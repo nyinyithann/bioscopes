@@ -1,0 +1,155 @@
+type state =
+  | Loading
+  | Error(string)
+  | Success(array<GenreModel.genre>)
+
+let cache = ref(Js.Dict.empty())
+
+module Title = {
+  @react.component
+  let make = (~name: string) => {
+    <div className="w-full font-nav text-lg border-b-[1px] pl-4 pb-1 border-b-indigo-100 text-500">
+      {name->React.string}
+    </div>
+  }
+}
+
+let staticItems = [
+  {
+    "id": -1,
+    "name": "Popular",
+    "dataName": "popular",
+    "icon": <Heroicons.Solid.HeartIcon className="w-3 h-3" />,
+  },
+  {
+    "id": -2,
+    "name": "Top Rated",
+    "dataName": "top_rated",
+    "icon": <Heroicons.Solid.TrendingUpIcon className="w-3 h-3" />,
+  },
+  {
+    "id": -3,
+    "name": "Upcoming",
+    "dataName": "upcoming",
+    "icon": <Heroicons.Solid.TruckIcon className="w-3 h-3" />,
+  },
+]
+
+module GenreLink = {
+  @react.component
+  let make = (
+    ~id: int,
+    ~name: string,
+    ~dataName: option<string>=?,
+    ~icon: option<React.element>=?,
+    ~onClick
+  ) => {
+    React.cloneElement(
+      <button
+        type_="button"
+        className="w-full font-general text-base text-left rounded-sm active:to-blue-500 transition duration-150 ease-linear pl-[3rem] py-1 flex gap-2 items-center text-600 hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:text-yellow-200"
+        onClick>
+        {switch icon {
+        | Some(x) => x
+        | None => <Heroicons.Solid.FilmIcon className="w-3 h-3" />
+        }}
+        {name->React.string}
+      </button>,
+      {
+        "data-id": id,
+        "data-name": switch dataName {
+        | Some(n) => n
+        | None => name
+        },
+      },
+    )
+  }
+}
+
+@react.component
+let make = () => {
+  let (state, setState) = React.useState(_ => Loading)
+
+  React.useEffect0(() => {
+    let genreCallback = json => {
+      switch GenreModel.GenreDecoder.decode(. ~json) {
+      | Ok(genreList) =>
+        Js.Dict.set(cache.contents, "genres", genreList.genres)
+        setState(_ => Success(genreList.genres))
+      | Error(msg) => setState(_ => Error(msg))
+      }
+    }
+    let controller = Fetch.AbortController.make()
+    switch Js.Dict.get(cache.contents, "genres") {
+    | Some(genres) => setState(_ => Success(genres))
+    | None =>
+      MovieAPI.getGenres(
+        ~callback=genreCallback,
+        ~signal=Fetch.AbortController.signal(controller),
+        (),
+      )->ignore
+    }
+
+    Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
+  })
+
+  let onClick = React.useCallback0(e => {
+    open ReactEvent.Mouse
+    // let dataId = target(e)["getAttribute"](. "data-id")
+    let dataName = target(e)["getAttribute"](. "data-name")
+    Js.log(dataName) 
+  })
+
+  <div className="flex flex-col items-start justify-center z-50">
+    <div className="flex font-brand w-full items-center justify-center pt-2 pb-4">
+      <h1
+        className="text-3xl rounded-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2">
+        <Heroicons.Solid.CameraIcon className="h-3 w-3 pl-1" />
+        {"BISCOPES"->React.string}
+        <Heroicons.Solid.CameraIcon className="h-3 w-3 pr-1" />
+      </h1>
+    </div>
+    {switch state {
+    | Loading =>
+      <Loading
+        className="w-[4rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
+      />
+    | Error(msg) =>
+      <div className="flex flex-wrap w-full px-1 text-red-400">
+        {React.string("Error occured while loaind genres: " ++ msg)}
+      </div>
+    | Success(genres) =>
+      <div className="w-full">
+        <div className="flex flex-col w-full">
+          <Title name="Discover" />
+          <div className="pt-1 flex flex-col justify-center items-center">
+            {staticItems
+            ->Belt.Array.map(x => {
+              <GenreLink
+                key={x["dataName"]}
+                id={x["id"]}
+                name={x["name"]}
+                dataName={x["dataName"]}
+                icon={x["icon"]}
+                onClick
+              />
+            })
+            ->React.array}
+          </div>
+        </div>
+        <div className="flex flex-col w-full">
+          <Title name="Genres" />
+          <div className="pt-1 flex flex-col items-start justify-start h-[55vh] md:h-[70vh]">
+            <div className="w-full flex flex-col overflow-y-auto bs-scrollbar dark:dark-scrollbar">
+              {genres
+              ->Belt.Array.map(x => {
+                <GenreLink key={x.id->Js.Int.toString} id={x.id} name={x.name} onClick/>
+              })
+              ->React.array}
+            </div>
+          </div>
+        </div>
+      </div>
+    }}
+  </div>
+}

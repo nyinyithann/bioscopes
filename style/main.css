@@ -1,0 +1,62 @@
+@import './_theme.css';
+@import './_fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+	.scrollbar::-webkit-scrollbar {
+		width: 10px;
+	}
+
+	.scrollbar::-webkit-scrollbar-track {
+		background: theme('backgroundColor.transparent');
+		border-radius: 100vh;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb {
+		background: theme('backgroundColor.transparent');
+		border-radius: 100vh;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb:hover {
+		background: theme('backgroundColor.400');
+	}
+
+	.bs-scrollbar::-webkit-scrollbar {
+		width: 10px;
+	}
+
+	.bs-scrollbar::-webkit-scrollbar-track {
+		background: theme('backgroundColor.200');
+		border-radius: 100vh;
+	}
+
+	.bs-scrollbar::-webkit-scrollbar-thumb {
+		background: theme('backgroundColor.300');
+		border-radius: 100vh;
+	}
+
+	.bs-scrollbar::-webkit-scrollbar-thumb:hover {
+		background: theme('backgroundColor.400');
+	}
+
+	.dark-scrollbar::-webkit-scrollbar {
+		width: 10px;
+	}
+
+	.dark-scrollbar::-webkit-scrollbar-track {
+		background: theme('colors.gray.600');
+		border-radius: 100vh;
+	}
+
+	.dark-scrollbar::-webkit-scrollbar-thumb {
+		background: theme('colors.gray.500');
+		border-radius: 100vh;
+	}
+
+	.dark-scrollbar::-webkit-scrollbar-thumb:hover {
+		background: theme('colors.gray.400');
+	}
+}
