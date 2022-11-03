@@ -10,7 +10,7 @@ let make = () => {
         _,
       )
     ),
-    (),
+    {"id": None},
   )
 
   let lazyAbout = React.createElement(
@@ -20,12 +20,17 @@ let make = () => {
         _,
       )
     ),
-    (),
+    {"id": None},
   )
 
   let url = RescriptReactRouter.useUrl()
   let component = switch url.path {
-  | list{} => <SuspensionLoader> lazyHome </SuspensionLoader>
+  | list{}
+  | list{"genre"}
+  | list{"search"} 
+  | list{"movie", ..._} 
+  | list{"person", ..._} =>
+    <SuspensionLoader> lazyHome </SuspensionLoader>
   | list{"about"} => <SuspensionLoader> lazyAbout </SuspensionLoader>
   | _ => <NotFound />
   }
@@ -34,7 +39,9 @@ let make = () => {
   <ThemeSwitchProvider value=setTheme>
     <div className={`${theme} flex flex-col`}>
       <ErrorBoundary>
-        <div className="h-screen bg-white dark:bg-slate-500"> {component} </div>
+        <div className="h-screen bg-white dark:bg-slate-500">
+          <div> {component} </div>
+        </div>
       </ErrorBoundary>
     </div>
   </ThemeSwitchProvider>

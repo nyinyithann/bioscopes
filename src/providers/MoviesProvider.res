@@ -1,19 +1,12 @@
-type api_params =
-  | Category({type_: string, page: int})
-  | Genre({id: int, page: int, sorty_by: string})
-  | Search({query: string, page: int})
-  | Recommendation({movieId: int, page: int})
-  | WithCast({castId: int, page: int, sorty_by: string})
-
 type state = {
-  apiParams: api_params,
+  apiParams: UrlQueryParam.query_param,
   movies: MovieModel.movielist,
   loading: bool,
   error: string,
 }
 
 type action =
-  | Loading(api_params)
+  | Loading(UrlQueryParam.query_param)
   | Error(string)
   | Success(MovieModel.movielist)
 
@@ -25,7 +18,7 @@ let emptyMovieList = {
 }
 
 let initialState = {
-  apiParams: Category({type_: "popular", page: 1}),
+  apiParams: Category({name: "popular", page: 1}),
   movies: emptyMovieList,
   loading: false,
   error: "",
@@ -35,7 +28,7 @@ type context_value = {
   movies: MovieModel.movielist,
   loading: bool,
   error: string,
-  loadMovies: (~apiParams: api_params) => unit,
+  loadMovies: (~apiParams: UrlQueryParam.query_param) => unit,
 }
 
 module MoviesContext = {
@@ -63,17 +56,24 @@ let reducer = (state: state, action) => {
   }
 }
 
-let loadMoviesInternal = (dispatch, ~apiParams: api_params) => {
+let loadMoviesInternal = (dispatch, ~apiParams: UrlQueryParam.query_param) => {
   let apiPath = switch apiParams {
-  | Category({type_, page}) =>
-    `${MovieAPI.apiBaseUrl}/${MovieAPI.apiVersion}/movie/${type_}?page=${Js.Int.toString(page)}`
+  | Category({name, page}) =>
+    `${MovieAPI.apiBaseUrl}/${MovieAPI.apiVersion}/movie/${name}?page=${Js.Int.toString(page)}`
+  | Genre({id, page, sort_by}) =>
+    `${MovieAPI.apiBaseUrl}/${MovieAPI.apiVersion}/discover/movie?with_genres=${string_of_int(
+        id,
+      )}&page=${Js.Int.toString(page)}&sort_by=${sort_by}`
   | _ => ""
   }
 
   let callback = json => {
     switch MovieModel.MovieListDecoder.decode(. ~json) {
     | Ok(ml) => dispatch(Success(ml))
-    | Error(msg) => dispatch(Error(msg))
+    | Error(msg) => {
+        Js.log(msg)
+        dispatch(Error(msg))
+    }
     }
   }
   dispatch(Loading(apiParams))
@@ -94,4 +94,4 @@ let make = (~children) => {
   <MoviesContext.Provider value> children </MoviesContext.Provider>
 }
 
-let usePopularMovies = () => React.useContext(MoviesContext.context)
+let useMoviesContext = () => React.useContext(MoviesContext.context)

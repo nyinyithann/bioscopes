@@ -3,8 +3,8 @@ let {string} = module(React)
 @react.component
 let make = () => {
   <div
-    className="w-full h-full flex flex-col items-center justify-center font-medium text-center text-slate-600 bg-50">
-    <span className="text-[10rem] md:text-[16rem] text-100"> {"404"->string} </span>
+    className="w-full h-full flex flex-col items-center justify-center font-medium text-center text-slate-600">
+    <span className="text-[10rem] md:text-[16rem] text-500"> {"404"->string} </span>
     <span className="text-900 pb-5 text-[1.2rem] dark:text-slate-200">
       {"Hmm... this page doesn't exist. Please go to the home page by clicking
         the button below."->string}

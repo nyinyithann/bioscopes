@@ -15,7 +15,7 @@ module AuthorLink = {
 @react.component
 let make = () => {
   <div
-    className="flex flex-col gap-2 text-600 font-sans text-center h-full items-center justify-center dark:text-slate-100">
+    className="flex flex-col gap-2 text-600 font-sans text-center w-full h-screen items-center justify-center dark:text-slate-100">
     <div className="-mt-40">
       <h1 className="text-base md:text-2xl font-bold pt-4">
         {"ReScript React template with Webpack and TailwindCSS"->string}

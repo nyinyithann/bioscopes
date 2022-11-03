@@ -28,7 +28,9 @@ function App(Props) {
                                       default: comp.make
                                     });
                         }), __x);
-          }), undefined);
+          }), {
+        id: undefined
+      });
   var lazyAbout = React.createElement(React.lazy(function (param) {
             var __x = import("./pages/About.js");
             return Js_promise.then_((function (comp) {
@@ -36,18 +38,49 @@ function App(Props) {
                                       default: comp.make
                                     });
                         }), __x);
-          }), undefined);
+          }), {
+        id: undefined
+      });
   var url = RescriptReactRouter.useUrl(undefined, undefined);
   var match = url.path;
-  var component = match ? (
-      match.hd === "about" ? (
-          match.tl ? React.createElement(NotFound.make, {}) : React.createElement(SuspensionLoader.make, {
+  var component;
+  var exit = 0;
+  if (match) {
+    switch (match.hd) {
+      case "about" :
+          if (match.tl) {
+            exit = 1;
+          } else {
+            component = React.createElement(SuspensionLoader.make, {
                   children: lazyAbout
-                })
-        ) : React.createElement(NotFound.make, {})
-    ) : React.createElement(SuspensionLoader.make, {
-          children: lazyHome
-        });
+                });
+          }
+          break;
+      case "movie" :
+      case "person" :
+          exit = 2;
+          break;
+      case "genre" :
+      case "search" :
+          exit = match.tl ? 1 : 2;
+          break;
+      default:
+        exit = 1;
+    }
+  } else {
+    exit = 2;
+  }
+  switch (exit) {
+    case 1 :
+        component = React.createElement(NotFound.make, {});
+        break;
+    case 2 :
+        component = React.createElement(SuspensionLoader.make, {
+              children: lazyHome
+            });
+        break;
+    
+  }
   var match$1 = ThemeHook.useTheme("theme-gray");
   return React.createElement(ThemeSwitchProvider.make, {
               value: match$1[1],
@@ -56,7 +89,7 @@ function App(Props) {
                   }, React.createElement(ErrorBoundary.make, {
                         children: React.createElement("div", {
                               className: "h-screen bg-white dark:bg-slate-500"
-                            }, component)
+                            }, React.createElement("div", undefined, component))
                       }))
             });
 }

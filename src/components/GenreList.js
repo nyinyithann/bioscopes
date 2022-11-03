@@ -7,7 +7,9 @@ import * as Loading from "./Loading.js";
 import * as MovieAPI from "../http/MovieAPI.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as GenreModel from "../models/GenreModel.js";
+import * as Pervasives from "rescript/lib/es6/pervasives.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
+import * as UrlQueryParam from "../routes/UrlQueryParam.js";
 import * as Solid from "@heroicons/react/solid";
 
 var cache = {
@@ -59,7 +61,7 @@ function GenreList$GenreLink(Props) {
   var icon = Props.icon;
   var onClick = Props.onClick;
   return React.cloneElement(React.createElement("button", {
-                  className: "w-full font-general text-base text-left rounded-sm active:to-blue-500 transition duration-150 ease-linear pl-[3rem] py-1 flex gap-2 items-center text-600 hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:text-yellow-200",
+                  className: "w-full font-general text-base text-left active:to-blue-500 transition duration-150 ease-linear pl-[3rem] py-1 flex gap-2 items-center text-600 hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:text-yellow-200",
                   type: "button",
                   onClick: onClick
                 }, icon !== undefined ? Caml_option.valFromOption(icon) : React.createElement(Solid.FilmIcon, {
@@ -80,6 +82,8 @@ function GenreList(Props) {
       });
   var setState = match[1];
   var state = match[0];
+  var match$1 = UrlQueryParam.useQueryParams(undefined);
+  var setQueryParam = match$1[1];
   React.useEffect((function () {
           var genreCallback = function (json) {
             var genreList = GenreModel.GenreDecoder.decode(json);
@@ -118,8 +122,33 @@ function GenreList(Props) {
                   });
         }), []);
   var onClick = React.useCallback((function (e) {
+          var dataId = e.target.getAttribute("data-id");
           var dataName = e.target.getAttribute("data-name");
-          console.log(dataName);
+          var id = Pervasives.int_of_string_opt(dataId);
+          if (id !== undefined) {
+            if (id < 0) {
+              return Curry._1(setQueryParam, {
+                          TAG: /* Category */0,
+                          _0: {
+                            name: dataName,
+                            page: 1
+                          }
+                        });
+            } else if (id > 0) {
+              return Curry._1(setQueryParam, {
+                          TAG: /* Genre */1,
+                          _0: {
+                            id: id,
+                            name: dataName,
+                            page: 1,
+                            sort_by: "popularity.desc"
+                          }
+                        });
+            } else {
+              return ;
+            }
+          }
+          
         }), []);
   var tmp;
   tmp = typeof state === "number" ? React.createElement(Loading.make, {
@@ -149,9 +178,9 @@ function GenreList(Props) {
                 }, React.createElement(GenreList$Title, {
                       name: "Genres"
                     }), React.createElement("div", {
-                      className: "pt-1 flex flex-col items-start justify-start h-[55vh] md:h-[70vh]"
+                      className: "pt-1 flex flex-col items-start justify-start h-[60vh] md:h-[68vh]"
                     }, React.createElement("div", {
-                          className: "w-full flex flex-col overflow-y-auto bs-scrollbar dark:dark-scrollbar"
+                          className: "w-full flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-thumb-rounded"
                         }, Belt_Array.map(state._0, (function (x) {
                                 return React.createElement(GenreList$GenreLink, {
                                             id: x.id,
@@ -164,12 +193,12 @@ function GenreList(Props) {
   return React.createElement("div", {
               className: "flex flex-col items-start justify-center z-50"
             }, React.createElement("div", {
-                  className: "flex font-brand w-full items-center justify-center pt-2 pb-4"
-                }, React.createElement("h1", {
-                      className: "text-3xl rounded-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2"
+                  className: "flex font-brand w-full items-center justify-center pt-2 pb-4 gap-2"
+                }, React.createElement("div", {
+                      className: "text-2xl rounded-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2"
                     }, React.createElement(Solid.CameraIcon, {
                           className: "h-3 w-3 pl-1"
-                        }), "BISCOPES", React.createElement(Solid.CameraIcon, {
+                        }), "BIOSCOPES", React.createElement(Solid.CameraIcon, {
                           className: "h-3 w-3 pr-1"
                         }))), tmp);
 }

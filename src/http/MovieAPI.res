@@ -1,7 +1,7 @@
 open Fetch
 open Promise
 
-let apiBaseUrl = "https://api.themoviedb.org/"
+let apiBaseUrl = "https://api.themoviedb.org"
 let apiVersion = "3"
 
 let contentType = ("Content-type", "application/json")
@@ -54,7 +54,7 @@ let getMovies = (~apiPath: string, ~callback, ~signal=?, ()) => {
     {
       method: #GET,
       headers: Headers.fromArray([contentType, authorization]),
-      ?signal
+      ?signal,
     },
   )
   ->checkResponseStatus
@@ -69,7 +69,7 @@ let getGenres = (~callback, ~signal=?, ()) => {
     {
       method: #GET,
       headers: Headers.fromArray([contentType, authorization]),
-      ?signal
+      ?signal,
     },
   )
   ->checkResponseStatus

@@ -3,20 +3,19 @@ module MovieList = {
   let make = () => {
     let (count, setCount) = React.useState(_ => 1)
     open MoviesProvider
-    let {movies, loadMovies} = usePopularMovies()
+    let {movies, loadMovies} = useMoviesContext()
 
-    let genreCallback = (json) => {
-        switch GenreModel.GenreDecoder.decode(. ~json) {
-            | Ok(genreList) => Js.log(genreList.genres)
-            | Error(msg) => Js.log(msg)
-        }
+    let genreCallback = json => {
+      switch GenreModel.GenreDecoder.decode(. ~json) {
+      | Ok(genreList) => Js.log(genreList.genres)
+      | Error(msg) => Js.log(msg)
+      }
     }
 
     React.useEffect1(() => {
-      open MoviesProvider
-      loadMovies(~apiParams=Category({type_ : "popular" , page: count}))
+      loadMovies(~apiParams=Category({name: "popular", page: count}))
 
-       MovieAPI.getGenres(~callback = genreCallback, ()) ->ignore
+      MovieAPI.getGenres(~callback=genreCallback, ())->ignore
 
       None
     }, [count])

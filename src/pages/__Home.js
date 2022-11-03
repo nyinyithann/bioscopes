@@ -13,7 +13,7 @@ function __Home$MovieList(Props) {
       });
   var setCount = match[1];
   var count = match[0];
-  var match$1 = MoviesProvider.usePopularMovies(undefined);
+  var match$1 = MoviesProvider.useMoviesContext(undefined);
   var loadMovies = match$1.loadMovies;
   var genreCallback = function (json) {
     var genreList = GenreModel.GenreDecoder.decode(json);
@@ -26,8 +26,10 @@ function __Home$MovieList(Props) {
   React.useEffect((function () {
           Curry._1(loadMovies, {
                 TAG: /* Category */0,
-                type_: "popular",
-                page: count
+                _0: {
+                  name: "popular",
+                  page: count
+                }
               });
           MovieAPI.getGenres(genreCallback, undefined, undefined);
         }), [count]);

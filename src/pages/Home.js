@@ -3,134 +3,232 @@
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as GenreList from "../components/GenreList.js";
+import * as Js_promise from "rescript/lib/es6/js_promise.js";
 import * as GithubButton from "../components/GithubButton.js";
+import * as MoviesProvider from "../providers/MoviesProvider.js";
+import * as SuspensionLoader from "../components/SuspensionLoader.js";
 import * as React$1 from "@headlessui/react";
+import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js";
 import * as Solid from "@heroicons/react/solid";
 
 function string(prim) {
   return prim;
 }
 
+var sidebarOpenRef = {
+  contents: true
+};
+
 function Home(Props) {
   var match = React.useState(function () {
-        return false;
+        return sidebarOpenRef.contents;
       });
   var setSidebarOpen = match[1];
+  var sidebarOpen = match[0];
+  React.useEffect((function () {
+          sidebarOpenRef.contents = sidebarOpen;
+        }), [sidebarOpen]);
+  var lazyMovieList = React.createElement(React.lazy(function (param) {
+            var __x = import("../components/MovieList.js");
+            return Js_promise.then_((function (comp) {
+                          return Promise.resolve({
+                                      default: comp.make
+                                    });
+                        }), __x);
+          }), {
+        id: undefined
+      });
+  var getLazyMovie = function (id) {
+    return React.createElement(React.lazy(function (param) {
+                    var __x = import("../components/Movie.js");
+                    return Js_promise.then_((function (comp) {
+                                  return Promise.resolve({
+                                              default: comp.make
+                                            });
+                                }), __x);
+                  }), {
+                id: id
+              });
+  };
+  var getLazyPerson = function (id) {
+    return React.createElement(React.lazy(function (param) {
+                    var __x = import("../components/Person.js");
+                    return Js_promise.then_((function (comp) {
+                                  return Promise.resolve({
+                                              default: comp.make
+                                            });
+                                }), __x);
+                  }), {
+                id: id
+              });
+  };
+  var url = RescriptReactRouter.useUrl(undefined, undefined);
+  var match$1 = url.path;
+  var component;
+  var exit = 0;
+  if (match$1) {
+    var exit$1 = 0;
+    switch (match$1.hd) {
+      case "movie" :
+          var match$2 = match$1.tl;
+          if (match$2 && !match$2.tl) {
+            component = React.createElement(SuspensionLoader.make, {
+                  children: getLazyMovie(match$2.hd)
+                });
+          } else {
+            exit = 1;
+          }
+          break;
+      case "person" :
+          var match$3 = match$1.tl;
+          if (match$3 && !match$3.tl) {
+            component = React.createElement(SuspensionLoader.make, {
+                  children: getLazyPerson(match$3.hd)
+                });
+          } else {
+            exit = 1;
+          }
+          break;
+      case "genre" :
+      case "search" :
+          exit$1 = 2;
+          break;
+      default:
+        exit = 1;
+    }
+    if (exit$1 === 2) {
+      if (match$1.tl) {
+        exit = 1;
+      } else {
+        component = React.createElement(SuspensionLoader.make, {
+              children: lazyMovieList
+            });
+      }
+    }
+    
+  } else {
+    component = React.createElement(SuspensionLoader.make, {
+          children: lazyMovieList
+        });
+  }
+  if (exit === 1) {
+    component = React.createElement("div", undefined, "Todo: To create a proper component to display message");
+  }
   return React.createElement("div", undefined, React.createElement(React$1.Transition, {
-                  show: match[0],
+                  show: sidebarOpenRef.contents,
                   children: React.createElement(React$1.Dialog, {
                         onClose: (function (param) {
+                            sidebarOpenRef.contents = true;
                             Curry._1(setSidebarOpen, (function (param) {
                                     return true;
                                   }));
                           }),
-                        className: "relative z-40 md:hidden",
-                        children: null
-                      }, React.createElement(React$1.Transition.Child, {
-                            enter: "transition-opacity ease-linear duration-300",
-                            enterFrom: "opacity-0",
-                            enterTo: "opacity-100",
-                            leave: "transition-opacity ease-linear duration-300",
-                            leaveFrom: "opacity-100",
-                            leaveTo: "opacity-0",
-                            children: React.createElement("div", {
-                                  className: "fixed inset-0 bg-gray-600 bg-opacity-75"
-                                })
-                          }), React.createElement("div", {
-                            className: "fixed inset-0 z-40 flex"
-                          }, React.createElement(React$1.Transition.Child, {
-                                enter: "transition ease-in-out duration-300 transform",
-                                enterFrom: "-translate-x-full",
-                                enterTo: "translate-x-0",
-                                leave: "transition ease-in-out duration-300 transform",
-                                leaveFrom: "translate-x-0",
-                                leaveTo: "-translate-x-full",
-                                children: React.createElement(React$1.Dialog.Panel, {
-                                      className: "relative flex h-full w-[16rem] flex-1 flex-col bg-white pt-5 pb-4",
-                                      children: null
-                                    }, React.createElement(React$1.Transition.Child, {
-                                          enter: "ease-in-out duration-300",
-                                          enterFrom: "opacity-0",
-                                          enterTo: "opacity-100",
-                                          leave: "ease-in-out duration-300",
-                                          leaveFrom: "opacity-100",
-                                          leaveTo: "opacity-0",
-                                          children: React.createElement("div", {
-                                                className: "absolute top-0 right-0 -mr-12 pt-2"
-                                              }, React.createElement("button", {
-                                                    className: "ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white",
-                                                    type: "button",
-                                                    onClick: (function (param) {
-                                                        Curry._1(setSidebarOpen, (function (param) {
-                                                                return false;
-                                                              }));
-                                                      })
-                                                  }, React.createElement("span", {
-                                                        className: "sr-only"
-                                                      }, "Close sidebar"), React.createElement(Solid.XIcon, {
-                                                        className: "h-6 w-6 text-white"
-                                                      })))
-                                        }), React.createElement(GenreList.make, {}))
-                              }), React.createElement("div", {
-                                className: "w-14 flex-shrink-0"
-                              })))
+                        className: "relative",
+                        children: React.createElement("div", {
+                              className: "fixed inset-0 flex"
+                            }, React.createElement(React$1.Transition.Child, {
+                                  enter: "transition ease-in-out duration-300 transform",
+                                  enterFrom: "-translate-x-full",
+                                  enterTo: "translate-x-0",
+                                  leave: "transition ease-in-out duration-300 transform",
+                                  leaveFrom: "translate-x-0",
+                                  leaveTo: "-translate-x-full",
+                                  children: React.createElement(React$1.Dialog.Panel, {
+                                        className: "relative flex h-full w-[16rem] flex-1 flex-col shadow-md shadow-gray-400 pt-2",
+                                        children: null
+                                      }, React.createElement(React$1.Transition.Child, {
+                                            enter: "ease-in-out duration-300",
+                                            enterFrom: "opacity-0",
+                                            enterTo: "opacity-100",
+                                            leave: "ease-in-out duration-300",
+                                            leaveFrom: "opacity-100",
+                                            leaveTo: "opacity-0",
+                                            children: React.createElement("div", {
+                                                  className: "absolute top-0 right-0 pt-2"
+                                                })
+                                          }), React.createElement(GenreList.make, {}))
+                                }), React.createElement("div", {
+                                  className: "w-14 flex-shrink-0"
+                                }))
+                      })
                 }), React.createElement("div", {
-                  className: "hidden md:fixed md:inset-y-0 md:flex md:flex-col md:w-[16rem] border-r-[1px] border-r-gray-100 shadow-md",
-                  id: "desktop-sidebar-container"
-                }, React.createElement(GenreList.make, {})), React.createElement("div", {
-                  className: "flex flex-1 flex-col h-screen md:pl-[16rem]",
+                  className: "flex flex-1 flex-col h-screen",
                   id: "navbar-main-data-container"
                 }, React.createElement("div", {
-                      className: "sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white md:shadow-white shadow-slate-300 shadow-md",
-                      id: "navbar"
-                    }, React.createElement("button", {
-                          className: "px-4 outline-none md:hidden",
-                          type: "button",
-                          onClick: (function (param) {
-                              Curry._1(setSidebarOpen, (function (param) {
-                                      return true;
-                                    }));
-                            })
-                        }, React.createElement("span", {
-                              className: "sr-only"
-                            }, "Open Sidebar"), React.createElement(Solid.MenuIcon, {
-                              className: "h-6 w-6 fill-400 hover:fill-indigo-500"
-                            })), React.createElement("div", {
-                          className: "flex flex-1 justify-between px-4",
-                          id: "search-colorswatch-container"
-                        }, React.createElement("div", {
-                              className: "relative w-full text-slate-500 focus-within:text-slate-600 flex items-center",
-                              id: "search-container"
-                            }, React.createElement("div", {
-                                  className: "pointer-events-none absolute inset-y-0 left-1 flex items-center"
-                                }, React.createElement(Solid.SearchIcon, {
-                                      className: "h-5 w-5"
-                                    })), React.createElement("input", {
-                                  className: "block w-full pl-8 pr-3 text-gray-900 placeholder-slate-400 outline-none ring-0 border-b-[1px] border-b-slate-200 focus:placeholder-slate-500 focus:outline-none focus:ring-0 focus:border-b-slate-300 border-t-0 border-x-0 sm:text-sm",
-                                  id: "search-field",
-                                  name: "search",
-                                  placeholder: "Search",
-                                  type: "search"
-                                })), React.createElement("div", {
-                              className: "ml-4 flex items-center md:ml-6",
-                              id: "colorswatch-container"
-                            }, React.createElement("button", undefined, React.createElement(Solid.SunIcon, {
-                                      className: "h-5 w-5 fill-klor-400 hover:fill-klor-600"
-                                    })), React.createElement("button", undefined, React.createElement(Solid.MoonIcon, {
-                                      className: "h-5 w-5 fill-klor-400 hover:fill-klor-600"
-                                    })), React.createElement(GithubButton.make, {})))), React.createElement("div", {
-                      className: "w-full h-screen flex flex-1 p-4",
-                      id: "main-data-container"
+                      className: "" + (
+                        sidebarOpenRef.contents ? "ml-[16rem]" : ""
+                      ) + ""
                     }, React.createElement("div", {
-                          className: "w-full h-full flex bg-100",
-                          id: "movie-list-here"
-                        }, "hi"))));
+                          className: "sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white md:shadow-white shadow-slate-300 shadow-md",
+                          id: "navbar"
+                        }, React.createElement("button", {
+                              className: "" + (
+                                sidebarOpenRef.contents ? "hidden" : "block"
+                              ) + " px-4 outline-none",
+                              type: "button",
+                              onClick: (function (param) {
+                                  sidebarOpenRef.contents = true;
+                                  Curry._1(setSidebarOpen, (function (param) {
+                                          return true;
+                                        }));
+                                })
+                            }, React.createElement("span", {
+                                  className: "sr-only"
+                                }, "Open Sidebar"), React.createElement(Solid.MenuIcon, {
+                                  className: "h-8 w-8 fill-400 hover:fill-yellow-100 bg-gradient-to-tr from-teal-400 to-blue-400 text-yellow-300 rounded p-1"
+                                })), React.createElement("button", {
+                              className: "" + (
+                                sidebarOpenRef.contents ? "block" : "hidden"
+                              ) + " pr-4 outline-none",
+                              type: "button",
+                              onClick: (function (param) {
+                                  sidebarOpenRef.contents = false;
+                                  Curry._1(setSidebarOpen, (function (param) {
+                                          return false;
+                                        }));
+                                })
+                            }, React.createElement("span", {
+                                  className: "sr-only"
+                                }, "Close sidebar"), React.createElement(Solid.XIcon, {
+                                  className: "h-8 w-8 fill-400 hover:fill-indigo-500 fill-yellow-900 rounded-r-full py-1 bg-gradient-to-br from-rose-50 to-yellow-100"
+                                })), React.createElement("div", {
+                              className: "flex flex-1 justify-between px-4",
+                              id: "search-colorswatch-container"
+                            }, React.createElement("div", {
+                                  className: "relative w-full text-slate-500 focus-within:text-slate-600 flex items-center",
+                                  id: "search-container"
+                                }, React.createElement("div", {
+                                      className: "pointer-events-none absolute inset-y-0 left-1 flex items-center"
+                                    }, React.createElement(Solid.SearchIcon, {
+                                          className: "h-5 w-5"
+                                        })), React.createElement("input", {
+                                      className: "block w-full pl-8 pr-3 text-gray-900 placeholder-slate-400 outline-none ring-0 border-b-[1px] border-b-slate-200 focus:placeholder-slate-500 focus:outline-none focus:ring-0 focus:border-b-slate-300 border-t-0 border-x-0 sm:text-sm",
+                                      id: "search-field",
+                                      name: "search",
+                                      placeholder: "Search",
+                                      type: "search"
+                                    })), React.createElement("div", {
+                                  className: "ml-4 flex items-center md:ml-6",
+                                  id: "colorswatch-container"
+                                }, React.createElement("button", undefined, React.createElement(Solid.SunIcon, {
+                                          className: "h-5 w-5 fill-klor-400 hover:fill-klor-600"
+                                        })), React.createElement("button", undefined, React.createElement(Solid.MoonIcon, {
+                                          className: "h-5 w-5 fill-klor-400 hover:fill-klor-600"
+                                        })), React.createElement(GithubButton.make, {})))), React.createElement("div", {
+                          className: "w-full h-[calc(100vh-4rem)] flex flex-1 p-4",
+                          id: "main-data-container"
+                        }, React.createElement("div", {
+                              className: "flex flex-1 h-full w-full overflow-y-auto z-40"
+                            }, React.createElement(MoviesProvider.make, {
+                                  children: component
+                                }))))));
 }
 
 var make = Home;
 
 export {
   string ,
+  sidebarOpenRef ,
   make ,
 }
 /* react Not a pure module */

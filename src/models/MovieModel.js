@@ -3,17 +3,26 @@
 import * as Json$JsonCombinators from "@glennsl/rescript-json-combinators/src/Json.js";
 import * as Json_Decode$JsonCombinators from "@glennsl/rescript-json-combinators/src/Json_Decode.js";
 
+function opt(fields, path, decode) {
+  try {
+    return fields.optional(path, decode);
+  }
+  catch (exn){
+    return ;
+  }
+}
+
 var movie = Json_Decode$JsonCombinators.object(function (fields) {
       return {
               adult: fields.required("adult", Json_Decode$JsonCombinators.bool),
-              backdrop_path: fields.optional("backdrop_path", Json_Decode$JsonCombinators.string),
+              backdrop_path: opt(fields, "backdrop_path", Json_Decode$JsonCombinators.string),
               genre_ids: fields.optional("genre_ids", Json_Decode$JsonCombinators.array(Json_Decode$JsonCombinators.$$int)),
               id: fields.required("id", Json_Decode$JsonCombinators.$$int),
               original_language: fields.optional("original_language", Json_Decode$JsonCombinators.string),
               original_title: fields.optional("original_title", Json_Decode$JsonCombinators.string),
               overview: fields.optional("overview", Json_Decode$JsonCombinators.string),
               popularity: fields.required("popularity", Json_Decode$JsonCombinators.$$float),
-              poster_path: fields.optional("poster_path", Json_Decode$JsonCombinators.string),
+              poster_path: opt(fields, "poster_path", Json_Decode$JsonCombinators.string),
               release_date: fields.optional("release_date", Json_Decode$JsonCombinators.string),
               title: fields.required("title", Json_Decode$JsonCombinators.string),
               video: fields.required("video", Json_Decode$JsonCombinators.bool),
@@ -27,6 +36,7 @@ function decode(json) {
 }
 
 var MovieDecoder = {
+  opt: opt,
   movie: movie,
   decode: decode
 };

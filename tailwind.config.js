@@ -18,10 +18,10 @@ module.exports = {
       // 'lg': '1024px',
       // 'xl': '1280px',
       // '2xl': '1536px',
-      'sm': '600px',
-      'md': '900px',
-      'lg': '1300px',
-      'xl': '1462.5px',
+      sm: '600px',
+      md: '900px',
+      lg: '1300px',
+      xl: '1462.5px',
       '2xl': '1500px',
     },
     extend: {
@@ -137,6 +137,12 @@ module.exports = {
       },
     },
   },
-  variants: {},
-  plugins: [require('@tailwindcss/line-clamp'), require('@tailwindcss/forms')],
+  variants: {
+    scrollbar: ['rounded'],
+  },
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+    require('@tailwindcss/forms'),
+    require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
 };

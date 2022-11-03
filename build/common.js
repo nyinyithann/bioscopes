@@ -10,6 +10,7 @@ module.exports = {
   entry: path.resolve(__dirname, '..', './src/index.js'),
   output: {
     path: path.resolve(__dirname, '..', './dist'),
+    publicPath: '/',
     clean: true,
     filename: isProductionMode ? '[name].[contenthash].bundle.js' : '[name].js',
     chunkFilename: '[name].[contenthash].bundle.js',

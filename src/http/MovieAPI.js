@@ -5,7 +5,7 @@ import * as Js_exn from "rescript/lib/es6/js_exn.js";
 import * as $$Promise from "@ryyppy/rescript-promise/src/Promise.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
-var apiBaseUrl = "https://api.themoviedb.org/";
+var apiBaseUrl = "https://api.themoviedb.org";
 
 var apiVersion = "3";
 

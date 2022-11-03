@@ -16,8 +16,10 @@ var emptyMovieList = {
 
 var initialState_apiParams = {
   TAG: /* Category */0,
-  type_: "popular",
-  page: 1
+  _0: {
+    name: "popular",
+    page: 1
+  }
 };
 
 var initialState = {
@@ -91,7 +93,18 @@ function reducer(state, action) {
 
 function loadMoviesInternal(dispatch, apiParams) {
   var apiPath;
-  apiPath = apiParams.TAG === /* Category */0 ? "" + MovieAPI.apiBaseUrl + "/" + MovieAPI.apiVersion + "/movie/" + apiParams.type_ + "?page=" + apiParams.page.toString() + "" : "";
+  switch (apiParams.TAG | 0) {
+    case /* Category */0 :
+        var match = apiParams._0;
+        apiPath = "" + MovieAPI.apiBaseUrl + "/" + MovieAPI.apiVersion + "/movie/" + match.name + "?page=" + match.page.toString() + "";
+        break;
+    case /* Genre */1 :
+        var match$1 = apiParams._0;
+        apiPath = "" + MovieAPI.apiBaseUrl + "/" + MovieAPI.apiVersion + "/discover/movie?with_genres=" + String(match$1.id) + "&page=" + match$1.page.toString() + "&sort_by=" + match$1.sort_by + "";
+        break;
+    default:
+      apiPath = "";
+  }
   var callback = function (json) {
     var ml = MovieModel.MovieListDecoder.decode(json);
     if (ml.TAG === /* Ok */0) {
@@ -99,12 +112,13 @@ function loadMoviesInternal(dispatch, apiParams) {
                   TAG: /* Success */2,
                   _0: ml._0
                 });
-    } else {
-      return Curry._1(dispatch, {
-                  TAG: /* Error */1,
-                  _0: ml._0
-                });
     }
+    var msg = ml._0;
+    console.log(msg);
+    Curry._1(dispatch, {
+          TAG: /* Error */1,
+          _0: msg
+        });
   };
   Curry._1(dispatch, {
         TAG: /* Loading */0,
@@ -138,7 +152,7 @@ function MoviesProvider(Props) {
             });
 }
 
-function usePopularMovies(param) {
+function useMoviesContext(param) {
   return React.useContext(context);
 }
 
@@ -151,6 +165,6 @@ export {
   reducer ,
   loadMoviesInternal ,
   make ,
-  usePopularMovies ,
+  useMoviesContext ,
 }
 /* context Not a pure module */

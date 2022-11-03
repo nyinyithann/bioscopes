@@ -42,12 +42,12 @@ module GenreLink = {
     ~name: string,
     ~dataName: option<string>=?,
     ~icon: option<React.element>=?,
-    ~onClick
+    ~onClick,
   ) => {
     React.cloneElement(
       <button
         type_="button"
-        className="w-full font-general text-base text-left rounded-sm active:to-blue-500 transition duration-150 ease-linear pl-[3rem] py-1 flex gap-2 items-center text-600 hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:text-yellow-200"
+        className="w-full font-general text-base text-left active:to-blue-500 transition duration-150 ease-linear pl-[3rem] py-1 flex gap-2 items-center text-600 hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:text-yellow-200"
         onClick>
         {switch icon {
         | Some(x) => x
@@ -69,6 +69,7 @@ module GenreLink = {
 @react.component
 let make = () => {
   let (state, setState) = React.useState(_ => Loading)
+  let (_, setQueryParam) = UrlQueryParam.useQueryParams()
 
   React.useEffect0(() => {
     let genreCallback = json => {
@@ -95,19 +96,24 @@ let make = () => {
 
   let onClick = React.useCallback0(e => {
     open ReactEvent.Mouse
-    // let dataId = target(e)["getAttribute"](. "data-id")
+    let dataId = target(e)["getAttribute"](. "data-id")
     let dataName = target(e)["getAttribute"](. "data-name")
-    Js.log(dataName) 
+    switch int_of_string_opt(dataId) {
+    | Some(id) if id < 0 => setQueryParam(Category({name: dataName, page: 1}))
+    | Some(id) if id > 0 =>
+      setQueryParam(Genre({id, name: dataName, page: 1, sort_by: "popularity.desc"}))
+    | None | _ => ()
+    }
   })
 
   <div className="flex flex-col items-start justify-center z-50">
-    <div className="flex font-brand w-full items-center justify-center pt-2 pb-4">
-      <h1
-        className="text-3xl rounded-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2">
+    <div className="flex font-brand w-full items-center justify-center pt-2 pb-4 gap-2">
+      <div
+        className="text-2xl rounded-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2">
         <Heroicons.Solid.CameraIcon className="h-3 w-3 pl-1" />
-        {"BISCOPES"->React.string}
+        {"BIOSCOPES"->React.string}
         <Heroicons.Solid.CameraIcon className="h-3 w-3 pr-1" />
-      </h1>
+      </div>
     </div>
     {switch state {
     | Loading =>
@@ -139,11 +145,12 @@ let make = () => {
         </div>
         <div className="flex flex-col w-full">
           <Title name="Genres" />
-          <div className="pt-1 flex flex-col items-start justify-start h-[55vh] md:h-[70vh]">
-            <div className="w-full flex flex-col overflow-y-auto bs-scrollbar dark:dark-scrollbar">
+          <div className="pt-1 flex flex-col items-start justify-start h-[60vh] md:h-[68vh]">
+            <div
+              className="w-full flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-thumb-rounded">
               {genres
               ->Belt.Array.map(x => {
-                <GenreLink key={x.id->Js.Int.toString} id={x.id} name={x.name} onClick/>
+                <GenreLink key={x.id->Js.Int.toString} id={x.id} name={x.name} onClick />
               })
               ->React.array}
             </div>

@@ -25,7 +25,7 @@ var AuthorLink = {
 
 function About(Props) {
   return React.createElement("div", {
-              className: "flex flex-col gap-2 text-600 font-sans text-center h-full items-center justify-center dark:text-slate-100"
+              className: "flex flex-col gap-2 text-600 font-sans text-center w-full h-screen items-center justify-center dark:text-slate-100"
             }, React.createElement("div", {
                   className: "-mt-40"
                 }, React.createElement("h1", {
