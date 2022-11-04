@@ -22,17 +22,17 @@ function MovieList$Poster(Props) {
   var poster_path = Props.poster_path;
   var imgLink = poster_path !== undefined ? Links.getPosterImageW342Link(poster_path) : "";
   return React.createElement("button", {
-              className: "flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[13rem] h-[22rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group\n      hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md",
+              className: "flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[9.5rem] h-[19rem] sm:w-[13rem] sm:h-[22rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group\n      hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md",
               type: "button",
               onClick: (function (param) {
                   console.log("Hello");
                 })
             }, imgLink.length > 0 ? React.createElement("img", {
-                    className: "w-[13rem] h-[18rem] flex-shrink-0 transform duration-300 group-hover:saturate-150",
+                    className: "w-[9.5rem] h-[14rem] sm:w-[13rem] sm:h-[18rem] flex-shrink-0 transform duration-300 group-hover:saturate-150",
                     alt: "A poster",
                     src: imgLink
                   }) : React.createElement("div", undefined, "placeholder here"), React.createElement("p", {
-                  className: "break-words text-[0.9rem] transform duration-300 group-hover:scale-110 group-hover:p-2  group-hover:text-yellow-200\n"
+                  className: "break-words text-[0.9rem] transform duration-300 group-hover:text-yellow-200\n"
                 }, Js_option.getWithDefault("", title)));
 }
 
@@ -82,7 +82,7 @@ function MovieList(Props) {
               });
   } else {
     return React.createElement("div", {
-                className: "w-full h-full flex flex-1 flex-wrap p-1 gap-[3rem] justify-center items-center z-50 px-[2rem]",
+                className: "w-full h-full flex flex-1 flex-wrap p-1 gap-[1rem] sm:gap-[3rem] justify-center items-center z-50 px-[2rem]",
                 id: "movie-list-here"
               }, Belt_Array.map(movieList, (function (m) {
                       return React.createElement(MovieList$Poster, {
