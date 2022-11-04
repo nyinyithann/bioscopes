@@ -4,14 +4,14 @@ import * as React from "react";
 
 function GithubButton(Props) {
   var className = Props.className;
-  var className$1 = className !== undefined ? className : "ml-6 block text-slate-400 hover:text-slate-500 dark:hover:text-slate-300";
+  var className$1 = className !== undefined ? className : "block text-200 hover:text-400 dark:hover:text-slate-300";
   return React.createElement("a", {
               className: className$1,
               href: "https://github.com/nyinyithann/biscopes"
             }, React.createElement("span", {
                   className: "sr-only"
                 }, "Biscopes Github Repository"), React.createElement("svg", {
-                  className: "w-5 h-5",
+                  className: "w-8 h-8",
                   fill: "currentColor",
                   viewBox: "0 0 16 16"
                 }, React.createElement("path", {

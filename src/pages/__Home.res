@@ -13,7 +13,7 @@ module MovieList = {
     }
 
     React.useEffect1(() => {
-      loadMovies(~apiParams=Category({name: "popular", page: count}))
+      loadMovies(~apiParams=Category({name: "popular", display: "Popular", page: count}))
 
       MovieAPI.getGenres(~callback=genreCallback, ())->ignore
 

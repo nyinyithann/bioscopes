@@ -3,6 +3,7 @@
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as GenreList from "../components/GenreList.js";
+import * as ThemeMenu from "../components/ThemeMenu.js";
 import * as Js_promise from "rescript/lib/es6/js_promise.js";
 import * as GithubButton from "../components/GithubButton.js";
 import * as MoviesProvider from "../providers/MoviesProvider.js";
@@ -115,13 +116,13 @@ function Home(Props) {
     component = React.createElement("div", undefined, "Todo: To create a proper component to display message");
   }
   return React.createElement("div", undefined, React.createElement("div", {
-                  className: "w-[14rem] md:w-[16rem]"
+                  className: "w-[12rem] md:w-[16rem]"
                 }, React.createElement(React$1.Transition, {
                       show: sidebarOpenRef.contents,
                       children: React.createElement("div", {
-                            className: "relative z-40 w-[14rem] md:w-[16rem]"
+                            className: "relative z-40 w-[12rem] md:w-[16rem]"
                           }, React.createElement("div", {
-                                className: "fixed inset-0 flex w-[14rem] md:w-[16rem] bg-white"
+                                className: "fixed inset-0 flex w-[12rem] md:w-[16rem] bg-white"
                               }, React.createElement(React$1.Transition.Child, {
                                     enter: "transition ease-in-out duration-300 transform",
                                     enterFrom: "-translate-x-full",
@@ -130,7 +131,7 @@ function Home(Props) {
                                     leaveFrom: "translate-x-0",
                                     leaveTo: "-translate-x-full",
                                     children: React.createElement("div", {
-                                          className: "relative flex h-full w-[14rem] md:w-[16rem] flex-1 flex-col shadow-md shadow-gray-100 pt-2"
+                                          className: "relative flex h-full w-[12rem] md:w-[16rem] flex-1 flex-col border-r-[1px] border-r-slate-100  shadow-md pt-2"
                                         }, React.createElement(React$1.Transition.Child, {
                                               enter: "ease-in-out duration-300",
                                               enterFrom: "opacity-0",
@@ -145,14 +146,14 @@ function Home(Props) {
                                   })))
                     })), React.createElement("div", {
                   className: "" + (
-                    sidebarOpenRef.contents ? "ml-[14rem] md:ml-[16rem]" : ""
+                    sidebarOpenRef.contents ? "ml-[12rem] md:ml-[16rem]" : ""
                   ) + " flex flex-1 flex-col h-full"
                 }, React.createElement("div", {
-                      className: "w-full flex flex-col flex-1"
+                      className: "w-full flex flex-col flex-1 bg-white"
                     }, React.createElement("div", {
-                          className: "h-auto w-auto flex flex-col"
+                          className: "h-auto w-auto flex flex-col z-50"
                         }, React.createElement("div", {
-                              className: "sticky top-0 z-30 flex h-16 flex-shrink-0 bg-white shadow-gray-100 shadow-md",
+                              className: "sticky top-0 z-50 flex h-14 flex-shrink-0 bg-white",
                               id: "navbar"
                             }, React.createElement("button", {
                                   className: "" + (
@@ -183,12 +184,12 @@ function Home(Props) {
                                 }, React.createElement("span", {
                                       className: "sr-only"
                                     }, "Close sidebar"), React.createElement(Solid.XIcon, {
-                                      className: "h-8 w-8 fill-400 hover:fill-slate-600 fill-slate-400 rounded-r-full py-1 bg-gradient-to-br from-slate-50 to-gray-100"
+                                      className: "h-8 w-8 fill-400 hover:fill-klor-600 fill-klor-400  rounded-r-full py-1 bg-100"
                                     })), React.createElement("div", {
-                                  className: "flex flex-1 justify-between px-4",
+                                  className: "flex flex-1 justify-between px-2",
                                   id: "search-colorswatch-container"
                                 }, React.createElement("div", {
-                                      className: "relative w-[14rem] sm:w-[22rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center m-auto",
+                                      className: "relative w-[12rem] sm:w-[22rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center m-auto",
                                       id: "search-container"
                                     }, React.createElement("div", {
                                           className: "pointer-events-none absolute inset-y-0 left-1 flex items-center"
@@ -201,17 +202,15 @@ function Home(Props) {
                                           placeholder: "Search",
                                           type: "search"
                                         })), React.createElement("div", {
-                                      className: "ml-4 flex items-center md:ml-6",
+                                      className: "ml-4 flex items-center gap-4 z-[50]",
                                       id: "colorswatch-container"
-                                    }, React.createElement("button", undefined, React.createElement(Solid.SunIcon, {
-                                              className: "h-5 w-5 fill-klor-400 hover:fill-klor-600"
-                                            })), React.createElement("button", undefined, React.createElement(Solid.MoonIcon, {
-                                              className: "h-5 w-5 fill-klor-400 hover:fill-klor-600"
-                                            })), React.createElement(GithubButton.make, {})))), React.createElement("div", {
-                              className: "pt-[2rem]"
+                                    }, React.createElement(ThemeMenu.make, {}), React.createElement(GithubButton.make, {})))), React.createElement("div", {
+                              className: "pt-1 z-30 bg-white"
                             }, React.createElement(MoviesProvider.make, {
                                   children: component
-                                }))))));
+                                })), React.createElement("footer", {
+                              className: "h-8"
+                            })))));
 }
 
 var make = Home;

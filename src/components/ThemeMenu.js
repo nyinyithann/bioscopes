@@ -146,7 +146,7 @@ function ThemeMenu$ColorButton(Props) {
   var onClick = Props.onClick;
   return React.cloneElement(React.createElement("button", {
                   "aria-label": "color",
-                  className: "flex h-8 w-8 items-center justify-center rounded-full p-1 shadow shadow-500 hover:ring-2 hover:ring-slate-300 focus:shadow-600 focus:outline-none dark:shadow-xl dark:shadow-gray-800 md:h-6 md:w-6",
+                  className: "flex h-8 w-8 items-center justify-center rounded-full p-1 shadow hover:ring-2 hover:ring-slate-300 focus:shadow-600 focus:outline-none dark:shadow-xl dark:shadow-gray-800 md:h-6 md:w-6",
                   style: {
                     backgroundColor: color
                   },
@@ -171,12 +171,12 @@ function ThemeMenu(Props) {
                         children: React.createElement(Solid.ColorSwatchIcon, {
                               className: "self-center w-5 h-5 text-900 dark:text-white"
                             }),
-                        className: "flex h-8 w-8 items-center justify-center rounded-full border-transparent bg-200 text-700 outline-none ring-0 saturate-150 hover:bg-400 hover:text-white dark:border-[1px] dark:border-slate-400 dark:bg-slate-400 dark:hover:bg-slate-700"
+                        className: "flex h-8 w-8 items-center justify-center rounded-full border-transparent bg-200 text-700 outline-none ring-0 hover:bg-400 hover:text-white dark:border-[1px] dark:border-slate-400 dark:bg-slate-400 dark:hover:bg-slate-700"
                       }), React.createElement(React$1.Menu.Items, {
                         children: Belt_Array.map(themeList, (function (param) {
                                 return React.createElement("div", {
                                             key: param.category,
-                                            className: "z-10 flex items-center justify-center bg-300/80 gap-[1rem]"
+                                            className: "z-10 flex items-center justify-center bg-white gap-[1rem]"
                                           }, Belt_Array.map(param.themes, (function (param) {
                                                   var name = param.name;
                                                   return React.createElement(React$1.Menu.Item, {
@@ -190,7 +190,7 @@ function ThemeMenu(Props) {
                                                             });
                                                 })));
                               })),
-                        className: "absolute right-1 top-6 mt-3 flex w-[12rem] origin-top-right flex-col rounded bg-300 shadow-md border-[1px] border-200 focus:outline-none dark:border-[1px] dark:border-slate-500 dark:bg-slate-600 md:w-40 gap-[1rem] p-2"
+                        className: "absolute right-14 top-9 mt-3 flex w-[12rem] origin-top-right flex-col rounded bg-white shadow-md border-[1px] focus:outline-none dark:border-[1px] dark:border-slate-500 dark:bg-slate-600 md:w-40 gap-[1rem] p-2"
                       })),
               className: "relative z-50 flex items-center justify-center text-left"
             });

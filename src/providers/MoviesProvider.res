@@ -18,7 +18,7 @@ let emptyMovieList = {
 }
 
 let initialState = {
-  apiParams: Category({name: "popular", page: 1}),
+  apiParams: Category({name: "popular", display: "Popular", page: 1}),
   movies: emptyMovieList,
   loading: false,
   error: "",
@@ -57,11 +57,12 @@ let reducer = (state: state, action) => {
 }
 
 let loadMoviesInternal = (dispatch, ~apiParams: UrlQueryParam.query_param) => {
+  open Links
   let apiPath = switch apiParams {
   | Category({name, page}) =>
-    `${MovieAPI.apiBaseUrl}/${MovieAPI.apiVersion}/movie/${name}?page=${Js.Int.toString(page)}`
+    `${apiBaseUrl}/${apiVersion}/movie/${name}?page=${Js.Int.toString(page)}`
   | Genre({id, page, sort_by}) =>
-    `${MovieAPI.apiBaseUrl}/${MovieAPI.apiVersion}/discover/movie?with_genres=${string_of_int(
+    `${apiBaseUrl}/${apiVersion}/discover/movie?with_genres=${string_of_int(
         id,
       )}&page=${Js.Int.toString(page)}&sort_by=${sort_by}`
   | _ => ""
@@ -73,7 +74,7 @@ let loadMoviesInternal = (dispatch, ~apiParams: UrlQueryParam.query_param) => {
     | Error(msg) => {
         Js.log(msg)
         dispatch(Error(msg))
-    }
+      }
     }
   }
   dispatch(Loading(apiParams))

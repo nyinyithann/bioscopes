@@ -5,15 +5,6 @@ type state =
 
 let cache = ref(Js.Dict.empty())
 
-module Title = {
-  @react.component
-  let make = (~name: string) => {
-    <div className="w-full font-nav text-lg border-b-[1px] pl-4 pb-1 border-b-indigo-100 text-500">
-      {name->React.string}
-    </div>
-  }
-}
-
 let staticItems = [
   {
     "id": -1,
@@ -35,6 +26,15 @@ let staticItems = [
   },
 ]
 
+module Title = {
+  @react.component
+  let make = (~name: string) => {
+    <div className="w-full font-nav text-lg border-b-[1px] pl-4 pb-1 border-b-indigo-100 text-500">
+      {name->React.string}
+    </div>
+  }
+}
+
 module GenreLink = {
   @react.component
   let make = (
@@ -44,10 +44,18 @@ module GenreLink = {
     ~icon: option<React.element>=?,
     ~onClick,
   ) => {
+    let (queryParam, _) = UrlQueryParam.useQueryParams()
+    let hl = "bg-gradient-to-r from-teal-400 to-blue-400 text-yellow-200"
+    let highligh = switch queryParam {
+    | Category(c) if c.name == Js.Option.getWithDefault("", dataName) => hl
+    | Genre(g) if g.id == id => hl
+    | _ => ""
+    }
+
     React.cloneElement(
       <button
         type_="button"
-        className="w-full text-base text-left active:to-blue-500 transition duration-150 ease-linear pl-[3rem] py-1 flex gap-2 items-center hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:text-yellow-200"
+        className={`${highligh} text-base text-left active:to-blue-500 transition duration-150 ease-linear pl-[3rem] py-1 flex gap-2 items-center hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:text-yellow-200 snap-start`}
         onClick>
         {switch icon {
         | Some(x) => x
@@ -57,6 +65,7 @@ module GenreLink = {
       </button>,
       {
         "data-id": id,
+        "data-display": name,
         "data-name": switch dataName {
         | Some(n) => n
         | None => name
@@ -98,18 +107,21 @@ let make = () => {
     open ReactEvent.Mouse
     let dataId = target(e)["getAttribute"](. "data-id")
     let dataName = target(e)["getAttribute"](. "data-name")
+    let dataDisplay = target(e)["getAttribute"](. "data-display")
     switch int_of_string_opt(dataId) {
-    | Some(id) if id < 0 => setQueryParam(Category({name: dataName, page: 1}))
+    | Some(id) if id < 0 => setQueryParam(Category({name: dataName, display: dataDisplay, page: 1}))
     | Some(id) if id > 0 =>
-      setQueryParam(Genre({id, name: dataName, page: 1, sort_by: "popularity.desc"}))
+      setQueryParam(
+        Genre({id, name: dataName, display: dataDisplay, page: 1, sort_by: "popularity.desc"}),
+      )
     | None | _ => ()
     }
   })
 
   <div className="flex flex-col items-start justify-center z-50">
-    <div className="flex font-brand w-full items-center justify-center pt-2 pb-4 gap-2">
+    <div className="flex font-brand w-full items-center justify-center pb-4 gap-2">
       <div
-        className="text-2xl rounded-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2">
+        className="text-xl sm:text-2xl rounded-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2 py-[0.4rem]">
         <Heroicons.Solid.CameraIcon className="h-3 w-3 pl-1" />
         {"BIOSCOPES"->React.string}
         <Heroicons.Solid.CameraIcon className="h-3 w-3 pr-1" />
@@ -128,7 +140,7 @@ let make = () => {
       <div className="w-full">
         <div className="flex flex-col w-full">
           <Title name="Discover" />
-          <div className="pt-1 flex flex-col justify-center items-center">
+          <div className="pt-1 w-full flex flex-col">
             {staticItems
             ->Belt.Array.map(x => {
               <GenreLink
@@ -147,7 +159,7 @@ let make = () => {
           <Title name="Genres" />
           <div className="pt-1 flex flex-col items-start justify-start h-[60vh] md:h-[68vh]">
             <div
-              className="w-full flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-thumb-rounded">
+              className="w-full flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-thumb-rounded snap-y">
               {genres
               ->Belt.Array.map(x => {
                 <GenreLink key={x.id->Js.Int.toString} id={x.id} name={x.name} onClick />

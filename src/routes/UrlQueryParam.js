@@ -7,6 +7,7 @@ import * as Json_Decode$JsonCombinators from "@glennsl/rescript-json-combinators
 var to = Json_Decode$JsonCombinators.object(function (fields) {
       return {
               name: fields.required("name", Json_Decode$JsonCombinators.string),
+              display: fields.required("display", Json_Decode$JsonCombinators.string),
               page: fields.required("page", Json_Decode$JsonCombinators.$$int)
             };
     });
@@ -14,6 +15,7 @@ var to = Json_Decode$JsonCombinators.object(function (fields) {
 function from(o) {
   return {
           name: o.name,
+          display: o.display,
           page: o.page
         };
 }
@@ -27,6 +29,7 @@ var to$1 = Json_Decode$JsonCombinators.object(function (fields) {
       return {
               id: fields.required("id", Json_Decode$JsonCombinators.$$int),
               name: fields.required("name", Json_Decode$JsonCombinators.string),
+              display: fields.required("display", Json_Decode$JsonCombinators.string),
               page: fields.required("page", Json_Decode$JsonCombinators.$$int),
               sort_by: fields.required("sort_by", Json_Decode$JsonCombinators.string)
             };
@@ -36,6 +39,7 @@ function from$1(o) {
   return {
           id: o.id,
           name: o.name,
+          display: o.display,
           page: o.page,
           sort_by: o.sort_by
         };
@@ -72,6 +76,7 @@ function useQueryParams(param) {
       TAG: /* Category */0,
       _0: {
         name: "popular",
+        display: "Popular",
         page: 1
       }
     };

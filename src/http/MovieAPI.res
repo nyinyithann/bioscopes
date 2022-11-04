@@ -1,9 +1,6 @@
 open Fetch
 open Promise
 
-let apiBaseUrl = "https://api.themoviedb.org"
-let apiVersion = "3"
-
 let contentType = ("Content-type", "application/json")
 let authorization = ("Authorization", `Bearer ${Env.apiReadAccess}`)
 
@@ -63,6 +60,7 @@ let getMovies = (~apiPath: string, ~callback, ~signal=?, ()) => {
 }
 
 let getGenres = (~callback, ~signal=?, ()) => {
+  open Links
   let apiPath = `${apiBaseUrl}/${apiVersion}/genre/movie/list`
   fetch(
     apiPath,

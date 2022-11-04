@@ -21,6 +21,7 @@ function MovieList$Poster(Props) {
   var title = Props.title;
   var poster_path = Props.poster_path;
   var imgLink = poster_path !== undefined ? Links.getPosterImageW342Link(poster_path) : "";
+  var title$1 = Js_option.getWithDefault("", title);
   return React.createElement("button", {
               className: "flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[9.5rem] h-[19rem] sm:w-[13rem] sm:h-[22rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group\n      hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md",
               type: "button",
@@ -28,12 +29,14 @@ function MovieList$Poster(Props) {
                   console.log("Hello");
                 })
             }, imgLink.length > 0 ? React.createElement("img", {
-                    className: "w-[9.5rem] h-[14rem] sm:w-[13rem] sm:h-[18rem] flex-shrink-0 transform duration-300 group-hover:saturate-150",
+                    className: "w-[9.5rem] h-[14rem] sm:w-[13rem] sm:h-[18rem] flex-shrink-0 transform duration-300 group-hover:saturate-150 border-[2px] border-slate-200 rounded-md",
                     alt: "A poster",
                     src: imgLink
                   }) : React.createElement("div", undefined, "placeholder here"), React.createElement("p", {
-                  className: "break-words text-[0.9rem] transform duration-300 group-hover:text-yellow-200\n"
-                }, Js_option.getWithDefault("", title)));
+                  className: "" + (
+                    title$1.length > 50 ? "text-[0.7rem]" : "text-[0.95rem]"
+                  ) + " break-words transform duration-300 group-hover:text-yellow-200"
+                }, title$1));
 }
 
 var Poster = {
@@ -46,25 +49,34 @@ function MovieList(Props) {
   var match$1 = MoviesProvider.useMoviesContext(undefined);
   var loadMovies = match$1.loadMovies;
   var movieList = Js_option.getWithDefault([], match$1.movies.results);
+  var viewingTitleRef = React.useRef("");
   React.useEffect((function () {
           switch (queryParam.TAG | 0) {
             case /* Category */0 :
                 var match = queryParam._0;
+                var display = match.display;
+                viewingTitleRef.current = display;
+                window.document.title = display + " Movies";
                 Curry._1(loadMovies, {
                       TAG: /* Category */0,
                       _0: {
                         name: match.name,
+                        display: display,
                         page: match.page
                       }
                     });
                 break;
             case /* Genre */1 :
                 var match$1 = queryParam._0;
+                var display$1 = match$1.display;
+                viewingTitleRef.current = display$1;
+                window.document.title = display$1 + " Movies";
                 Curry._1(loadMovies, {
                       TAG: /* Genre */1,
                       _0: {
                         id: match$1.id,
                         name: match$1.name,
+                        display: display$1,
                         page: match$1.page,
                         sort_by: match$1.sort_by
                       }
@@ -82,15 +94,19 @@ function MovieList(Props) {
               });
   } else {
     return React.createElement("div", {
-                className: "w-full h-full flex flex-1 flex-wrap p-1 gap-[1rem] sm:gap-[3rem] justify-center items-center z-50 px-[2rem]",
-                id: "movie-list-here"
-              }, Belt_Array.map(movieList, (function (m) {
-                      return React.createElement(MovieList$Poster, {
-                                  title: m.title,
-                                  poster_path: m.poster_path,
-                                  key: m.id.toString()
-                                });
-                    })));
+                className: "flex flex-col bg-white"
+              }, React.createElement("div", {
+                    className: "font-nav text-[1.2rem] text-500 p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200"
+                  }, viewingTitleRef.current), React.createElement("div", {
+                    className: "w-full h-full flex flex-1 flex-wrap p-1 pt-4 gap-[1rem] sm:gap-[3rem] justify-center items-center px-[2rem] bg-white",
+                    id: "movie-list-here"
+                  }, Belt_Array.map(movieList, (function (m) {
+                          return React.createElement(MovieList$Poster, {
+                                      title: m.title,
+                                      poster_path: m.poster_path,
+                                      key: m.id.toString()
+                                    });
+                        }))));
   }
 }
 

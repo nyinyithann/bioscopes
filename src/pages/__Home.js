@@ -29,6 +29,7 @@ function __Home$MovieList(Props) {
                 TAG: /* Category */0,
                 _0: {
                   name: "popular",
+                  display: "Popular",
                   page: count
                 }
               });
