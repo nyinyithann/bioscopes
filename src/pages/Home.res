@@ -57,97 +57,103 @@ let make = () => {
   }
 
   <div>
-    <Transition show={sidebarOpenRef.contents}>
-      <Dialog
-        className="relative"
-        onClose={_ => {
-          sidebarOpenRef.contents = true
-          setSidebarOpen(_ => true)
-        }}>
-        <div className="fixed inset-0 flex">
-          <Transition.Child
-            enter="transition ease-in-out duration-300 transform"
-            enterFrom="-translate-x-full"
-            enterTo="translate-x-0"
-            leave="transition ease-in-out duration-300 transform"
-            leaveFrom="translate-x-0"
-            leaveTo="-translate-x-full">
-            <Dialog.Panel
-              className="relative flex h-full w-[16rem] flex-1 flex-col shadow-md shadow-gray-400 pt-2">
-              <Transition.Child
-                enter="ease-in-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in-out duration-300"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0">
-                <div className="absolute top-0 right-0 pt-2" />
-              </Transition.Child>
-              <GenreList />
-            </Dialog.Panel>
-          </Transition.Child>
-          <div className="w-14 flex-shrink-0" />
-        </div>
-      </Dialog>
-    </Transition>
-    <div id="navbar-main-data-container" className="flex flex-1 flex-col h-screen">
-      <div className={`${sidebarOpenRef.contents ? "ml-[16rem]" : ""}`}>
-        <div
-          id="navbar"
-          className="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white md:shadow-white shadow-slate-300 shadow-md">
-          <button
-            type_="button"
-            className={`${sidebarOpenRef.contents ? "hidden" : "block"} px-4 outline-none`}
-            onClick={_ => {
-              sidebarOpenRef.contents = true
-              setSidebarOpen(_ => true)
-            }}>
-            <span className="sr-only"> {"Open Sidebar"->string} </span>
-            <Heroicons.Solid.MenuIcon
-              className="h-8 w-8 fill-400 hover:fill-yellow-100 bg-gradient-to-tr from-teal-400 to-blue-400 text-yellow-300 rounded p-1"
-            />
-          </button>
-          <button
-            type_="button"
-            className={`${sidebarOpenRef.contents ? "block" : "hidden"} pr-4 outline-none`}
-            onClick={_ => {
-              sidebarOpenRef.contents = false
-              setSidebarOpen(_ => false)
-            }}>
-            <span className="sr-only"> {"Close sidebar"->string} </span>
-            <Heroicons.Solid.XIcon
-              className="h-8 w-8 fill-400 hover:fill-indigo-500 fill-yellow-900 rounded-r-full py-1 bg-gradient-to-br from-rose-50 to-yellow-100"
-            />
-          </button>
-          <div id="search-colorswatch-container" className="flex flex-1 justify-between px-4">
-            <div
-              id="search-container"
-              className="relative w-full text-slate-500 focus-within:text-slate-600 flex items-center">
-              <div className="pointer-events-none absolute inset-y-0 left-1 flex items-center">
-                <Heroicons.Solid.SearchIcon className="h-5 w-5" />
+    <div className="w-[18rem] z-0">
+      <Transition show={sidebarOpenRef.contents}>
+        <div className="relative w-[16rem]">
+          <div className="fixed inset-0 flex w-[16rem] z-0">
+            <Transition.Child
+              enter="transition ease-in-out duration-300 transform"
+              enterFrom="-translate-x-full"
+              enterTo="translate-x-0"
+              leave="transition ease-in-out duration-300 transform"
+              leaveFrom="translate-x-0"
+              leaveTo="-translate-x-full">
+              <div
+                className="relative flex h-full w-[16rem] flex-1 flex-col shadow-md shadow-gray-100 pt-2">
+                <Transition.Child
+                  enter="ease-in-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in-out duration-300"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0">
+                  <div className="absolute top-0 right-0 pt-2" />
+                </Transition.Child>
+                <GenreList />
               </div>
-              <input
-                id="search-field"
-                className="block w-full pl-8 pr-3 text-gray-900 placeholder-slate-400 outline-none ring-0 border-b-[1px] border-b-slate-200 focus:placeholder-slate-500 focus:outline-none focus:ring-0 focus:border-b-slate-300 border-t-0 border-x-0 sm:text-sm"
-                placeholder="Search"
-                type_="search"
-                name="search"
-              />
-            </div>
-            <div id="colorswatch-container" className="ml-4 flex items-center md:ml-6">
-              <button>
-                <Heroicons.Solid.SunIcon className="h-5 w-5 fill-klor-400 hover:fill-klor-600" />
-              </button>
-              <button>
-                <Heroicons.Solid.MoonIcon className="h-5 w-5 fill-klor-400 hover:fill-klor-600" />
-              </button>
-              <GithubButton />
-            </div>
+            </Transition.Child>
           </div>
         </div>
-        <div id="main-data-container" className="w-full h-[calc(100vh-4rem)] flex flex-1 p-4">
-          <div className="flex flex-1 h-full w-full overflow-y-auto z-40">
-            <MoviesProvider> {component} </MoviesProvider>
+      </Transition>
+    </div>
+    <div className="flex flex-1 flex-col h-full z-50 bg-white">
+      <div className={`${sidebarOpenRef.contents ? "ml-[16rem]" : ""}`}>
+
+
+      
+
+        <div className="w-full flex flex-col flex-1 bg-red-500">
+          <div className="h-auto w-auto flex flex-col">
+            <div
+              id="navbar"
+              className="sticky top-0 z-40 flex h-16 flex-shrink-0 bg-white shadow-gray-100 shadow-md">
+              <button
+                type_="button"
+                className={`${sidebarOpenRef.contents ? "hidden" : "block"} px-4 outline-none`}
+                onClick={_ => {
+                  sidebarOpenRef.contents = true
+                  setSidebarOpen(_ => true)
+                }}>
+                <span className="sr-only"> {"Open Sidebar"->string} </span>
+                <Heroicons.Solid.MenuIcon
+                  className="h-8 w-8 fill-400 hover:fill-yellow-100 bg-gradient-to-tr from-teal-400 to-blue-400 text-yellow-300 rounded p-1"
+                />
+              </button>
+              <button
+                type_="button"
+                className={`${sidebarOpenRef.contents ? "block" : "hidden"} pr-4 outline-none`}
+                onClick={_ => {
+                  sidebarOpenRef.contents = false
+                  setSidebarOpen(_ => false)
+                }}>
+                <span className="sr-only"> {"Close sidebar"->string} </span>
+                <Heroicons.Solid.XIcon
+                  className="h-8 w-8 fill-400 hover:fill-slate-600 fill-slate-400 rounded-r-full py-1 bg-gradient-to-br from-slate-50 to-gray-100"
+                />
+              </button>
+              <div id="search-colorswatch-container" className="flex flex-1 justify-between px-4">
+                <div
+                  id="search-container"
+                  className="relative w-[14rem] md:w-[26rem] text-slate-500 focus-within:text-slate-600 flex items-center m-auto">
+                  <div className="pointer-events-none absolute inset-y-0 left-1 flex items-center">
+                    <Heroicons.Solid.SearchIcon className="h-5 w-5" />
+                  </div>
+                  <input
+                    id="search-field"
+                    className="block w-full rounded-md pl-[2rem] text-gray-900 placeholder-slate-400 outline-none ring-0 border-0 bg-100 focus:bg-200 focus:border-[1px] focus:border-slate-100 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm"
+                    placeholder="Search"
+                    type_="search"
+                    name="search"
+                  />
+                </div>
+                <div id="colorswatch-container" className="ml-4 flex items-center md:ml-6">
+                  <button>
+                    <Heroicons.Solid.SunIcon
+                      className="h-5 w-5 fill-klor-400 hover:fill-klor-600"
+                    />
+                  </button>
+                  <button>
+                    <Heroicons.Solid.MoonIcon
+                      className="h-5 w-5 fill-klor-400 hover:fill-klor-600"
+                    />
+                  </button>
+                  <GithubButton />
+                </div>
+              </div>
+            </div>
+            <div className="pt-[2rem]">
+              <MoviesProvider> {component} </MoviesProvider>
+            </div>
           </div>
         </div>
       </div>

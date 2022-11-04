@@ -5,13 +5,19 @@ import * as React from "react";
 import * as MovieAPI from "../http/MovieAPI.js";
 import * as MovieModel from "../models/MovieModel.js";
 
+var emptyMovieList_page = 0;
+
 var emptyMovieList_results = [];
 
+var emptyMovieList_total_pages = 0;
+
+var emptyMovieList_total_results = 0;
+
 var emptyMovieList = {
-  page: 0,
+  page: emptyMovieList_page,
   results: emptyMovieList_results,
-  total_pages: 0,
-  total_results: 0
+  total_pages: emptyMovieList_total_pages,
+  total_results: emptyMovieList_total_results
 };
 
 var initialState_apiParams = {

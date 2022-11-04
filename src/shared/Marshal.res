@@ -25,3 +25,15 @@ module Make = (M: Marshalable): (Interface with type t := M.t) => {
 
   let stringfy = (. o: t) => M.from(o)->JsonCombinators.Json.stringify
 }
+
+let to_opt: 'a. (
+  . JsonCombinators.Json.Decode.fieldDecoders,
+  string,
+  JsonCombinators.Json.Decode.t<'a>,
+) => option<'a> = (. fields, path, decode) => {
+  try {
+    fields.optional(. path, decode)
+  } catch {
+  | _ => None
+  }
+}

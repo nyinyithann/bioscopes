@@ -17,7 +17,17 @@ function Make(M) {
         };
 }
 
+function to_opt(fields, path, decode) {
+  try {
+    return fields.optional(path, decode);
+  }
+  catch (exn){
+    return ;
+  }
+}
+
 export {
   Make ,
+  to_opt ,
 }
 /* No side effect */

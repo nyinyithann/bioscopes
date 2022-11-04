@@ -3,6 +3,7 @@
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as MovieAPI from "../http/MovieAPI.js";
+import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as GenreModel from "../models/GenreModel.js";
 import * as MoviesProvider from "../providers/MoviesProvider.js";
@@ -44,10 +45,10 @@ function __Home$MovieList(Props) {
                               return prev + 1 | 0;
                             }));
                     })
-                }, "More"), React.createElement(React.Fragment, undefined, Belt_Array.map(match$1.movies.results, (function (m) {
+                }, "More"), React.createElement(React.Fragment, undefined, Belt_Array.map(Js_option.getExn(match$1.movies.results), (function (m) {
                         return React.createElement("div", {
                                     key: String(m.id)
-                                  }, m.title);
+                                  }, Js_option.getExn(m.title));
                       }))));
 }
 

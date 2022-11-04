@@ -79,7 +79,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     new HtmlWebpackPlugin({
-      title: 'Biscopes',
+      title: 'Bioscopes',
       favicon: path.resolve(__dirname, '..', './public/favicon.ico'),
       template: path.resolve(__dirname, '..', './public/index.html'),
       hash: true,

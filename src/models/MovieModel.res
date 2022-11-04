@@ -1,53 +1,46 @@
 type movie = {
-  adult: bool,
+  adult?: bool,
   backdrop_path?: string,
   genre_ids?: array<int>,
   id: int,
   original_language?: string,
   original_title?: string,
   overview?: string,
-  popularity: float,
+  popularity?: float,
   poster_path?: string,
   release_date?: string,
-  title: string,
-  video: bool,
-  vote_average: float,
-  vote_count: int,
+  title?: string,
+  video?: bool,
+  vote_average?: float,
+  vote_count?: int,
 }
 
 type movielist = {
-  page: int,
-  results: array<movie>,
-  total_pages: int,
-  total_results: int,
+  page?: int,
+  results?: array<movie>,
+  total_pages?: int,
+  total_results?: int,
 }
 
 module MovieDecoder = {
   open JsonCombinators
   open! JsonCombinators.Json.Decode
 
-  let opt = (fields, path, decode) =>
-    try {
-      fields.optional(. path, decode)
-    } catch {
-    | _ => None
-    }
-
   let movie: Json.Decode.t<movie> = object(fields => {
-    adult: fields.required(. "adult", bool),
-    backdrop_path: ?opt(fields, "backdrop_path", string), // ?fields.optional(. "backdrop_path", string),
-    genre_ids: ?fields.optional(. "genre_ids", array(int)),
+    adult: ?Marshal.to_opt(. fields, "adult", bool),
+    backdrop_path: ?Marshal.to_opt(. fields, "backdrop_path", string), 
+    genre_ids: ?Marshal.to_opt(. fields, "genre_ids", array(int)),
     id: fields.required(. "id", int),
-    original_language: ?fields.optional(. "original_language", string),
-    original_title: ?fields.optional(. "original_title", string),
-    overview: ?fields.optional(. "overview", string),
-    popularity: fields.required(. "popularity", float),
-    poster_path: ?opt(fields, "poster_path", string),
-    release_date: ?fields.optional(. "release_date", string),
-    title: fields.required(. "title", string),
-    video: fields.required(. "video", bool),
-    vote_average: fields.required(. "vote_average", float),
-    vote_count: fields.required(. "vote_count", int),
+    original_language: ?Marshal.to_opt(. fields, "original_language", string),
+    original_title: ?Marshal.to_opt(. fields, "original_title", string),
+    overview: ?Marshal.to_opt(. fields, "overview", string),
+    popularity: ?Marshal.to_opt(. fields, "popularity", float),
+    poster_path: ?Marshal.to_opt(. fields, "poster_path", string),
+    release_date: ?Marshal.to_opt(. fields, "release_date", string),
+    title: ?Marshal.to_opt(. fields, "title", string),
+    video: ?Marshal.to_opt(. fields, "video", bool),
+    vote_average: ?Marshal.to_opt(. fields, "vote_average", float),
+    vote_count: ?Marshal.to_opt(. fields, "vote_count", int),
   })
 
   let decode = (. ~json: Js.Json.t): result<movie, string> => {
@@ -60,10 +53,10 @@ module MovieListDecoder = {
   open! JsonCombinators.Json.Decode
 
   let movieList: Json.Decode.t<movielist> = object(fields => {
-    page: fields.required(. "page", int),
-    results: fields.required(. "results", array(MovieDecoder.movie)),
-    total_pages: fields.required(. "total_pages", int),
-    total_results: fields.required(. "total_results", int),
+    page: ?Marshal.to_opt(. fields, "page", int),
+    results: ?Marshal.to_opt(. fields, "results", array(MovieDecoder.movie)),
+    total_pages: ?Marshal.to_opt(. fields, "total_pages", int),
+    total_results: ?Marshal.to_opt(. fields, "total_results", int),
   })
 
   let decode = (. ~json: Js.Json.t): result<movielist, string> => {

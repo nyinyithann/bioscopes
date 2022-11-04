@@ -61,7 +61,7 @@ function GenreList$GenreLink(Props) {
   var icon = Props.icon;
   var onClick = Props.onClick;
   return React.cloneElement(React.createElement("button", {
-                  className: "w-full font-general text-base text-left active:to-blue-500 transition duration-150 ease-linear pl-[3rem] py-1 flex gap-2 items-center text-600 hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:text-yellow-200",
+                  className: "w-full text-base text-left active:to-blue-500 transition duration-150 ease-linear pl-[3rem] py-1 flex gap-2 items-center hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:text-yellow-200",
                   type: "button",
                   onClick: onClick
                 }, icon !== undefined ? Caml_option.valFromOption(icon) : React.createElement(Solid.FilmIcon, {

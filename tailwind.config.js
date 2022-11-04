@@ -139,6 +139,16 @@ module.exports = {
   },
   variants: {
     scrollbar: ['rounded'],
+    display: ['group-hover'],
+    opacity: ['group-hover'],
+    translate: ['group-hover'],
+    transform: ['group-hover'],
+    width: ['group-hover', 'hover'],
+    height: ['group-hover', 'hover'],
+    padding: ['group-hover', 'hover'],
+    animation: ['group-hover', 'hover'],
+    scale: ['group-hover', 'hover'],
+    shadow: ['group-hover', 'hover'],
   },
   plugins: [
     require('@tailwindcss/line-clamp'),

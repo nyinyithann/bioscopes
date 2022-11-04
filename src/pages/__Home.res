@@ -31,9 +31,9 @@ module MovieList = {
         {"More"->React.string}
       </button>
       {<>
-        {movies.results
+        {Js.Option.getExn(movies.results)
         ->Belt.Array.map(m => {
-          <div key={m.id->Belt.Int.toString}> {m.title->React.string} </div>
+          <div key={m.id->Belt.Int.toString}> {Js.Option.getExn(m.title)->React.string} </div>
         })
         ->React.array}
       </>}
