@@ -7,8 +7,10 @@ import * as Rating from "./Rating.js";
 import * as Loading from "./Loading.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
+import * as DomBinding from "../bindings/DomBinding.js";
 import * as UrlQueryParam from "../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../providers/MoviesProvider.js";
+import ReactLazyLoad from "react-lazy-load";
 
 function string(prim) {
   return prim;
@@ -24,23 +26,30 @@ function MovieList$Poster(Props) {
   var vote_average = Props.vote_average;
   var imgLink = poster_path !== undefined ? Links.getPosterImageW342Link(poster_path) : "";
   var title$1 = Js_option.getWithDefault("", title);
-  return React.createElement("button", {
-              className: "flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group\n      hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md",
-              type: "button",
-              onClick: (function (param) {
-                  console.log("Hello");
+  return React.createElement(ReactLazyLoad, {
+              children: React.createElement("button", {
+                    className: "flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group\n      hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md",
+                    type: "button",
+                    onClick: (function (param) {
+                        console.log("Hello");
+                      })
+                  }, imgLink.length > 0 ? React.createElement("img", {
+                          className: "w-[10rem] h-[15rem] sm:w-[15rem] sm:h-[22rem] flex-shrink-0 transform duration-300 group-hover:saturate-150 border-[2px] border-slate-200 rounded-md",
+                          alt: "A poster",
+                          src: imgLink
+                        }) : React.createElement("div", undefined, "placeholder here"), React.createElement("p", {
+                        className: "" + (
+                          title$1.length > 50 ? "text-[0.7rem]" : "text-[0.95rem]"
+                        ) + " break-words transform duration-300 group-hover:text-yellow-200"
+                      }, title$1), React.createElement(Rating.make, {
+                        ratingValue: vote_average
+                      })),
+              offset: 300,
+              height: DomBinding.checkMediaQuery("(min-width: 600px)") ? 448 : 352,
+              onContentVisible: (function (param) {
+                  console.log("loaded");
                 })
-            }, imgLink.length > 0 ? React.createElement("img", {
-                    className: "w-[10rem] h-[15rem] sm:w-[15rem] sm:h-[22rem] flex-shrink-0 transform duration-300 group-hover:saturate-150 border-[2px] border-slate-200 rounded-md",
-                    alt: "A poster",
-                    src: imgLink
-                  }) : React.createElement("div", undefined, "placeholder here"), React.createElement("p", {
-                  className: "" + (
-                    title$1.length > 50 ? "text-[0.7rem]" : "text-[0.95rem]"
-                  ) + " break-words transform duration-300 group-hover:text-yellow-200"
-                }, title$1), React.createElement(Rating.make, {
-                  ratingValue: vote_average
-                }));
+            });
 }
 
 var Poster = {
