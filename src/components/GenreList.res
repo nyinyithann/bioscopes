@@ -121,7 +121,7 @@ let make = () => {
   <div className="flex flex-col items-start justify-center z-50">
     <div className="flex font-brand w-full items-center justify-center pb-4 gap-2">
       <div
-        className="text-xl sm:text-2xl rounded-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2 py-[0.4rem]">
+        className="text-lg sm:text-xl md:text-2xl rounded-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2 py-[0.4rem]">
         <Heroicons.Solid.CameraIcon className="h-3 w-3 pl-1" />
         {"BIOSCOPES"->React.string}
         <Heroicons.Solid.CameraIcon className="h-3 w-3 pr-1" />

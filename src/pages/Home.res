@@ -7,6 +7,10 @@ let make = () => {
   open HeadlessUI
   let (sidebarOpen, setSidebarOpen) = React.useState(_ => sidebarOpenRef.contents)
 
+  React.useMemo0(()=> {
+     sidebarOpenRef.contents = DomBinding.checkMediaQuery("(min-width: 600px)")
+  })
+  
   React.useEffect1(() => {
     sidebarOpenRef.contents = sidebarOpen
     None
@@ -57,10 +61,10 @@ let make = () => {
   }
 
   <div>
-    <div className="w-[12rem] md:w-[16rem]">
+    <div className="w-[12rem] sm:w-[14rem] md:w-[16rem]">
       <Transition show={sidebarOpenRef.contents}>
-        <div className="relative z-40 w-[12rem] md:w-[16rem]">
-          <div className="fixed inset-0 flex w-[12rem] md:w-[16rem] bg-white">
+        <div className="relative z-40 w-[12rem] sm:w-[14rem] md:w-[16rem]">
+          <div className="fixed inset-0 flex w-[12rem] sm:w-[14rem] md:w-[16rem] bg-white">
             <Transition.Child
               enter="transition ease-in-out duration-300 transform"
               enterFrom="-translate-x-full"
@@ -69,7 +73,7 @@ let make = () => {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full">
               <div
-                className="relative flex h-full w-[12rem] md:w-[16rem] flex-1 flex-col border-r-[1px] border-r-slate-100  shadow-md pt-2">
+                className="relative flex h-full w-[12rem] sm:w-[14rem] md:w-[16rem] flex-1 flex-col border-r-[1px] border-r-slate-100  shadow-md pt-2">
                 <Transition.Child
                   enter="ease-in-out duration-300"
                   enterFrom="opacity-0"
@@ -77,7 +81,9 @@ let make = () => {
                   leave="ease-in-out duration-300"
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0">
-                  <div className="absolute top-0 right-0 pt-2 w-[14rem] md:w-[16rem]" />
+                  <div
+                    className="absolute top-0 right-0 pt-2 w-[14rem] sm:w-[14rem] md:w-[16rem]"
+                  />
                 </Transition.Child>
                 <GenreList />
               </div>
@@ -88,7 +94,7 @@ let make = () => {
     </div>
     <div
       className={`${sidebarOpenRef.contents
-          ? "ml-[12rem] md:ml-[16rem]"
+          ? "ml-[12rem] sm:ml-[14rem] md:ml-[16rem]"
           : ""} flex flex-1 flex-col h-full`}>
       <div className="w-full flex flex-col flex-1 bg-white">
         <div className="h-auto w-auto flex flex-col z-50">
@@ -114,13 +120,13 @@ let make = () => {
               }}>
               <span className="sr-only"> {"Close sidebar"->string} </span>
               <Heroicons.Solid.XIcon
-                className="h-8 w-8 fill-400 hover:fill-klor-600 fill-klor-400  rounded-r-full py-1 bg-100"
+                className="h-8 w-8 fill-400 hover:fill-klor-600 fill-klor-400 rounded-r-full py-1 bg-100"
               />
             </button>
-            <div id="search-colorswatch-container" className="flex flex-1 justify-between px-2">
+            <div id="search-colorswatch-container" className="flex flex-1 items-center justify-end gap-2">
               <div
                 id="search-container"
-                className="relative w-[12rem] sm:w-[22rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center m-auto">
+                className="relative w-[12rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center">
                 <div className="pointer-events-none absolute inset-y-0 left-1 flex items-center">
                   <Heroicons.Solid.SearchIcon className="h-5 w-5" />
                 </div>
@@ -132,7 +138,7 @@ let make = () => {
                   name="search"
                 />
               </div>
-              <div id="colorswatch-container" className="ml-4 flex items-center gap-4 z-[50]">
+              <div id="colorswatch-container" className="pr-8 place-items-start flex items-center gap-2 z-[50]">
                 <ThemeMenu />
                 <GithubButton />
               </div>
