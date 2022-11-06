@@ -3,7 +3,12 @@
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as Links from "../shared/Links.js";
 import * as React from "react";
+import * as Js_int from "rescript/lib/es6/js_int.js";
+import * as Belt_Id from "rescript/lib/es6/belt_Id.js";
+import * as Caml_obj from "rescript/lib/es6/caml_obj.js";
 import * as MovieAPI from "../http/MovieAPI.js";
+import * as Js_option from "rescript/lib/es6/js_option.js";
+import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as MovieModel from "../models/MovieModel.js";
 
 var emptyMovieList_page = 0;
@@ -41,11 +46,26 @@ function initialContextValue_loadMovies(param) {
   
 }
 
+var initialContextValue_apiParams = {
+  TAG: /* Category */0,
+  _0: {
+    name: "popular",
+    display: "Popular",
+    page: 1
+  }
+};
+
+function initialContextValue_clearMovies(param) {
+  
+}
+
 var initialContextValue = {
   movies: emptyMovieList,
   loading: false,
   error: "",
-  loadMovies: initialContextValue_loadMovies
+  loadMovies: initialContextValue_loadMovies,
+  apiParams: initialContextValue_apiParams,
+  clearMovies: initialContextValue_clearMovies
 };
 
 var context = React.createContext(initialContextValue);
@@ -73,6 +93,14 @@ var MoviesContext = {
 };
 
 function reducer(state, action) {
+  if (typeof action === "number") {
+    return {
+            apiParams: state.apiParams,
+            movies: emptyMovieList,
+            loading: false,
+            error: ""
+          };
+  }
   switch (action.TAG | 0) {
     case /* Loading */0 :
         return {
@@ -89,15 +117,39 @@ function reducer(state, action) {
                 error: action._0
               };
     case /* Success */2 :
+        var movies = action._1;
         return {
-                apiParams: state.apiParams,
-                movies: action._0,
+                apiParams: action._0,
+                movies: {
+                  page: movies.page,
+                  results: Belt_Array.concat(Js_option.getWithDefault([], state.movies.results), Js_option.getWithDefault([], movies.results)),
+                  total_pages: movies.total_pages,
+                  total_results: movies.total_results
+                },
                 loading: false,
                 error: ""
               };
     
   }
 }
+
+function hash(param) {
+  switch (param.TAG | 0) {
+    case /* Category */0 :
+        return param._0.page;
+    case /* Genre */1 :
+        return param._0.page;
+    default:
+      return Js_int.max;
+  }
+}
+
+var eq = Caml_obj.equal;
+
+var QueryParamHash = Belt_Id.MakeHashable({
+      hash: hash,
+      eq: eq
+    });
 
 function loadMoviesInternal(dispatch, apiParams) {
   var apiPath;
@@ -118,15 +170,15 @@ function loadMoviesInternal(dispatch, apiParams) {
     if (ml.TAG === /* Ok */0) {
       return Curry._1(dispatch, {
                   TAG: /* Success */2,
+                  _0: apiParams,
+                  _1: ml._0
+                });
+    } else {
+      return Curry._1(dispatch, {
+                  TAG: /* Error */1,
                   _0: ml._0
                 });
     }
-    var msg = ml._0;
-    console.log(msg);
-    Curry._1(dispatch, {
-          TAG: /* Error */1,
-          _0: msg
-        });
   };
   Curry._1(dispatch, {
         TAG: /* Loading */0,
@@ -148,11 +200,17 @@ function MoviesProvider(Props) {
   var value_movies = state.movies;
   var value_loading = state.loading;
   var value_error = state.error;
+  var value_apiParams = state.apiParams;
+  var value_clearMovies = function (param) {
+    Curry._1(dispatch, /* Clear */0);
+  };
   var value = {
     movies: value_movies,
     loading: value_loading,
     error: value_error,
-    loadMovies: loadMovies
+    loadMovies: loadMovies,
+    apiParams: value_apiParams,
+    clearMovies: value_clearMovies
   };
   return React.createElement(MoviesProvider$MoviesContext$Provider, {
               value: value,
@@ -171,6 +229,7 @@ export {
   initialState ,
   MoviesContext ,
   reducer ,
+  QueryParamHash ,
   loadMoviesInternal ,
   make ,
   useMoviesContext ,

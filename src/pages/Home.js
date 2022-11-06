@@ -7,7 +7,6 @@ import * as ThemeMenu from "../components/ThemeMenu.js";
 import * as DomBinding from "../bindings/DomBinding.js";
 import * as Js_promise from "rescript/lib/es6/js_promise.js";
 import * as GithubButton from "../components/GithubButton.js";
-import * as MoviesProvider from "../providers/MoviesProvider.js";
 import * as SuspensionLoader from "../components/SuspensionLoader.js";
 import * as React$1 from "@headlessui/react";
 import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js";
@@ -210,9 +209,7 @@ function Home(Props) {
                                       id: "colorswatch-container"
                                     }, React.createElement(ThemeMenu.make, {}), React.createElement(GithubButton.make, {})))), React.createElement("div", {
                               className: "pt-1 z-30 bg-white"
-                            }, React.createElement(MoviesProvider.make, {
-                                  children: component
-                                })), React.createElement("footer", {
+                            }, component), React.createElement("footer", {
                               className: "h-8"
                             })))));
 }

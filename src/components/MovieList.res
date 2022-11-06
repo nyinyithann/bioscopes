@@ -6,7 +6,7 @@ module Poster = {
     ~title: option<string>,
     ~poster_path: option<string>,
     ~vote_average: option<float>,
-    ~release_date: option<string>
+    ~release_date: option<string>,
   ) => {
     open Js.String2
     let imgLink = switch poster_path {
@@ -15,8 +15,8 @@ module Poster = {
     }
     let title = Js.Option.getWithDefault("", title)
     let releaseYear = switch release_date {
-        | Some(rd) => Js.String2.substring(rd,~from=0, ~to_=4)
-        | None => ""
+    | Some(rd) => Js.String2.substring(rd, ~from=0, ~to_=4)
+    | None => ""
     }
     <div
       type_="button"
@@ -44,51 +44,97 @@ module Poster = {
         {title->string}
       </p>
       <Rating ratingValue={vote_average} />
-      {
-          Js.String2.length(releaseYear) == 4 
-          ? <div className="absolute top-[0.5rem] right-[0.5rem] text-[0.8rem] bg-gray-700/60 text-slate-50 px-[4px] py-[1px] rounded-sm">{releaseYear->React.string}</div>
-          : React.null
-      }
+      {Js.String2.length(releaseYear) == 4
+        ? <div
+            className="absolute top-[0.5rem] right-[0.5rem] text-[0.8rem] bg-700/60 text-slate-50 px-[4px] py-[1px] rounded-sm">
+            {releaseYear->React.string}
+          </div>
+        : React.null}
     </div>
   }
 }
+
+let currentPageRef = ref(0)
 
 @react.component
 let make = () => {
   let (queryParam, _) = UrlQueryParam.useQueryParams()
 
-  let {movies, loading, error, loadMovies} = MoviesProvider.useMoviesContext()
+  let {
+    movies,
+    loading,
+    error,
+    loadMovies,
+    apiParams,
+    clearMovies,
+  } = MoviesProvider.useMoviesContext()
   let movieList = Js.Option.getWithDefault([], movies.results)
 
   let viewingTitleRef = React.useRef("")
 
+  let loadMore = _ => {
+    open Webapi.Dom.Window
+    open Js.Int
+    if (
+      Js.Math.ceil(toFloat(innerHeight(Webapi__Dom.window)) +. scrollY(Webapi__Dom.window)) >=
+      Webapi.Dom.Element.scrollHeight(
+        Webapi.Dom.Document.documentElement(Webapi__Dom.document),
+      ) - 300 && !loading
+    ) {
+      switch apiParams {
+      | Category({name, display, _}) => {
+          currentPageRef.contents = currentPageRef.contents + 1
+          loadMovies(~apiParams=Category({name, display, page: currentPageRef.contents + 1}))
+        }
+
+      | Genre({id, name, display, sort_by}) => {
+          currentPageRef.contents = currentPageRef.contents + 1
+          loadMovies(
+            ~apiParams=Genre({id, name, display, page: currentPageRef.contents + 1, sort_by}),
+          )
+        }
+
+      | _ => ()
+      }
+    }
+  }
+
   React.useEffect0(() => {
     switch queryParam {
     | Category({name, display, page}) => {
+        clearMovies()
         viewingTitleRef.current = display
         DomBinding.setTitle(DomBinding.htmlDoc, display ++ " Movies")
+        currentPageRef.contents = page
         loadMovies(~apiParams=Category({name, display, page}))
       }
 
     | Genre({id, name, display, page, sort_by}) => {
+        clearMovies()
         viewingTitleRef.current = display
         DomBinding.setTitle(DomBinding.htmlDoc, display ++ " Movies")
+        currentPageRef.contents = page
         loadMovies(~apiParams=Genre({id, name, display, page, sort_by}))
       }
 
     | _ => ()
     }
-    None
+
+    Webapi.Dom.Window.addEventListener(Webapi.Dom.window, "scroll", loadMore)
+
+    Some(() => Webapi.Dom.Window.removeEventListener(Webapi.Dom.window, "scroll", loadMore))
   })
 
   if Js.String2.length(error) > 0 {
     <div> {"Error"->string} </div>
-  } else if loading {
-    <Loading
-      className="w-[6rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-green-500 fill-50 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
-    />
-  } else {
-    <div className="flex flex-col bg-white">
+  } 
+  /* else if loading { */
+  /*   <Loading */
+  /*     className="w-[6rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-green-500 fill-50 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto" */
+  /*   /> */
+  /* } */
+  else {
+    <div className="flex flex-col bg-white" onScroll={e => Js.log(e)}>
       <div
         className="font-nav text-[1.2rem] text-500 p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200">
         {viewingTitleRef.current->string}

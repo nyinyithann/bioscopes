@@ -7,10 +7,10 @@ let make = () => {
   open HeadlessUI
   let (sidebarOpen, setSidebarOpen) = React.useState(_ => sidebarOpenRef.contents)
 
-  React.useMemo0(()=> {
-     sidebarOpenRef.contents = DomBinding.checkMediaQuery("(min-width: 600px)")
+  React.useMemo0(() => {
+    sidebarOpenRef.contents = DomBinding.checkMediaQuery("(min-width: 600px)")
   })
-  
+
   React.useEffect1(() => {
     sidebarOpenRef.contents = sidebarOpen
     None
@@ -123,7 +123,9 @@ let make = () => {
                 className="h-8 w-8 fill-400 hover:fill-klor-600 fill-klor-400 rounded-r-full py-1 bg-100"
               />
             </button>
-            <div id="search-colorswatch-container" className="flex flex-1 items-center justify-end gap-2">
+            <div
+              id="search-colorswatch-container"
+              className="flex flex-1 items-center justify-end gap-2">
               <div
                 id="search-container"
                 className="relative w-[12rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center">
@@ -138,15 +140,15 @@ let make = () => {
                   name="search"
                 />
               </div>
-              <div id="colorswatch-container" className="pr-8 place-items-start flex items-center gap-2 z-[50]">
+              <div
+                id="colorswatch-container"
+                className="pr-8 place-items-start flex items-center gap-2 z-[50]">
                 <ThemeMenu />
                 <GithubButton />
               </div>
             </div>
           </div>
-          <div className="pt-1 z-30 bg-white">
-            <MoviesProvider> {component} </MoviesProvider>
-          </div>
+          <div className="pt-1 z-30 bg-white"> {component} </div>
           <footer className="h-8" />
         </div>
       </div>

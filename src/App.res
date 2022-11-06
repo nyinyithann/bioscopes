@@ -27,8 +27,8 @@ let make = () => {
   let component = switch url.path {
   | list{}
   | list{"genre"}
-  | list{"search"} 
-  | list{"movie", ..._} 
+  | list{"search"}
+  | list{"movie", ..._}
   | list{"person", ..._} =>
     <SuspensionLoader> lazyHome </SuspensionLoader>
   | list{"about"} => <SuspensionLoader> lazyAbout </SuspensionLoader>
@@ -40,7 +40,9 @@ let make = () => {
     <div className={`${theme} flex flex-col`}>
       <ErrorBoundary>
         <div className="h-screen bg-white dark:bg-slate-500">
-          <div> {component} </div>
+          <MoviesProvider>
+            <div> {component} </div>
+          </MoviesProvider>
         </div>
       </ErrorBoundary>
     </div>

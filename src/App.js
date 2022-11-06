@@ -6,6 +6,7 @@ import * as NotFound from "./pages/NotFound.js";
 import * as ThemeHook from "./hooks/ThemeHook.js";
 import * as Js_promise from "rescript/lib/es6/js_promise.js";
 import * as ErrorBoundary from "./components/ErrorBoundary.js";
+import * as MoviesProvider from "./providers/MoviesProvider.js";
 import * as SuspensionLoader from "./components/SuspensionLoader.js";
 import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js";
 import * as ThemeSwitchProvider from "./providers/ThemeSwitchProvider.js";
@@ -89,7 +90,9 @@ function App(Props) {
                   }, React.createElement(ErrorBoundary.make, {
                         children: React.createElement("div", {
                               className: "h-screen bg-white dark:bg-slate-500"
-                            }, React.createElement("div", undefined, component))
+                            }, React.createElement(MoviesProvider.make, {
+                                  children: React.createElement("div", undefined, component)
+                                }))
                       }))
             });
 }

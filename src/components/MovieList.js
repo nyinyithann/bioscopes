@@ -5,7 +5,7 @@ import * as $$Image from "./Image.js";
 import * as Links from "../shared/Links.js";
 import * as React from "react";
 import * as Rating from "./Rating.js";
-import * as Loading from "./Loading.js";
+import * as Js_math from "rescript/lib/es6/js_math.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as UrlQueryParam from "../routes/UrlQueryParam.js";
@@ -54,7 +54,7 @@ function MovieList$Poster(Props) {
                 }, title$1), React.createElement(Rating.make, {
                   ratingValue: vote_average
                 }), releaseYear.length === 4 ? React.createElement("div", {
-                    className: "absolute top-[0.5rem] right-[0.5rem] text-[0.8rem] bg-gray-700/60 text-slate-50 px-[4px] py-[1px] rounded-sm"
+                    className: "absolute top-[0.5rem] right-[0.5rem] text-[0.8rem] bg-700/60 text-slate-50 px-[4px] py-[1px] rounded-sm"
                   }, releaseYear) : null);
 }
 
@@ -62,41 +62,87 @@ var Poster = {
   make: MovieList$Poster
 };
 
+var currentPageRef = {
+  contents: 0
+};
+
 function MovieList(Props) {
   var match = UrlQueryParam.useQueryParams(undefined);
   var queryParam = match[0];
   var match$1 = MoviesProvider.useMoviesContext(undefined);
+  var clearMovies = match$1.clearMovies;
+  var apiParams = match$1.apiParams;
   var loadMovies = match$1.loadMovies;
+  var loading = match$1.loading;
   var movieList = Js_option.getWithDefault([], match$1.movies.results);
   var viewingTitleRef = React.useRef("");
+  var loadMore = function (param) {
+    if (!(Js_math.ceil(window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 300 | 0) && !loading)) {
+      return ;
+    }
+    switch (apiParams.TAG | 0) {
+      case /* Category */0 :
+          var match = apiParams._0;
+          currentPageRef.contents = currentPageRef.contents + 1 | 0;
+          return Curry._1(loadMovies, {
+                      TAG: /* Category */0,
+                      _0: {
+                        name: match.name,
+                        display: match.display,
+                        page: currentPageRef.contents + 1 | 0
+                      }
+                    });
+      case /* Genre */1 :
+          var match$1 = apiParams._0;
+          currentPageRef.contents = currentPageRef.contents + 1 | 0;
+          return Curry._1(loadMovies, {
+                      TAG: /* Genre */1,
+                      _0: {
+                        id: match$1.id,
+                        name: match$1.name,
+                        display: match$1.display,
+                        page: currentPageRef.contents + 1 | 0,
+                        sort_by: match$1.sort_by
+                      }
+                    });
+      default:
+        return ;
+    }
+  };
   React.useEffect((function () {
           switch (queryParam.TAG | 0) {
             case /* Category */0 :
                 var match = queryParam._0;
+                var page = match.page;
                 var display = match.display;
+                Curry._1(clearMovies, undefined);
                 viewingTitleRef.current = display;
                 window.document.title = display + " Movies";
+                currentPageRef.contents = page;
                 Curry._1(loadMovies, {
                       TAG: /* Category */0,
                       _0: {
                         name: match.name,
                         display: display,
-                        page: match.page
+                        page: page
                       }
                     });
                 break;
             case /* Genre */1 :
                 var match$1 = queryParam._0;
+                var page$1 = match$1.page;
                 var display$1 = match$1.display;
+                Curry._1(clearMovies, undefined);
                 viewingTitleRef.current = display$1;
                 window.document.title = display$1 + " Movies";
+                currentPageRef.contents = page$1;
                 Curry._1(loadMovies, {
                       TAG: /* Genre */1,
                       _0: {
                         id: match$1.id,
                         name: match$1.name,
                         display: display$1,
-                        page: match$1.page,
+                        page: page$1,
                         sort_by: match$1.sort_by
                       }
                     });
@@ -104,16 +150,19 @@ function MovieList(Props) {
             default:
               
           }
+          window.addEventListener("scroll", loadMore);
+          return (function (param) {
+                    window.removeEventListener("scroll", loadMore);
+                  });
         }), []);
   if (match$1.error.length > 0) {
     return React.createElement("div", undefined, "Error");
-  } else if (match$1.loading) {
-    return React.createElement(Loading.make, {
-                className: "w-[6rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-green-500 fill-50 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
-              });
   } else {
     return React.createElement("div", {
-                className: "flex flex-col bg-white"
+                className: "flex flex-col bg-white",
+                onScroll: (function (e) {
+                    console.log(e);
+                  })
               }, React.createElement("div", {
                     className: "font-nav text-[1.2rem] text-500 p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200"
                   }, viewingTitleRef.current), React.createElement("div", {
@@ -137,6 +186,7 @@ export {
   string ,
   array ,
   Poster ,
+  currentPageRef ,
   make ,
 }
 /* Image Not a pure module */
