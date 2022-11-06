@@ -23,10 +23,12 @@ function MovieList$Poster(Props) {
   var title = Props.title;
   var poster_path = Props.poster_path;
   var vote_average = Props.vote_average;
+  var release_date = Props.release_date;
   var imgLink = poster_path !== undefined ? Links.getPosterImageW342Link(poster_path) : "";
   var title$1 = Js_option.getWithDefault("", title);
-  return React.createElement("button", {
-              className: "flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md",
+  var releaseYear = release_date !== undefined ? release_date.substring(0, 4) : "";
+  return React.createElement("div", {
+              className: "relative flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md",
               role: "button",
               type: "button",
               onClick: (function (param) {
@@ -51,7 +53,9 @@ function MovieList$Poster(Props) {
                   ) + " break-words transform duration-300 group-hover:text-yellow-200 pt-[0.3rem] flex justify-center items-center text-center"
                 }, title$1), React.createElement(Rating.make, {
                   ratingValue: vote_average
-                }));
+                }), releaseYear.length === 4 ? React.createElement("div", {
+                    className: "absolute top-[0.5rem] right-[0.5rem] text-[0.8rem] bg-gray-700/60 text-slate-50 px-[4px] py-[1px] rounded-sm"
+                  }, releaseYear) : null);
 }
 
 var Poster = {
@@ -120,6 +124,7 @@ function MovieList(Props) {
                                       title: m.title,
                                       poster_path: m.poster_path,
                                       vote_average: m.vote_average,
+                                      release_date: m.release_date,
                                       key: m.id.toString()
                                     });
                         }))));

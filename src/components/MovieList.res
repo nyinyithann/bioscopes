@@ -6,6 +6,7 @@ module Poster = {
     ~title: option<string>,
     ~poster_path: option<string>,
     ~vote_average: option<float>,
+    ~release_date: option<string>
   ) => {
     open Js.String2
     let imgLink = switch poster_path {
@@ -13,10 +14,14 @@ module Poster = {
     | None => ""
     }
     let title = Js.Option.getWithDefault("", title)
-    <button
+    let releaseYear = switch release_date {
+        | Some(rd) => Js.String2.substring(rd,~from=0, ~to_=4)
+        | None => ""
+    }
+    <div
       type_="button"
       role="button"
-      className="flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md"
+      className="relative flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md"
       onClick={_ => Js.log("Hello")}>
       <Image
         alt="A poster"
@@ -39,7 +44,12 @@ module Poster = {
         {title->string}
       </p>
       <Rating ratingValue={vote_average} />
-    </button>
+      {
+          Js.String2.length(releaseYear) == 4 
+          ? <div className="absolute top-[0.5rem] right-[0.5rem] text-[0.8rem] bg-gray-700/60 text-slate-50 px-[4px] py-[1px] rounded-sm">{releaseYear->React.string}</div>
+          : React.null
+      }
+    </div>
   }
 }
 
@@ -93,6 +103,7 @@ let make = () => {
             title={m.title}
             poster_path={m.poster_path}
             vote_average={m.vote_average}
+            release_date={m.release_date}
           />
         )
         ->array}

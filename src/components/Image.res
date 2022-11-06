@@ -51,12 +51,12 @@ let make = (
         )->toString}px] ${getWithDefault("", className)}`
   let w = toString(isMobile ? getWithDefault(0., width) : getWithDefault(0., sm_width))
   let h = toString(isMobile ? getWithDefault(0., height) : getWithDefault(0., sm_height))
-  let cn = `${err ? "object-fit" : "object-cover"} ${getWithDefault("", className)}`
+  let cn = `${err ? "object-fit" : "object-cover"} ${getWithDefault("", className)} ${cn}`
   let imgStyle = ReactDOM.Style.make(~width=`${w}px`, ~height=`${h}px`, ())
-  <>
+  <div className="flex relative">
     {!loaded
       ? <div
-          className="w-full h-full flex flex-col items-center justify-center animate-pulse bg-50">
+          className="absolute top-[calc(h /. 2.)] w-full h-full flex flex-col items-center justify-center animate-pulse bg-50">
           <Loading
             className="w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
           />
@@ -84,5 +84,5 @@ let make = (
         />
       </LazyLoadWrapper>
     </OverlayLayer>
-  </>
+  </div>
 }

@@ -10,7 +10,7 @@
     <meta name="keywords" content="Listing and searching movies provided by themoviedb.org" />
     <meta name="title" content="Listing and searching movies provided by themoviedb.org" />
     <meta name="description" content="Listing and searching movies provided by themoviedb.org" />
-    <meta name="application-name" content="Biscopes" />
+    <meta name="application-name" content="Bioscopes" />
     <meta name="twitter:site" content="" />
     <meta name="twitter:card" content="" />
     <meta name="twitter:domain" content="" />
@@ -31,6 +31,30 @@
     <title>
         <%= htmlWebpackPlugin.options.title %>
     </title>
+    <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+    <style>
+        .pace {
+            -webkit-pointer-events: none;
+            pointer-events: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        .pace-inactive {
+            display: none;
+        }
+
+        .pace .pace-progress {
+            background: #22ddbe;
+            position: fixed;
+            z-index: 2000;
+            top: 0;
+            right: 100%;
+            width: 100%;
+            height: 2px;
+        }
+    </style>
 </head>
 
 <body>

@@ -68,26 +68,22 @@ function $$Image(Props) {
       });
   var setErr = match$1[1];
   var isMobile = DomBinding.checkMediaQuery(Js_option.getWithDefault("(max-width: 600px)", sm_mediaQuery));
-  if (isMobile) {
-    "w-[" + Js_option.getWithDefault(0, width).toString() + "px] h-[" + Js_option.getWithDefault(0, height).toString() + "px] " + Js_option.getWithDefault("", className) + "";
-  } else {
-    "w-[" + Js_option.getWithDefault(0, sm_width).toString() + "px] h-[" + Js_option.getWithDefault(0, sm_height).toString() + "px] " + Js_option.getWithDefault("", className) + "";
-  }
+  var cn = isMobile ? "w-[" + Js_option.getWithDefault(0, width).toString() + "px] h-[" + Js_option.getWithDefault(0, height).toString() + "px] " + Js_option.getWithDefault("", className) + "" : "w-[" + Js_option.getWithDefault(0, sm_width).toString() + "px] h-[" + Js_option.getWithDefault(0, sm_height).toString() + "px] " + Js_option.getWithDefault("", className) + "";
   var w = (
       isMobile ? Js_option.getWithDefault(0, width) : Js_option.getWithDefault(0, sm_width)
     ).toString();
   var h = (
       isMobile ? Js_option.getWithDefault(0, height) : Js_option.getWithDefault(0, sm_height)
     ).toString();
-  var cn = "" + (
+  var cn$1 = "" + (
     match$1[0] ? "object-fit" : "object-cover"
-  ) + " " + Js_option.getWithDefault("", className) + "";
+  ) + " " + Js_option.getWithDefault("", className) + " " + cn + "";
   var imgStyle = {
     height: "" + h + "px",
     width: "" + w + "px"
   };
   var tmp = {
-    className: cn,
+    className: cn$1,
     style: imgStyle,
     src: src,
     onError: (function (e) {
@@ -109,8 +105,10 @@ function $$Image(Props) {
   if (alt !== undefined) {
     tmp.alt = Caml_option.valFromOption(alt);
   }
-  return React.createElement(React.Fragment, undefined, match[0] ? null : React.createElement("div", {
-                    className: "w-full h-full flex flex-col items-center justify-center animate-pulse bg-50"
+  return React.createElement("div", {
+              className: "flex relative"
+            }, match[0] ? null : React.createElement("div", {
+                    className: "absolute top-[calc(h /. 2.)] w-full h-full flex flex-col items-center justify-center animate-pulse bg-50"
                   }, React.createElement(Loading.make, {
                         className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
                       })), React.createElement(Image$OverlayLayer, {
