@@ -4,6 +4,8 @@ let apiVersion = "3"
 let imageBaseUrl = "https://image.tmdb.org/t/p"
 
 let getPosterImageW342Link = (seg: string) => `${imageBaseUrl}/w342/${seg}`
+// let placeholderImage = "/assets/svgs/nothing.svg"
+let placeholderImage = "/assets/nothing.svg"
 
 /*
  "backdrop_sizes": [

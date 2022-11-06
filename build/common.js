@@ -100,6 +100,10 @@ module.exports = {
           from: path.resolve(__dirname, '..', './public/robots.txt'),
           to: path.resolve(__dirname, '..', './dist/robots.txt'),
         },
+        {
+          from: path.resolve(__dirname, '..', './public/assets/nothing.svg'),
+          to: path.resolve(__dirname, '..', './dist/assets/nothing.svg'),
+        },
       ],
     }),
   ],

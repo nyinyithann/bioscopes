@@ -9,6 +9,10 @@ module.exports = {
     }),
   ],
   devServer: {
+    static: {
+      directory: path.resolve(__dirname, '..', '../public'),
+      directory: path.resolve(__dirname, '..', '../public/assets'),
+    },
     historyApiFallback: true,
     hot: true,
     open: true,

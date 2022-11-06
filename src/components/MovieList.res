@@ -13,28 +13,33 @@ module Poster = {
     | None => ""
     }
     let title = Js.Option.getWithDefault("", title)
-    <LazyLoad height={DomBinding.checkMediaQuery("(min-width: 600px)") ? 448. : 352.} offset={300.} onContentVisible={() => Js.log("loaded")}>
-      <button
-        type_="button"
-        className="flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group
-      hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md"
-        onClick={_ => Js.log("Hello")}>
-        {length(imgLink) > 0
-          ? <img
-              alt="A poster"
-              src={imgLink}
-              className="w-[10rem] h-[15rem] sm:w-[15rem] sm:h-[22rem] flex-shrink-0 transform duration-300 group-hover:saturate-150 border-[2px] border-slate-200 rounded-md"
-            />
-          : <div> {"placeholder here"->string} </div>}
-        <p
-          className={`${length(title) > 50
-              ? "text-[0.7rem]"
-              : "text-[0.95rem]"} break-words transform duration-300 group-hover:text-yellow-200`}>
-          {title->string}
-        </p>
-        <Rating ratingValue={vote_average} />
-      </button>
-    </LazyLoad>
+    <button
+      type_="button"
+      role="button"
+      className="flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md"
+      onClick={_ => Js.log("Hello")}>
+      <Image
+        alt="A poster"
+        src={imgLink}
+        className="flex-shrink-0 group-hover:saturate-150 border-[2px] border-slate-200 rounded-md"
+        overlayEnabled={true}
+        lazyLoadEnabled={true}
+        lazyLoadOffset={50.}
+        width={160.}
+        height={240.}
+        sm_width={240.}
+        sm_height={352.}
+        sm_mediaQuery="(max-width: 600px)"
+        placeholderPath={Links.placeholderImage}
+      />
+      <p
+        className={`${length(title) > 50
+            ? "text-[0.7rem]"
+            : "text-[0.95rem]"} break-words transform duration-300 group-hover:text-yellow-200 pt-[0.3rem] flex justify-center items-center text-center`}>
+        {title->string}
+      </p>
+      <Rating ratingValue={vote_average} />
+    </button>
   }
 }
 

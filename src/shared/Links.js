@@ -11,10 +11,13 @@ var apiBaseUrl = "https://api.themoviedb.org";
 
 var apiVersion = "3";
 
+var placeholderImage = "/assets/nothing.svg";
+
 export {
   apiBaseUrl ,
   apiVersion ,
   imageBaseUrl ,
   getPosterImageW342Link ,
+  placeholderImage ,
 }
 /* No side effect */
