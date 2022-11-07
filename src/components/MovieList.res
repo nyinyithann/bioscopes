@@ -54,87 +54,89 @@ module Poster = {
   }
 }
 
-let currentPageRef = ref(0)
-
 @react.component
 let make = () => {
-  let (queryParam, _) = UrlQueryParam.useQueryParams()
+  let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
 
-  let {
-    movies,
-    loading,
-    error,
-    loadMovies,
-    apiParams,
-    clearMovies,
-  } = MoviesProvider.useMoviesContext()
+  let {movies, loading, error, loadMovies, apiParams} = MoviesProvider.useMoviesContext()
   let movieList = Js.Option.getWithDefault([], movies.results)
+  let currentPage = Js.Option.getWithDefault(0, movies.page)
+  let totalPages = Js.Option.getWithDefault(0, movies.total_pages)
 
   let viewingTitleRef = React.useRef("")
 
-  let loadMore = _ => {
-    open Webapi.Dom.Window
-    open Js.Int
-    if (
-      Js.Math.ceil(toFloat(innerHeight(Webapi__Dom.window)) +. scrollY(Webapi__Dom.window)) >=
-      Webapi.Dom.Element.scrollHeight(
-        Webapi.Dom.Document.documentElement(Webapi__Dom.document),
-      ) - 300 && !loading
-    ) {
-      switch apiParams {
-      | Category({name, display, _}) => {
-          currentPageRef.contents = currentPageRef.contents + 1
-          loadMovies(~apiParams=Category({name, display, page: currentPageRef.contents + 1}))
+  React.useMemo1(() => {
+    switch apiParams {
+    | Category({display}) => {
+        if Js.String2.toLowerCase(display) == "upcoming" {
+          Js.log(movies.dates)
+          let msg = switch movies.dates {
+          | Some(ds) =>
+            switch (ds.maximum, ds.minimum) {
+            | (Some(mx), Some(mi)) => `${display} (${mi} ~ ${mx})`
+            | _ => display
+            }
+          | None => display
+          }
+          viewingTitleRef.current = msg
+        } else {
+          viewingTitleRef.current = display
         }
-
-      | Genre({id, name, display, sort_by}) => {
-          currentPageRef.contents = currentPageRef.contents + 1
-          loadMovies(
-            ~apiParams=Genre({id, name, display, page: currentPageRef.contents + 1, sort_by}),
-          )
-        }
-
-      | _ => ()
-      }
-    }
-  }
-
-  React.useEffect0(() => {
-    switch queryParam {
-    | Category({name, display, page}) => {
-        clearMovies()
-        viewingTitleRef.current = display
         DomBinding.setTitle(DomBinding.htmlDoc, display ++ " Movies")
-        currentPageRef.contents = page
-        loadMovies(~apiParams=Category({name, display, page}))
       }
 
-    | Genre({id, name, display, page, sort_by}) => {
-        clearMovies()
+    | Genre({display}) => {
         viewingTitleRef.current = display
         DomBinding.setTitle(DomBinding.htmlDoc, display ++ " Movies")
-        currentPageRef.contents = page
-        loadMovies(~apiParams=Genre({id, name, display, page, sort_by}))
+      }
+
+    | Search({query}) => {
+        viewingTitleRef.current = `Search: '${query}'`
+        DomBinding.setTitle(DomBinding.htmlDoc, viewingTitleRef.current)
       }
 
     | _ => ()
     }
+  }, [movies])
 
-    Webapi.Dom.Window.addEventListener(Webapi.Dom.window, "scroll", loadMore)
-
-    Some(() => Webapi.Dom.Window.removeEventListener(Webapi.Dom.window, "scroll", loadMore))
+  React.useEffect0(() => {
+    let controller = Fetch.AbortController.make()
+    switch queryParam {
+    | Category({name, display, page}) =>
+      loadMovies(
+        ~apiParams=Category({name, display, page}),
+        ~signal=Fetch.AbortController.signal(controller),
+      )
+    | Genre({id, name, display, page, sort_by}) =>
+      loadMovies(
+        ~apiParams=Genre({id, name, display, page, sort_by}),
+        ~signal=Fetch.AbortController.signal(controller),
+      )
+    | Search({query, page}) =>
+      loadMovies(~apiParams=Search({query, page}), ~signal=Fetch.AbortController.signal(controller))
+    | _ => ()
+    }
+    Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
   })
 
+  let loadPage = n => {
+    switch apiParams {
+    | Category({name, display, page}) => setQueryParam(Category({name, display, page: page + n}))
+    | Genre({id, name, display, page, sort_by}) =>
+      setQueryParam(Genre({id, name, display, page: page + n, sort_by}))
+    | Search({query, page}) => setQueryParam(Search({query, page: page + n}))
+    | _ => ()
+    }
+  }
+
   if Js.String2.length(error) > 0 {
-    <div> {"Error"->string} </div>
-  } 
-  /* else if loading { */
-  /*   <Loading */
-  /*     className="w-[6rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-green-500 fill-50 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto" */
-  /*   /> */
-  /* } */
-  else {
-    <div className="flex flex-col bg-white" onScroll={e => Js.log(e)}>
+    <ErrorDisplay errorMessage={error} />
+  } else if loading {
+    <Loading
+      className="w-[6rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-green-500 fill-50 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
+    />
+  } else {
+    <div className="flex flex-col bg-white">
       <div
         className="font-nav text-[1.2rem] text-500 p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200">
         {viewingTitleRef.current->string}
@@ -142,17 +144,43 @@ let make = () => {
       <div
         id="movie-list-here"
         className="w-full h-full flex flex-1 flex-wrap p-1 pt-4 gap-[1rem] sm:gap-[1.4rem] justify-center items-center px-[1rem] sm:px-[2rem] bg-white">
-        {movieList
-        ->Belt.Array.map(m =>
-          <Poster
-            key={Js.Int.toString(m.id)}
-            title={m.title}
-            poster_path={m.poster_path}
-            vote_average={m.vote_average}
-            release_date={m.release_date}
-          />
-        )
-        ->array}
+        {Belt.Array.length(movieList) == 0
+          ? <div className="text-300 text-2xl"> {"Movies Not Found."->string} </div>
+          : movieList
+            ->Belt.Array.map(m =>
+              <Poster
+                key={Js.Int.toString(m.id)}
+                title={m.title}
+                poster_path={m.poster_path}
+                vote_average={m.vote_average}
+                release_date={m.release_date}
+              />
+            )
+            ->array}
+      </div>
+      <div className="flex gap-2 px-4">
+        {currentPage > 1
+          ? <button
+              type_="button"
+              className="flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group"
+              onClick={_ => loadPage(-1)}>
+              <Heroicons.Solid.ArrowLeftIcon
+                className="h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
+              />
+              <span> {`Page ${Js.Int.toString(currentPage - 1)} `->string} </span>
+            </button>
+          : React.null}
+        {currentPage < totalPages
+          ? <button
+              type_="button"
+              className="flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group ml-auto"
+              onClick={_ => loadPage(1)}>
+              <span> {`Page ${Js.Int.toString(currentPage + 1)} `->string} </span>
+              <Heroicons.Solid.ArrowRightIcon
+                className="h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
+              />
+            </button>
+          : React.null}
       </div>
     </div>
   }

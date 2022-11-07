@@ -15,11 +15,34 @@ type movie = {
   vote_count?: int,
 }
 
+type upcoming_dates = {
+  maximum?: string,
+  minimum?: string,
+}
+
 type movielist = {
+  dates?: upcoming_dates,
   page?: int,
   results?: array<movie>,
   total_pages?: int,
   total_results?: int,
+}
+
+type movie_error = {
+  errors?: array<string>,
+  success?: bool,
+}
+
+module MovieErrorDecoder = {
+  open JsonCombinators
+  open! JsonCombinators.Json.Decode
+  let movie_error = object(fields => {
+    errors: ?Marshal.to_opt(. fields, "errors", array(string)),
+    success: ?Marshal.to_opt(. fields, "success", bool),
+  })
+  let decode = (. ~json: Js.Json.t): result<movie_error, string> => {
+    Json.decode(json, movie_error)
+  }
 }
 
 module MovieDecoder = {
@@ -28,7 +51,7 @@ module MovieDecoder = {
 
   let movie: Json.Decode.t<movie> = object(fields => {
     adult: ?Marshal.to_opt(. fields, "adult", bool),
-    backdrop_path: ?Marshal.to_opt(. fields, "backdrop_path", string), 
+    backdrop_path: ?Marshal.to_opt(. fields, "backdrop_path", string),
     genre_ids: ?Marshal.to_opt(. fields, "genre_ids", array(int)),
     id: fields.required(. "id", int),
     original_language: ?Marshal.to_opt(. fields, "original_language", string),
@@ -52,7 +75,13 @@ module MovieListDecoder = {
   open JsonCombinators
   open! JsonCombinators.Json.Decode
 
+  let dates = object(fields => {
+    maximum: ?Marshal.to_opt(. fields, "maximum", string),
+    minimum: ?Marshal.to_opt(. fields, "minimum", string),
+  })
+
   let movieList: Json.Decode.t<movielist> = object(fields => {
+    dates: ?Marshal.to_opt(. fields, "dates", dates),
     page: ?Marshal.to_opt(. fields, "page", int),
     results: ?Marshal.to_opt(. fields, "results", array(MovieDecoder.movie)),
     total_pages: ?Marshal.to_opt(. fields, "total_pages", int),
@@ -60,6 +89,8 @@ module MovieListDecoder = {
   })
 
   let decode = (. ~json: Js.Json.t): result<movielist, string> => {
-    Json.decode(json, movieList)
+    let d = Json.decode(json, movieList)
+    Js.log(d)
+    d
   }
 }

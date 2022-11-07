@@ -81,23 +81,29 @@ let make = () => {
   let (_, setQueryParam) = UrlQueryParam.useQueryParams()
 
   React.useEffect0(() => {
-    let genreCallback = json => {
-      switch GenreModel.GenreDecoder.decode(. ~json) {
-      | Ok(genreList) =>
-        Js.Dict.set(cache.contents, "genres", genreList.genres)
-        setState(_ => Success(genreList.genres))
-      | Error(msg) => setState(_ => Error(msg))
+    let callback = result => {
+      switch result {
+      | Ok(json) =>
+        switch GenreModel.GenreDecoder.decode(. ~json) {
+        | Ok(genreList) =>
+          Js.Dict.set(cache.contents, "genres", genreList.genres)
+          setState(_ => Success(genreList.genres))
+        | Error(msg) => setState(_ => Error(msg))
+        }
+      | Error(json) =>
+        switch GenreModel.GenreErrorDecoder.decode(. ~json) {
+        | Ok(e) => setState(_ => Error(e.status_message))
+
+        | _ => setState(_ => Error("Unexpected error occured while reteriving genre data."))
+        }
       }
     }
+
     let controller = Fetch.AbortController.make()
     switch Js.Dict.get(cache.contents, "genres") {
     | Some(genres) => setState(_ => Success(genres))
     | None =>
-      MovieAPI.getGenres(
-        ~callback=genreCallback,
-        ~signal=Fetch.AbortController.signal(controller),
-        (),
-      )->ignore
+      MovieAPI.getGenres(~callback, ~signal=Fetch.AbortController.signal(controller), ())->ignore
     }
 
     Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
@@ -119,9 +125,9 @@ let make = () => {
   })
 
   <div className="flex flex-col items-start justify-center z-50">
-    <div className="flex font-brand w-full items-center justify-center pb-4 gap-2">
+    <div className="flex font-nav tracking-widest w-full items-center pb-4 gap-2">
       <div
-        className="text-lg sm:text-xl md:text-2xl rounded-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2 py-[0.4rem]">
+        className="text-lg sm:text-2xl md:text-3xl w-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2 py-[0.2rem]">
         <Heroicons.Solid.CameraIcon className="h-3 w-3 pl-1" />
         {"BIOSCOPES"->React.string}
         <Heroicons.Solid.CameraIcon className="h-3 w-3 pr-1" />
@@ -132,9 +138,9 @@ let make = () => {
       <Loading
         className="w-[4rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
       />
-    | Error(msg) =>
-      <div className="flex flex-wrap w-full px-1 text-red-400">
-        {React.string("Error occured while loaind genres: " ++ msg)}
+    | Error(errorMessage) =>
+      <div className="flex flex-wrap w-full h-auto">
+        <ErrorDisplay errorMessage />
       </div>
     | Success(genres) =>
       <div className="w-full">

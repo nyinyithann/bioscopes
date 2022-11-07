@@ -50,26 +50,71 @@ var Converter_genre_param = Marshal.Make({
       from: from$1
     });
 
+var to$2 = Json_Decode$JsonCombinators.object(function (fields) {
+      return {
+              query: fields.required("query", Json_Decode$JsonCombinators.string),
+              page: fields.required("page", Json_Decode$JsonCombinators.$$int)
+            };
+    });
+
+function from$2(o) {
+  return {
+          query: o.query,
+          page: o.page
+        };
+}
+
+var Converter_search_param = Marshal.Make({
+      to: to$2,
+      from: from$2
+    });
+
 function useQueryParams(param) {
   var url = RescriptReactRouter.useUrl(undefined, undefined);
   var match = url.path;
   var match$1 = url.search;
   var queryParam;
   if (match) {
-    if (match.hd === "genre" && !match.tl) {
-      var p = Converter_genre_param.parse(match$1);
-      queryParam = p.TAG === /* Ok */0 ? ({
-            TAG: /* Genre */1,
-            _0: p._0
-          }) : ({
-            TAG: /* Invalid */5,
-            _0: p._0
-          });
-    } else {
-      queryParam = {
-        TAG: /* Invalid */5,
-        _0: "Invalid Route"
-      };
+    switch (match.hd) {
+      case "genre" :
+          if (match.tl) {
+            queryParam = {
+              TAG: /* Invalid */5,
+              _0: "Invalid Route"
+            };
+          } else {
+            var p = Converter_genre_param.parse(match$1);
+            queryParam = p.TAG === /* Ok */0 ? ({
+                  TAG: /* Genre */1,
+                  _0: p._0
+                }) : ({
+                  TAG: /* Invalid */5,
+                  _0: p._0
+                });
+          }
+          break;
+      case "search" :
+          if (match.tl) {
+            queryParam = {
+              TAG: /* Invalid */5,
+              _0: "Invalid Route"
+            };
+          } else {
+            var p$1 = Converter_search_param.parse(match$1);
+            queryParam = p$1.TAG === /* Ok */0 ? ({
+                  TAG: /* Search */2,
+                  _0: p$1._0
+                }) : ({
+                  TAG: /* Invalid */5,
+                  _0: p$1._0
+                });
+          }
+          break;
+      default:
+        queryParam = {
+          TAG: /* Invalid */5,
+          _0: "Invalid Route"
+        };
     }
   } else if (match$1 === "") {
     queryParam = {
@@ -81,13 +126,13 @@ function useQueryParams(param) {
       }
     };
   } else {
-    var p$1 = Converter_category_param.parse(match$1);
-    queryParam = p$1.TAG === /* Ok */0 ? ({
+    var p$2 = Converter_category_param.parse(match$1);
+    queryParam = p$2.TAG === /* Ok */0 ? ({
           TAG: /* Category */0,
-          _0: p$1._0
+          _0: p$2._0
         }) : ({
           TAG: /* Invalid */5,
-          _0: p$1._0
+          _0: p$2._0
         });
   }
   var setQueryParam = function (params) {
@@ -96,10 +141,14 @@ function useQueryParams(param) {
           return RescriptReactRouter.push("/?" + new URLSearchParams(Converter_category_param.stringfy(params._0)).toString());
       case /* Genre */1 :
           return RescriptReactRouter.push("/genre?" + new URLSearchParams(Converter_genre_param.stringfy(params._0)).toString());
+      case /* Search */2 :
+          return RescriptReactRouter.push("/search?" + new URLSearchParams(Converter_search_param.stringfy(params._0)).toString());
       case /* Movie */3 :
           return RescriptReactRouter.push("/movie/" + String(params._0) + "");
-      default:
-        return ;
+      case /* Person */4 :
+      case /* Invalid */5 :
+          return ;
+      
     }
   };
   return [
@@ -111,6 +160,7 @@ function useQueryParams(param) {
 export {
   Converter_category_param ,
   Converter_genre_param ,
+  Converter_search_param ,
   useQueryParams ,
 }
 /* Converter_category_param Not a pure module */

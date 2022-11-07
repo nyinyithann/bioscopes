@@ -54,6 +54,25 @@ module Converter_genre_param = Marshal.Make({
   }
 })
 
+module Converter_search_param = Marshal.Make({
+  open! JsonCombinators
+  open! JsonCombinators.Json.Decode
+  type t = search_param
+
+  let to = object(fields => {
+    query: fields.required(. "query", string),
+    page: fields.required(. "page", int),
+  })
+
+  let from = (o: t) => {
+    open! JsonCombinators.Json.Encode
+    Unsafe.object({
+      "query": string(o.query),
+      "page": int(o.page),
+    })
+  }
+})
+
 let useQueryParams = (): (query_param, query_param => unit) => {
   let url = RescriptReactRouter.useUrl()
   let queryParam = switch (url.path, url.search) {
@@ -68,6 +87,11 @@ let useQueryParams = (): (query_param, query_param => unit) => {
     | Ok(p) => Genre(p)
     | Error(msg) => Invalid(msg)
     }
+  | (list{"search"}, q) =>
+    switch Converter_search_param.parse(. q) {
+    | Ok(p) => Search(p)
+    | Error(msg) => Invalid(msg)
+    }
   | _ => Invalid("Invalid Route")
   }
 
@@ -80,14 +104,23 @@ let useQueryParams = (): (query_param, query_param => unit) => {
           Converter_category_param.stringfy(. p)->URLSearchParams.make->URLSearchParams.toString
         RescriptReactRouter.push(seg)
       }
+
     | Genre(p) => {
         let seg =
           `/genre?` ++
           Converter_genre_param.stringfy(. p)->URLSearchParams.make->URLSearchParams.toString
         RescriptReactRouter.push(seg)
       }
+
+    | Search(s) => {
+        let seg =
+          `/search?` ++
+          Converter_search_param.stringfy(. s)->URLSearchParams.make->URLSearchParams.toString
+        RescriptReactRouter.push(seg)
+      }
+
     | Movie(id) => {
-        let seg = `/movie/${string_of_int(id)}` 
+        let seg = `/movie/${string_of_int(id)}`
         RescriptReactRouter.push(seg)
       }
 

@@ -3,13 +3,11 @@
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as Links from "../shared/Links.js";
 import * as React from "react";
-import * as Js_int from "rescript/lib/es6/js_int.js";
-import * as Belt_Id from "rescript/lib/es6/belt_Id.js";
-import * as Caml_obj from "rescript/lib/es6/caml_obj.js";
 import * as MovieAPI from "../http/MovieAPI.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as MovieModel from "../models/MovieModel.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 var emptyMovieList_page = 0;
 
@@ -42,7 +40,7 @@ var initialState = {
   error: ""
 };
 
-function initialContextValue_loadMovies(param) {
+function initialContextValue_loadMovies(param, param$1) {
   
 }
 
@@ -121,8 +119,9 @@ function reducer(state, action) {
         return {
                 apiParams: action._0,
                 movies: {
+                  dates: movies.dates,
                   page: movies.page,
-                  results: Belt_Array.concat(Js_option.getWithDefault([], state.movies.results), Js_option.getWithDefault([], movies.results)),
+                  results: movies.results,
                   total_pages: movies.total_pages,
                   total_results: movies.total_results
                 },
@@ -133,25 +132,7 @@ function reducer(state, action) {
   }
 }
 
-function hash(param) {
-  switch (param.TAG | 0) {
-    case /* Category */0 :
-        return param._0.page;
-    case /* Genre */1 :
-        return param._0.page;
-    default:
-      return Js_int.max;
-  }
-}
-
-var eq = Caml_obj.equal;
-
-var QueryParamHash = Belt_Id.MakeHashable({
-      hash: hash,
-      eq: eq
-    });
-
-function loadMoviesInternal(dispatch, apiParams) {
+function loadMoviesInternal(dispatch, apiParams, signal) {
   var apiPath;
   switch (apiParams.TAG | 0) {
     case /* Category */0 :
@@ -162,29 +143,49 @@ function loadMoviesInternal(dispatch, apiParams) {
         var match$1 = apiParams._0;
         apiPath = "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/discover/movie?with_genres=" + String(match$1.id) + "&page=" + match$1.page.toString() + "&sort_by=" + match$1.sort_by + "";
         break;
+    case /* Search */2 :
+        var match$2 = apiParams._0;
+        apiPath = "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/search/movie?query=" + match$2.query + "&page=" + match$2.page.toString() + "";
+        break;
     default:
       apiPath = "";
   }
-  var callback = function (json) {
-    var ml = MovieModel.MovieListDecoder.decode(json);
-    if (ml.TAG === /* Ok */0) {
-      return Curry._1(dispatch, {
-                  TAG: /* Success */2,
-                  _0: apiParams,
-                  _1: ml._0
-                });
-    } else {
+  var callback = function (result) {
+    if (result.TAG === /* Ok */0) {
+      var ml = MovieModel.MovieListDecoder.decode(result._0);
+      if (ml.TAG === /* Ok */0) {
+        return Curry._1(dispatch, {
+                    TAG: /* Success */2,
+                    _0: apiParams,
+                    _1: ml._0
+                  });
+      } else {
+        return Curry._1(dispatch, {
+                    TAG: /* Error */1,
+                    _0: ml._0
+                  });
+      }
+    }
+    var e = MovieModel.MovieErrorDecoder.decode(result._0);
+    if (e.TAG !== /* Ok */0) {
       return Curry._1(dispatch, {
                   TAG: /* Error */1,
-                  _0: ml._0
+                  _0: "Unexpected error occured while reteriving movie data."
                 });
     }
+    var errors = Belt_Array.reduce(Js_option.getWithDefault([], e._0.errors), ". ", (function (a, b) {
+            return b + a;
+          }));
+    Curry._1(dispatch, {
+          TAG: /* Error */1,
+          _0: errors
+        });
   };
   Curry._1(dispatch, {
         TAG: /* Loading */0,
         _0: apiParams
       });
-  MovieAPI.getMovies(apiPath, callback, undefined, undefined);
+  MovieAPI.getMovies(apiPath, callback, Caml_option.some(signal), undefined);
 }
 
 function MoviesProvider(Props) {
@@ -193,8 +194,8 @@ function MoviesProvider(Props) {
   var dispatch = match[1];
   var state = match[0];
   var loadMovies = React.useMemo((function () {
-          return function (param) {
-            return loadMoviesInternal(dispatch, param);
+          return function (param, param$1) {
+            return loadMoviesInternal(dispatch, param, param$1);
           };
         }), [dispatch]);
   var value_movies = state.movies;
@@ -229,7 +230,6 @@ export {
   initialState ,
   MoviesContext ,
   reducer ,
-  QueryParamHash ,
   loadMoviesInternal ,
   make ,
   useMoviesContext ,

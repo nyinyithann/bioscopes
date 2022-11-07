@@ -28,7 +28,7 @@ function checkResponseStatus(promise) {
               } else {
                 return Promise.resolve({
                             TAG: /* Error */1,
-                            _0: "Error with status code: " + response.status.toString() + ", status text: " + response.statusText + ""
+                            _0: response.json()
                           });
               }
             });
@@ -39,21 +39,27 @@ function catchPromiseFault(promise) {
                 if (e.RE_EXN_ID !== Js_exn.$$Error) {
                   return Promise.resolve({
                               TAG: /* Error */1,
-                              _0: "Unexpected Error"
+                              _0: Promise.resolve("Unexpected Promise Fault!")
                             });
                 }
                 var msg = e._1.message;
-                if (msg !== undefined) {
+                if (msg === undefined) {
                   return Promise.resolve({
                               TAG: /* Error */1,
-                              _0: msg
-                            });
-                } else {
-                  return Promise.resolve({
-                              TAG: /* Error */1,
-                              _0: "Unexpected Error"
+                              _0: Promise.resolve("Unexpected Promise Fault!")
                             });
                 }
+                var tmp;
+                try {
+                  tmp = JSON.parse(msg);
+                }
+                catch (exn){
+                  tmp = "Unexpected Promise Fault!";
+                }
+                return Promise.resolve({
+                            TAG: /* Error */1,
+                            _0: Promise.resolve(tmp)
+                          });
               }));
 }
 
@@ -61,11 +67,20 @@ function handleResponse(promise, callback, param) {
   return promise.then(function (result) {
               if (result.TAG === /* Ok */0) {
                 result._0.then(function (data) {
-                      Curry._1(callback, data);
+                      Curry._1(callback, {
+                            TAG: /* Ok */0,
+                            _0: data
+                          });
                       return Promise.resolve(undefined);
                     });
               } else {
-                console.log(result._0);
+                result._0.then(function (err) {
+                      Curry._1(callback, {
+                            TAG: /* Error */1,
+                            _0: err
+                          });
+                      return Promise.resolve(undefined);
+                    });
               }
               return Promise.resolve(undefined);
             });

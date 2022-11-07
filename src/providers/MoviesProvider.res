@@ -11,8 +11,9 @@ type action =
   | Success(UrlQueryParam.query_param, MovieModel.movielist)
   | Clear
 
-let emptyMovieList = {
-  MovieModel.page: 0,
+let emptyMovieList: MovieModel.movielist = {
+  dates: ?None,
+  page: 0,
   results: [],
   total_pages: 0,
   total_results: 0,
@@ -29,7 +30,7 @@ type context_value = {
   movies: MovieModel.movielist,
   loading: bool,
   error: string,
-  loadMovies: (~apiParams: UrlQueryParam.query_param) => unit,
+  loadMovies: (~apiParams: UrlQueryParam.query_param, ~signal: Fetch.AbortSignal.t) => unit,
   apiParams: UrlQueryParam.query_param,
   clearMovies: unit => unit,
 }
@@ -39,9 +40,9 @@ module MoviesContext = {
     movies: emptyMovieList,
     loading: false,
     error: "",
-    loadMovies: (~apiParams as _) => (),
+    loadMovies: (~apiParams as _, ~signal as _) => (),
     apiParams: initialState.apiParams,
-    clearMovies: () => ()
+    clearMovies: () => (),
   }
   let context = React.createContext(initialContextValue)
   module Provider = {
@@ -60,33 +61,21 @@ let reducer = (state: state, action) => {
   | Success(apiParams, movies) => {
       apiParams,
       movies: {
-        MovieModel.page: ?movies.page,
+        MovieModel.dates: ?movies.dates,
+        page: ?movies.page,
         total_pages: ?movies.total_pages,
         total_results: ?movies.total_results,
-        results: Belt.Array.concat(
-          Js.Option.getWithDefault([], state.movies.results),
-          Js.Option.getWithDefault([], movies.results),
-        ),
+        results: ?movies.results,
       },
       loading: false,
       error: "",
     }
-    | Clear => {apiParams : state.apiParams, movies: emptyMovieList , loading: false, error: ""} 
+
+  | Clear => {apiParams: state.apiParams, movies: emptyMovieList, loading: false, error: ""}
   }
 }
 
-module QueryParamHash = Belt.Id.MakeHashable({
-  type t = UrlQueryParam.query_param
-  let hash = param =>
-    switch param {
-    | UrlQueryParam.Category({page}) => page
-    | UrlQueryParam.Genre({page}) => page
-    | _ => Js.Int.max
-    }
-  let eq = (a, b) => a == b
-})
-
-let loadMoviesInternal = (dispatch, ~apiParams: UrlQueryParam.query_param) => {
+let loadMoviesInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signal) => {
   open Links
   let apiPath = switch apiParams {
   | Category({name, page}) =>
@@ -95,17 +84,35 @@ let loadMoviesInternal = (dispatch, ~apiParams: UrlQueryParam.query_param) => {
     `${apiBaseUrl}/${apiVersion}/discover/movie?with_genres=${string_of_int(
         id,
       )}&page=${Js.Int.toString(page)}&sort_by=${sort_by}`
+  | Search({query, page}) =>
+    `${apiBaseUrl}/${apiVersion}/search/movie?query=${query}&page=${Js.Int.toString(page)}`
   | _ => ""
   }
 
-  let callback = json => {
-    switch MovieModel.MovieListDecoder.decode(. ~json) {
-    | Ok(ml) => dispatch(Success(apiParams, ml))
-    | Error(msg) => dispatch(Error(msg))
+  let callback = result => {
+    switch result {
+    | Ok(json) =>
+      switch MovieModel.MovieListDecoder.decode(. ~json) {
+      | Ok(ml) => dispatch(Success(apiParams, ml))
+
+      | Error(msg) => dispatch(Error(msg))
+      }
+    | Error(json) =>
+      switch MovieModel.MovieErrorDecoder.decode(. ~json) {
+      | Ok(e) => {
+          let errors = Belt.Array.reduce(Js.Option.getWithDefault([], e.errors), ". ", (a, b) =>
+            b ++ a
+          )
+          dispatch(Error(errors))
+        }
+
+      | _ => dispatch(Error("Unexpected error occured while reteriving movie data."))
+      }
     }
   }
+
   dispatch(Loading(apiParams))
-  MovieAPI.getMovies(~apiPath, ~callback, ())->ignore
+  MovieAPI.getMovies(~apiPath, ~callback, ~signal, ())->ignore
 }
 
 @react.component
@@ -119,7 +126,7 @@ let make = (~children) => {
     error: state.error,
     loadMovies,
     apiParams: state.apiParams,
-    clearMovies: () => dispatch(Clear)
+    clearMovies: () => dispatch(Clear),
   }
   <MoviesContext.Provider value> children </MoviesContext.Provider>
 }

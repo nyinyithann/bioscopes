@@ -10,6 +10,7 @@ import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as GenreModel from "../models/GenreModel.js";
 import * as Pervasives from "rescript/lib/es6/pervasives.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
+import * as ErrorDisplay from "./ErrorDisplay.js";
 import * as UrlQueryParam from "../routes/UrlQueryParam.js";
 import * as Solid from "@heroicons/react/solid";
 
@@ -101,23 +102,41 @@ function GenreList(Props) {
   var match$1 = UrlQueryParam.useQueryParams(undefined);
   var setQueryParam = match$1[1];
   React.useEffect((function () {
-          var genreCallback = function (json) {
-            var genreList = GenreModel.GenreDecoder.decode(json);
-            if (genreList.TAG === /* Ok */0) {
-              var genreList$1 = genreList._0;
-              cache.contents["genres"] = genreList$1.genres;
+          var callback = function (result) {
+            if (result.TAG === /* Ok */0) {
+              var genreList = GenreModel.GenreDecoder.decode(result._0);
+              if (genreList.TAG === /* Ok */0) {
+                var genreList$1 = genreList._0;
+                cache.contents["genres"] = genreList$1.genres;
+                return Curry._1(setState, (function (param) {
+                              return {
+                                      TAG: /* Success */1,
+                                      _0: genreList$1.genres
+                                    };
+                            }));
+              }
+              var msg = genreList._0;
               return Curry._1(setState, (function (param) {
                             return {
-                                    TAG: /* Success */1,
-                                    _0: genreList$1.genres
+                                    TAG: /* Error */0,
+                                    _0: msg
                                   };
                           }));
             }
-            var msg = genreList._0;
+            var e = GenreModel.GenreErrorDecoder.decode(result._0);
+            if (e.TAG !== /* Ok */0) {
+              return Curry._1(setState, (function (param) {
+                            return {
+                                    TAG: /* Error */0,
+                                    _0: "Unexpected error occured while reteriving genre data."
+                                  };
+                          }));
+            }
+            var e$1 = e._0;
             Curry._1(setState, (function (param) {
                     return {
                             TAG: /* Error */0,
-                            _0: msg
+                            _0: e$1.status_message
                           };
                   }));
           };
@@ -131,7 +150,7 @@ function GenreList(Props) {
                           };
                   }));
           } else {
-            MovieAPI.getGenres(genreCallback, Caml_option.some(controller.signal), undefined);
+            MovieAPI.getGenres(callback, Caml_option.some(controller.signal), undefined);
           }
           return (function (param) {
                     controller.abort("Cancel the request");
@@ -174,8 +193,10 @@ function GenreList(Props) {
           className: "w-[4rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
         }) : (
       state.TAG === /* Error */0 ? React.createElement("div", {
-              className: "flex flex-wrap w-full px-1 text-red-400"
-            }, "Error occured while loaind genres: " + state._0) : React.createElement("div", {
+              className: "flex flex-wrap w-full h-auto"
+            }, React.createElement(ErrorDisplay.make, {
+                  errorMessage: state._0
+                })) : React.createElement("div", {
               className: "w-full"
             }, React.createElement("div", {
                   className: "flex flex-col w-full"
@@ -212,9 +233,9 @@ function GenreList(Props) {
   return React.createElement("div", {
               className: "flex flex-col items-start justify-center z-50"
             }, React.createElement("div", {
-                  className: "flex font-brand w-full items-center justify-center pb-4 gap-2"
+                  className: "flex font-nav tracking-widest w-full items-center pb-4 gap-2"
                 }, React.createElement("div", {
-                      className: "text-lg sm:text-xl md:text-2xl rounded-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2 py-[0.4rem]"
+                      className: "text-lg sm:text-2xl md:text-3xl w-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2 py-[0.2rem]"
                     }, React.createElement(Solid.CameraIcon, {
                           className: "h-3 w-3 pl-1"
                         }), "BIOSCOPES", React.createElement(Solid.CameraIcon, {

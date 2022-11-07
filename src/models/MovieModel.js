@@ -4,6 +4,22 @@ import * as Marshal from "../shared/Marshal.js";
 import * as Json$JsonCombinators from "@glennsl/rescript-json-combinators/src/Json.js";
 import * as Json_Decode$JsonCombinators from "@glennsl/rescript-json-combinators/src/Json_Decode.js";
 
+var movie_error = Json_Decode$JsonCombinators.object(function (fields) {
+      return {
+              errors: Marshal.to_opt(fields, "errors", Json_Decode$JsonCombinators.array(Json_Decode$JsonCombinators.string)),
+              success: Marshal.to_opt(fields, "success", Json_Decode$JsonCombinators.bool)
+            };
+    });
+
+function decode(json) {
+  return Json$JsonCombinators.decode(json, movie_error);
+}
+
+var MovieErrorDecoder = {
+  movie_error: movie_error,
+  decode: decode
+};
+
 var movie = Json_Decode$JsonCombinators.object(function (fields) {
       return {
               adult: Marshal.to_opt(fields, "adult", Json_Decode$JsonCombinators.bool),
@@ -23,17 +39,25 @@ var movie = Json_Decode$JsonCombinators.object(function (fields) {
             };
     });
 
-function decode(json) {
+function decode$1(json) {
   return Json$JsonCombinators.decode(json, movie);
 }
 
 var MovieDecoder = {
   movie: movie,
-  decode: decode
+  decode: decode$1
 };
+
+var dates = Json_Decode$JsonCombinators.object(function (fields) {
+      return {
+              maximum: Marshal.to_opt(fields, "maximum", Json_Decode$JsonCombinators.string),
+              minimum: Marshal.to_opt(fields, "minimum", Json_Decode$JsonCombinators.string)
+            };
+    });
 
 var movieList = Json_Decode$JsonCombinators.object(function (fields) {
       return {
+              dates: Marshal.to_opt(fields, "dates", dates),
               page: Marshal.to_opt(fields, "page", Json_Decode$JsonCombinators.$$int),
               results: Marshal.to_opt(fields, "results", Json_Decode$JsonCombinators.array(movie)),
               total_pages: Marshal.to_opt(fields, "total_pages", Json_Decode$JsonCombinators.$$int),
@@ -41,17 +65,21 @@ var movieList = Json_Decode$JsonCombinators.object(function (fields) {
             };
     });
 
-function decode$1(json) {
-  return Json$JsonCombinators.decode(json, movieList);
+function decode$2(json) {
+  var d = Json$JsonCombinators.decode(json, movieList);
+  console.log(d);
+  return d;
 }
 
 var MovieListDecoder = {
+  dates: dates,
   movieList: movieList,
-  decode: decode$1
+  decode: decode$2
 };
 
 export {
+  MovieErrorDecoder ,
   MovieDecoder ,
   MovieListDecoder ,
 }
-/* movie Not a pure module */
+/* movie_error Not a pure module */

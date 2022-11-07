@@ -6,25 +6,33 @@ let authorization = ("Authorization", `Bearer ${Env.apiReadAccess}`)
 
 let checkResponseStatus = promise => {
   promise->then(response => {
-    Response.ok(response)
-      ? Ok(Response.json(response))->resolve
-      : Error(
-          `Error with status code: ${Response.status(
-              response,
-            )->Js.Int.toString}, status text: ${Response.statusText(response)}`,
-        )->resolve
+    if Response.ok(response) {
+      Ok(Response.json(response))->resolve
+    } else {
+      Error(Response.json(response))->resolve
+    }
   })
 }
 
-let catchPromiseFault = promise => {
+let catchPromiseFault: Promise.t<result<Promise.t<Js.Json.t>, Promise.t<Js.Json.t>>> => Promise.t<
+  result<Promise.t<Js.Json.t>, Promise.t<Js.Json.t>>,
+> = promise => {
+  let defaultFaultMsg = () => Js.Json.string("Unexpected Promise Fault!")
   promise->catch(e => {
     switch e {
     | Js.Exn.Error(obj) =>
       switch Js.Exn.message(obj) {
-      | Some(msg) => Error(msg)->resolve
-      | _ => Error("Unexpected Error")->resolve
+      | Some(msg) =>
+        Error(
+          Promise.resolve(
+            try Js.Json.parseExn(msg) catch {
+            | _ => defaultFaultMsg()
+            },
+          ),
+        )->resolve
+      | _ => Error(Promise.resolve(defaultFaultMsg()))->resolve
       }
-    | _ => Error("Unexpected Error")->resolve
+    | _ => Error(Promise.resolve(defaultFaultMsg()))->resolve
     }
   })
 }
@@ -35,17 +43,28 @@ let handleResponse = (promise, ~callback, ()) => {
     | Ok(p) =>
       p
       ->thenResolve(data => {
-        callback(data)
+        callback(Ok(data))
         resolve()
       })
       ->ignore
-    | Error(msg) => Js.log(msg)
+    | Error(msg) =>
+      msg
+      ->thenResolve(err => {
+        callback(Error(err))
+        resolve()
+      })
+      ->ignore
     }
     resolve()
   })
 }
 
-let getMovies = (~apiPath: string, ~callback, ~signal=?, ()) => {
+let getMovies = (
+  ~apiPath: string,
+  ~callback: result<Js.Json.t, Js.Json.t> => unit,
+  ~signal=?,
+  (),
+) => {
   fetch(
     apiPath,
     {

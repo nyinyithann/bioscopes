@@ -120,35 +120,24 @@ let make = () => {
               }}>
               <span className="sr-only"> {"Close sidebar"->string} </span>
               <Heroicons.Solid.XIcon
-                className="h-8 w-8 fill-400 hover:fill-klor-600 fill-klor-400 rounded-r-full py-1 bg-100"
+                className="h-8 w-8 fill-400 hover:fill-yellow-200 fill-yellow-300 rounded-r-full py-1 bg-gradient-to-r from-teal-400  to-blue-400"
               />
             </button>
             <div
               id="search-colorswatch-container"
               className="flex flex-1 items-center justify-end gap-2">
-              <div
-                id="search-container"
-                className="relative w-[12rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center">
-                <div className="pointer-events-none absolute inset-y-0 left-1 flex items-center">
-                  <Heroicons.Solid.SearchIcon className="h-5 w-5" />
-                </div>
-                <input
-                  id="search-field"
-                  className="block w-full rounded-md pl-[2rem] text-gray-900 placeholder-slate-400 outline-none ring-0 border-0 bg-100 focus:bg-200 focus:border-[1px] focus:border-slate-100 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm"
-                  placeholder="Search"
-                  type_="search"
-                  name="search"
-                />
-              </div>
+              <SearchBox />
               <div
                 id="colorswatch-container"
-                className="pr-8 place-items-start flex items-center gap-2 z-[50]">
+                className="pr-4 place-items-start flex items-center gap-2 z-[50]">
                 <ThemeMenu />
                 <GithubButton />
               </div>
             </div>
           </div>
-          <div className="pt-1 z-30 bg-white"> {component} </div>
+          <div className="pt-1 z-30 bg-white">
+            <MoviesProvider> {component} </MoviesProvider>
+          </div>
           <footer className="h-8" />
         </div>
       </div>

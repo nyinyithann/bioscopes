@@ -40,9 +40,7 @@ let make = () => {
     <div className={`${theme} flex flex-col`}>
       <ErrorBoundary>
         <div className="h-screen bg-white dark:bg-slate-500">
-          <MoviesProvider>
-            <div> {component} </div>
-          </MoviesProvider>
+          <div> {component} </div>
         </div>
       </ErrorBoundary>
     </div>

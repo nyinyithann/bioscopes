@@ -26,7 +26,25 @@ var GenreDecoder = {
   decode: decode
 };
 
+var genre_error = Json_Decode$JsonCombinators.object(function (fields) {
+      return {
+              success: fields.required("success", Json_Decode$JsonCombinators.bool),
+              status_code: fields.required("status_code", Json_Decode$JsonCombinators.$$int),
+              status_message: fields.required("status_message", Json_Decode$JsonCombinators.string)
+            };
+    });
+
+function decode$1(json) {
+  return Json$JsonCombinators.decode(json, genre_error);
+}
+
+var GenreErrorDecoder = {
+  genre_error: genre_error,
+  decode: decode$1
+};
+
 export {
   GenreDecoder ,
+  GenreErrorDecoder ,
 }
 /* genre Not a pure module */

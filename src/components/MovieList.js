@@ -5,11 +5,13 @@ import * as $$Image from "./Image.js";
 import * as Links from "../shared/Links.js";
 import * as React from "react";
 import * as Rating from "./Rating.js";
-import * as Js_math from "rescript/lib/es6/js_math.js";
+import * as Loading from "./Loading.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
+import * as ErrorDisplay from "./ErrorDisplay.js";
 import * as UrlQueryParam from "../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../providers/MoviesProvider.js";
+import * as Solid from "@heroicons/react/solid";
 
 function string(prim) {
   return prim;
@@ -62,121 +64,179 @@ var Poster = {
   make: MovieList$Poster
 };
 
-var currentPageRef = {
-  contents: 0
-};
-
 function MovieList(Props) {
   var match = UrlQueryParam.useQueryParams(undefined);
+  var setQueryParam = match[1];
   var queryParam = match[0];
   var match$1 = MoviesProvider.useMoviesContext(undefined);
-  var clearMovies = match$1.clearMovies;
   var apiParams = match$1.apiParams;
   var loadMovies = match$1.loadMovies;
-  var loading = match$1.loading;
-  var movieList = Js_option.getWithDefault([], match$1.movies.results);
+  var error = match$1.error;
+  var movies = match$1.movies;
+  var movieList = Js_option.getWithDefault([], movies.results);
+  var currentPage = Js_option.getWithDefault(0, movies.page);
+  var totalPages = Js_option.getWithDefault(0, movies.total_pages);
   var viewingTitleRef = React.useRef("");
-  var loadMore = function (param) {
-    if (!(Js_math.ceil(window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 300 | 0) && !loading)) {
-      return ;
-    }
-    switch (apiParams.TAG | 0) {
-      case /* Category */0 :
-          var match = apiParams._0;
-          currentPageRef.contents = currentPageRef.contents + 1 | 0;
-          return Curry._1(loadMovies, {
+  React.useMemo((function () {
+          switch (apiParams.TAG | 0) {
+            case /* Category */0 :
+                var display = apiParams._0.display;
+                if (display.toLowerCase() === "upcoming") {
+                  console.log(movies.dates);
+                  var ds = movies.dates;
+                  var msg;
+                  if (ds !== undefined) {
+                    var match = ds.maximum;
+                    var match$1 = ds.minimum;
+                    msg = match !== undefined && match$1 !== undefined ? "" + display + " (" + match$1 + " ~ " + match + ")" : display;
+                  } else {
+                    msg = display;
+                  }
+                  viewingTitleRef.current = msg;
+                } else {
+                  viewingTitleRef.current = display;
+                }
+                window.document.title = display + " Movies";
+                return ;
+            case /* Genre */1 :
+                var display$1 = apiParams._0.display;
+                viewingTitleRef.current = display$1;
+                window.document.title = display$1 + " Movies";
+                return ;
+            case /* Search */2 :
+                viewingTitleRef.current = "Search: '" + apiParams._0.query + "'";
+                window.document.title = viewingTitleRef.current;
+                return ;
+            default:
+              return ;
+          }
+        }), [movies]);
+  React.useEffect((function () {
+          var controller = new AbortController();
+          switch (queryParam.TAG | 0) {
+            case /* Category */0 :
+                var match = queryParam._0;
+                Curry._2(loadMovies, {
                       TAG: /* Category */0,
                       _0: {
                         name: match.name,
                         display: match.display,
-                        page: currentPageRef.contents + 1 | 0
+                        page: match.page
                       }
-                    });
-      case /* Genre */1 :
-          var match$1 = apiParams._0;
-          currentPageRef.contents = currentPageRef.contents + 1 | 0;
-          return Curry._1(loadMovies, {
+                    }, controller.signal);
+                break;
+            case /* Genre */1 :
+                var match$1 = queryParam._0;
+                Curry._2(loadMovies, {
                       TAG: /* Genre */1,
                       _0: {
                         id: match$1.id,
                         name: match$1.name,
                         display: match$1.display,
-                        page: currentPageRef.contents + 1 | 0,
+                        page: match$1.page,
                         sort_by: match$1.sort_by
+                      }
+                    }, controller.signal);
+                break;
+            case /* Search */2 :
+                var match$2 = queryParam._0;
+                Curry._2(loadMovies, {
+                      TAG: /* Search */2,
+                      _0: {
+                        query: match$2.query,
+                        page: match$2.page
+                      }
+                    }, controller.signal);
+                break;
+            default:
+              
+          }
+          return (function (param) {
+                    controller.abort("Cancel the request");
+                  });
+        }), []);
+  var loadPage = function (n) {
+    switch (apiParams.TAG | 0) {
+      case /* Category */0 :
+          var match = apiParams._0;
+          return Curry._1(setQueryParam, {
+                      TAG: /* Category */0,
+                      _0: {
+                        name: match.name,
+                        display: match.display,
+                        page: match.page + n | 0
+                      }
+                    });
+      case /* Genre */1 :
+          var match$1 = apiParams._0;
+          return Curry._1(setQueryParam, {
+                      TAG: /* Genre */1,
+                      _0: {
+                        id: match$1.id,
+                        name: match$1.name,
+                        display: match$1.display,
+                        page: match$1.page + n | 0,
+                        sort_by: match$1.sort_by
+                      }
+                    });
+      case /* Search */2 :
+          var match$2 = apiParams._0;
+          return Curry._1(setQueryParam, {
+                      TAG: /* Search */2,
+                      _0: {
+                        query: match$2.query,
+                        page: match$2.page + n | 0
                       }
                     });
       default:
         return ;
     }
   };
-  React.useEffect((function () {
-          switch (queryParam.TAG | 0) {
-            case /* Category */0 :
-                var match = queryParam._0;
-                var page = match.page;
-                var display = match.display;
-                Curry._1(clearMovies, undefined);
-                viewingTitleRef.current = display;
-                window.document.title = display + " Movies";
-                currentPageRef.contents = page;
-                Curry._1(loadMovies, {
-                      TAG: /* Category */0,
-                      _0: {
-                        name: match.name,
-                        display: display,
-                        page: page
-                      }
-                    });
-                break;
-            case /* Genre */1 :
-                var match$1 = queryParam._0;
-                var page$1 = match$1.page;
-                var display$1 = match$1.display;
-                Curry._1(clearMovies, undefined);
-                viewingTitleRef.current = display$1;
-                window.document.title = display$1 + " Movies";
-                currentPageRef.contents = page$1;
-                Curry._1(loadMovies, {
-                      TAG: /* Genre */1,
-                      _0: {
-                        id: match$1.id,
-                        name: match$1.name,
-                        display: display$1,
-                        page: page$1,
-                        sort_by: match$1.sort_by
-                      }
-                    });
-                break;
-            default:
-              
-          }
-          window.addEventListener("scroll", loadMore);
-          return (function (param) {
-                    window.removeEventListener("scroll", loadMore);
-                  });
-        }), []);
-  if (match$1.error.length > 0) {
-    return React.createElement("div", undefined, "Error");
+  if (error.length > 0) {
+    return React.createElement(ErrorDisplay.make, {
+                errorMessage: error
+              });
+  } else if (match$1.loading) {
+    return React.createElement(Loading.make, {
+                className: "w-[6rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-green-500 fill-50 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
+              });
   } else {
     return React.createElement("div", {
-                className: "flex flex-col bg-white",
-                onScroll: (function (e) {
-                    console.log(e);
-                  })
+                className: "flex flex-col bg-white"
               }, React.createElement("div", {
                     className: "font-nav text-[1.2rem] text-500 p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200"
                   }, viewingTitleRef.current), React.createElement("div", {
                     className: "w-full h-full flex flex-1 flex-wrap p-1 pt-4 gap-[1rem] sm:gap-[1.4rem] justify-center items-center px-[1rem] sm:px-[2rem] bg-white",
                     id: "movie-list-here"
-                  }, Belt_Array.map(movieList, (function (m) {
-                          return React.createElement(MovieList$Poster, {
-                                      title: m.title,
-                                      poster_path: m.poster_path,
-                                      vote_average: m.vote_average,
-                                      release_date: m.release_date,
-                                      key: m.id.toString()
-                                    });
-                        }))));
+                  }, movieList.length === 0 ? React.createElement("div", {
+                          className: "text-300 text-2xl"
+                        }, "Movies Not Found.") : Belt_Array.map(movieList, (function (m) {
+                            return React.createElement(MovieList$Poster, {
+                                        title: m.title,
+                                        poster_path: m.poster_path,
+                                        vote_average: m.vote_average,
+                                        release_date: m.release_date,
+                                        key: m.id.toString()
+                                      });
+                          }))), React.createElement("div", {
+                    className: "flex gap-2 px-4"
+                  }, currentPage > 1 ? React.createElement("button", {
+                          className: "flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group",
+                          type: "button",
+                          onClick: (function (param) {
+                              loadPage(-1);
+                            })
+                        }, React.createElement(Solid.ArrowLeftIcon, {
+                              className: "h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
+                            }), React.createElement("span", undefined, "Page " + (currentPage - 1 | 0).toString() + " ")) : null, currentPage < totalPages ? React.createElement("button", {
+                          className: "flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group ml-auto",
+                          type: "button",
+                          onClick: (function (param) {
+                              loadPage(1);
+                            })
+                        }, React.createElement("span", undefined, "Page " + (currentPage + 1 | 0).toString() + " "), React.createElement(Solid.ArrowRightIcon, {
+                              className: "h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
+                            })) : null));
   }
 }
 
@@ -186,7 +246,6 @@ export {
   string ,
   array ,
   Poster ,
-  currentPageRef ,
   make ,
 }
 /* Image Not a pure module */
