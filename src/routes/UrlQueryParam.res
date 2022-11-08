@@ -6,8 +6,8 @@ type query_param =
   | Category(category_param)
   | Genre(genre_param)
   | Search(search_param)
-  | Movie(int)
-  | Person(int)
+  | Movie(string)
+  | Person(string)
   | Invalid(string)
 
 module Converter_category_param = Marshal.Make({
@@ -120,7 +120,7 @@ let useQueryParams = (): (query_param, query_param => unit) => {
       }
 
     | Movie(id) => {
-        let seg = `/movie/${string_of_int(id)}`
+        let seg = `/movie/${id}`
         RescriptReactRouter.push(seg)
       }
 

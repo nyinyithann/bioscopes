@@ -8,7 +8,6 @@ import * as ThemeMenu from "../components/ThemeMenu.js";
 import * as DomBinding from "../bindings/DomBinding.js";
 import * as Js_promise from "rescript/lib/es6/js_promise.js";
 import * as GithubButton from "../components/GithubButton.js";
-import * as MoviesProvider from "../providers/MoviesProvider.js";
 import * as SuspensionLoader from "../components/SuspensionLoader.js";
 import * as React$1 from "@headlessui/react";
 import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js";
@@ -77,7 +76,7 @@ function Home(Props) {
     switch (match$1.hd) {
       case "movie" :
           var match$2 = match$1.tl;
-          if (match$2 && !match$2.tl) {
+          if (match$2) {
             component = React.createElement(SuspensionLoader.make, {
                   children: getLazyMovie(match$2.hd)
                 });
@@ -87,7 +86,7 @@ function Home(Props) {
           break;
       case "person" :
           var match$3 = match$1.tl;
-          if (match$3 && !match$3.tl) {
+          if (match$3) {
             component = React.createElement(SuspensionLoader.make, {
                   children: getLazyPerson(match$3.hd)
                 });
@@ -136,7 +135,7 @@ function Home(Props) {
                                     leaveFrom: "translate-x-0",
                                     leaveTo: "-translate-x-full",
                                     children: React.createElement("div", {
-                                          className: "relative flex h-full w-[12rem] sm:w-[14rem] md:w-[16rem] flex-1 flex-col border-r-[1px] border-r-slate-100  shadow-md pt-2"
+                                          className: "relative flex h-full w-[12rem] sm:w-[14rem] md:w-[16rem] flex-1 flex-col border-r-[1px] border-r-slate-200 shadow-2xl shadow-slate-300 pt-2"
                                         }, React.createElement(React$1.Transition.Child, {
                                               enter: "ease-in-out duration-300",
                                               enterFrom: "opacity-0",
@@ -145,9 +144,26 @@ function Home(Props) {
                                               leaveFrom: "opacity-100",
                                               leaveTo: "opacity-0",
                                               children: React.createElement("div", {
-                                                    className: "absolute top-0 right-0 pt-2 w-[14rem] sm:w-[14rem] md:w-[16rem]"
+                                                    className: "absolute top-0 right-0 pt-2 w-[14rem] sm:w-[14rem] md:w-[16rem] z-40 bg-gradient-to-t from-green-300 via-klor-100 to-slate-50"
                                                   })
-                                            }), React.createElement(GenreList.make, {}))
+                                            }), React.createElement("div", {
+                                              className: "relative w-full"
+                                            }, React.createElement("button", {
+                                                  className: "" + (
+                                                    sidebarOpenRef.contents ? "block" : "hidden"
+                                                  ) + " pr-4 outline-none absolute right-[-0.8rem] top-[0.3rem]",
+                                                  type: "button",
+                                                  onClick: (function (param) {
+                                                      sidebarOpenRef.contents = false;
+                                                      Curry._1(setSidebarOpen, (function (param) {
+                                                              return false;
+                                                            }));
+                                                    })
+                                                }, React.createElement("span", {
+                                                      className: "sr-only"
+                                                    }, "Close sidebar"), React.createElement(Solid.XIcon, {
+                                                      className: "h-8 w-8 fill-400 hover:fill-yellow-200 fill-yellow-300 rounded-full py-1 bg-transparent"
+                                                    })), React.createElement(GenreList.make, {})))
                                   })))
                     })), React.createElement("div", {
                   className: "" + (
@@ -175,21 +191,6 @@ function Home(Props) {
                                       className: "sr-only"
                                     }, "Open Sidebar"), React.createElement(Solid.MenuIcon, {
                                       className: "h-8 w-8 fill-400 hover:fill-yellow-100 bg-gradient-to-tr from-teal-400 to-blue-400 text-yellow-300 rounded p-1"
-                                    })), React.createElement("button", {
-                                  className: "" + (
-                                    sidebarOpenRef.contents ? "block" : "hidden"
-                                  ) + " pr-4 outline-none",
-                                  type: "button",
-                                  onClick: (function (param) {
-                                      sidebarOpenRef.contents = false;
-                                      Curry._1(setSidebarOpen, (function (param) {
-                                              return false;
-                                            }));
-                                    })
-                                }, React.createElement("span", {
-                                      className: "sr-only"
-                                    }, "Close sidebar"), React.createElement(Solid.XIcon, {
-                                      className: "h-8 w-8 fill-400 hover:fill-yellow-200 fill-yellow-300 rounded-r-full py-1 bg-gradient-to-r from-teal-400  to-blue-400"
                                     })), React.createElement("div", {
                                   className: "flex flex-1 items-center justify-end gap-2",
                                   id: "search-colorswatch-container"
@@ -197,10 +198,8 @@ function Home(Props) {
                                       className: "pr-4 place-items-start flex items-center gap-2 z-[50]",
                                       id: "colorswatch-container"
                                     }, React.createElement(ThemeMenu.make, {}), React.createElement(GithubButton.make, {})))), React.createElement("div", {
-                              className: "pt-1 z-30 bg-white"
-                            }, React.createElement(MoviesProvider.make, {
-                                  children: component
-                                })), React.createElement("footer", {
+                              className: "z-30 bg-white"
+                            }, component), React.createElement("footer", {
                               className: "h-8"
                             })))));
 }

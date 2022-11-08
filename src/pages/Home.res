@@ -56,8 +56,8 @@ let make = () => {
   | list{"genre"}
   | list{"search"} =>
     <SuspensionLoader> lazyMovieList </SuspensionLoader>
-  | list{"movie", id} => <SuspensionLoader> {getLazyMovie(id)} </SuspensionLoader>
-  | list{"person", id} => <SuspensionLoader> {getLazyPerson(id)} </SuspensionLoader>
+  | list{"movie", id, ..._} => <SuspensionLoader> {getLazyMovie(id)} </SuspensionLoader> 
+  | list{"person", id, ..._} => <SuspensionLoader> {getLazyPerson(id)} </SuspensionLoader>
   | _ => <div> {"Todo: To create a proper component to display message"->string} </div>
   }
 
@@ -74,7 +74,7 @@ let make = () => {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full">
               <div
-                className="relative flex h-full w-[12rem] sm:w-[14rem] md:w-[16rem] flex-1 flex-col border-r-[1px] border-r-slate-100  shadow-md pt-2">
+                className="relative flex h-full w-[12rem] sm:w-[14rem] md:w-[16rem] flex-1 flex-col border-r-[1px] border-r-slate-200 shadow-2xl shadow-slate-300 pt-2">
                 <Transition.Child
                   enter="ease-in-out duration-300"
                   enterFrom="opacity-0"
@@ -83,10 +83,24 @@ let make = () => {
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0">
                   <div
-                    className="absolute top-0 right-0 pt-2 w-[14rem] sm:w-[14rem] md:w-[16rem]"
+                    className="absolute top-0 right-0 pt-2 w-[14rem] sm:w-[14rem] md:w-[16rem] z-40 bg-gradient-to-t from-green-300 via-klor-100 to-slate-50"
                   />
                 </Transition.Child>
-                <GenreList />
+                <div className="relative w-full">
+                  <button
+                    type_="button"
+                    className={`${sidebarOpenRef.contents ? "block" : "hidden"} pr-4 outline-none absolute right-[-0.8rem] top-[0.3rem]`}
+                    onClick={_ => {
+                      sidebarOpenRef.contents = false
+                      setSidebarOpen(_ => false)
+                    }}>
+                    <span className="sr-only"> {"Close sidebar"->string} </span>
+                    <Heroicons.Solid.XIcon
+                      className="h-8 w-8 fill-400 hover:fill-yellow-200 fill-yellow-300 rounded-full py-1 bg-transparent"
+                    />
+                  </button>
+                  <GenreList />
+                </div>
               </div>
             </Transition.Child>
           </div>
@@ -112,18 +126,6 @@ let make = () => {
                 className="h-8 w-8 fill-400 hover:fill-yellow-100 bg-gradient-to-tr from-teal-400 to-blue-400 text-yellow-300 rounded p-1"
               />
             </button>
-            <button
-              type_="button"
-              className={`${sidebarOpenRef.contents ? "block" : "hidden"} pr-4 outline-none`}
-              onClick={_ => {
-                sidebarOpenRef.contents = false
-                setSidebarOpen(_ => false)
-              }}>
-              <span className="sr-only"> {"Close sidebar"->string} </span>
-              <Heroicons.Solid.XIcon
-                className="h-8 w-8 fill-400 hover:fill-yellow-200 fill-yellow-300 rounded-r-full py-1 bg-gradient-to-r from-teal-400  to-blue-400"
-              />
-            </button>
             <div
               id="search-colorswatch-container"
               className="flex flex-1 items-center justify-end gap-2">
@@ -136,8 +138,8 @@ let make = () => {
               </div>
             </div>
           </div>
-          <div className="pt-1 z-30 bg-white">
-            <MoviesProvider> {component} </MoviesProvider>
+          <div className="z-30 bg-white">
+            {component} 
           </div>
           <footer className="h-8" />
         </div>

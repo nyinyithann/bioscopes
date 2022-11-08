@@ -3,11 +3,15 @@ let {string, array} = module(React)
 module Poster = {
   @react.component
   let make = (
+    ~id: string,
     ~title: option<string>,
     ~poster_path: option<string>,
     ~vote_average: option<float>,
     ~release_date: option<string>,
   ) => {
+
+      let (_, setQueryParam) = UrlQueryParam.useQueryParams()
+
     open Js.String2
     let imgLink = switch poster_path {
     | Some(p) => Links.getPosterImageW342Link(p)
@@ -18,11 +22,17 @@ module Poster = {
     | Some(rd) => Js.String2.substring(rd, ~from=0, ~to_=4)
     | None => ""
     }
-    <div
+
+    let handleClick = e => {
+      open ReactEvent.Mouse
+      preventDefault(e)
+      setQueryParam(UrlQueryParam.Movie(id))
+    }
+
+    <button
       type_="button"
-      role="button"
       className="relative flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md"
-      onClick={_ => Js.log("Hello")}>
+      onClick={handleClick}>
       <Image
         alt="A poster"
         src={imgLink}
@@ -50,7 +60,7 @@ module Poster = {
             {releaseYear->React.string}
           </div>
         : React.null}
-    </div>
+    </button>
   }
 }
 
@@ -58,7 +68,7 @@ module Poster = {
 let make = () => {
   let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
 
-  let {movies, loading, error, loadMovies, apiParams} = MoviesProvider.useMoviesContext()
+  let {movies, loading, error, loadData} = MoviesProvider.useMoviesContext()
   let movieList = Js.Option.getWithDefault([], movies.results)
   let currentPage = Js.Option.getWithDefault(0, movies.page)
   let totalPages = Js.Option.getWithDefault(0, movies.total_pages)
@@ -67,7 +77,7 @@ let make = () => {
   let isGenreRef = ref(false)
 
   React.useMemo1(() => {
-    switch apiParams {
+    switch queryParam {
     | Category({display}) => {
         if Js.String2.toLowerCase(display) == "upcoming" {
           Js.log(movies.dates)
@@ -107,24 +117,24 @@ let make = () => {
     let controller = Fetch.AbortController.make()
     switch queryParam {
     | Category({name, display, page}) =>
-      loadMovies(
+      loadData(
         ~apiParams=Category({name, display, page}),
         ~signal=Fetch.AbortController.signal(controller),
       )
     | Genre({id, name, display, page, sort_by}) =>
-      loadMovies(
+      loadData(
         ~apiParams=Genre({id, name, display, page, sort_by}),
         ~signal=Fetch.AbortController.signal(controller),
       )
     | Search({query, page}) =>
-      loadMovies(~apiParams=Search({query, page}), ~signal=Fetch.AbortController.signal(controller))
+      loadData(~apiParams=Search({query, page}), ~signal=Fetch.AbortController.signal(controller))
     | _ => ()
     }
     Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
   })
 
   let loadPage = n => {
-    switch apiParams {
+    switch queryParam {
     | Category({name, display, page}) => setQueryParam(Category({name, display, page: page + n}))
     | Genre({id, name, display, page, sort_by}) =>
       setQueryParam(Genre({id, name, display, page: page + n, sort_by}))
@@ -144,7 +154,7 @@ let make = () => {
       <div
         className="flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200">
         <div className="font-nav text-[1.2rem] text-500"> {viewingTitleRef.current->string} </div>
-        <div className=`${isGenreRef.contents ? "flex" : "hidden"} justify-start ml-auto pr-4`>
+        <div className={`${isGenreRef.contents ? "flex" : "hidden"} justify-start ml-auto pr-4`}>
           <FilterBox />
         </div>
       </div>
@@ -157,6 +167,7 @@ let make = () => {
             ->Belt.Array.map(m =>
               <Poster
                 key={Js.Int.toString(m.id)}
+                id={m.id->Js.Int.toString}
                 title={m.title}
                 poster_path={m.poster_path}
                 vote_average={m.vote_average}

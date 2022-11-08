@@ -59,7 +59,7 @@ let handleResponse = (promise, ~callback, ()) => {
   })
 }
 
-let getMovies = (
+let getData = (
   ~apiPath: string,
   ~callback: result<Js.Json.t, Js.Json.t> => unit,
   ~signal=?,

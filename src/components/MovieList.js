@@ -23,20 +23,27 @@ function array(prim) {
 }
 
 function MovieList$Poster(Props) {
+  var id = Props.id;
   var title = Props.title;
   var poster_path = Props.poster_path;
   var vote_average = Props.vote_average;
   var release_date = Props.release_date;
+  var match = UrlQueryParam.useQueryParams(undefined);
+  var setQueryParam = match[1];
   var imgLink = poster_path !== undefined ? Links.getPosterImageW342Link(poster_path) : "";
   var title$1 = Js_option.getWithDefault("", title);
   var releaseYear = release_date !== undefined ? release_date.substring(0, 4) : "";
-  return React.createElement("div", {
+  var handleClick = function (e) {
+    e.preventDefault();
+    Curry._1(setQueryParam, {
+          TAG: /* Movie */3,
+          _0: id
+        });
+  };
+  return React.createElement("button", {
               className: "relative flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md",
-              role: "button",
               type: "button",
-              onClick: (function (param) {
-                  console.log("Hello");
-                })
+              onClick: handleClick
             }, React.createElement($$Image.make, {
                   overlayEnabled: true,
                   lazyLoadEnabled: true,
@@ -70,8 +77,7 @@ function MovieList(Props) {
   var setQueryParam = match[1];
   var queryParam = match[0];
   var match$1 = MoviesProvider.useMoviesContext(undefined);
-  var apiParams = match$1.apiParams;
-  var loadMovies = match$1.loadMovies;
+  var loadData = match$1.loadData;
   var error = match$1.error;
   var movies = match$1.movies;
   var movieList = Js_option.getWithDefault([], movies.results);
@@ -82,9 +88,9 @@ function MovieList(Props) {
     contents: false
   };
   React.useMemo((function () {
-          switch (apiParams.TAG | 0) {
+          switch (queryParam.TAG | 0) {
             case /* Category */0 :
-                var display = apiParams._0.display;
+                var display = queryParam._0.display;
                 if (display.toLowerCase() === "upcoming") {
                   console.log(movies.dates);
                   var ds = movies.dates;
@@ -104,13 +110,13 @@ function MovieList(Props) {
                 isGenreRef.contents = false;
                 return ;
             case /* Genre */1 :
-                var display$1 = apiParams._0.display;
+                var display$1 = queryParam._0.display;
                 viewingTitleRef.current = display$1;
                 window.document.title = display$1 + " Movies";
                 isGenreRef.contents = true;
                 return ;
             case /* Search */2 :
-                viewingTitleRef.current = "Search: '" + apiParams._0.query + "'";
+                viewingTitleRef.current = "Search: '" + queryParam._0.query + "'";
                 window.document.title = viewingTitleRef.current;
                 isGenreRef.contents = false;
                 return ;
@@ -124,7 +130,7 @@ function MovieList(Props) {
           switch (queryParam.TAG | 0) {
             case /* Category */0 :
                 var match = queryParam._0;
-                Curry._2(loadMovies, {
+                Curry._2(loadData, {
                       TAG: /* Category */0,
                       _0: {
                         name: match.name,
@@ -135,7 +141,7 @@ function MovieList(Props) {
                 break;
             case /* Genre */1 :
                 var match$1 = queryParam._0;
-                Curry._2(loadMovies, {
+                Curry._2(loadData, {
                       TAG: /* Genre */1,
                       _0: {
                         id: match$1.id,
@@ -148,7 +154,7 @@ function MovieList(Props) {
                 break;
             case /* Search */2 :
                 var match$2 = queryParam._0;
-                Curry._2(loadMovies, {
+                Curry._2(loadData, {
                       TAG: /* Search */2,
                       _0: {
                         query: match$2.query,
@@ -164,9 +170,9 @@ function MovieList(Props) {
                   });
         }), []);
   var loadPage = function (n) {
-    switch (apiParams.TAG | 0) {
+    switch (queryParam.TAG | 0) {
       case /* Category */0 :
-          var match = apiParams._0;
+          var match = queryParam._0;
           return Curry._1(setQueryParam, {
                       TAG: /* Category */0,
                       _0: {
@@ -176,7 +182,7 @@ function MovieList(Props) {
                       }
                     });
       case /* Genre */1 :
-          var match$1 = apiParams._0;
+          var match$1 = queryParam._0;
           return Curry._1(setQueryParam, {
                       TAG: /* Genre */1,
                       _0: {
@@ -188,7 +194,7 @@ function MovieList(Props) {
                       }
                     });
       case /* Search */2 :
-          var match$2 = apiParams._0;
+          var match$2 = queryParam._0;
           return Curry._1(setQueryParam, {
                       TAG: /* Search */2,
                       _0: {
@@ -226,6 +232,7 @@ function MovieList(Props) {
                           className: "text-300 text-2xl"
                         }, "Movies Not Found.") : Belt_Array.map(movieList, (function (m) {
                             return React.createElement(MovieList$Poster, {
+                                        id: m.id.toString(),
                                         title: m.title,
                                         poster_path: m.poster_path,
                                         vote_average: m.vote_average,

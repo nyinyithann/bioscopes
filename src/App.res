@@ -39,9 +39,11 @@ let make = () => {
   <ThemeSwitchProvider value=setTheme>
     <div className={`${theme} flex flex-col`}>
       <ErrorBoundary>
-        <div className="h-screen bg-white dark:bg-slate-500">
-          <div> {component} </div>
-        </div>
+        <MoviesProvider>
+          <div className="h-screen bg-white dark:bg-slate-500">
+            <div> {component} </div>
+          </div>
+        </MoviesProvider>
       </ErrorBoundary>
     </div>
   </ThemeSwitchProvider>

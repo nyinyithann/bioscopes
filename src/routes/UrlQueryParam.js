@@ -144,7 +144,7 @@ function useQueryParams(param) {
       case /* Search */2 :
           return RescriptReactRouter.push("/search?" + new URLSearchParams(Converter_search_param.stringfy(params._0)).toString());
       case /* Movie */3 :
-          return RescriptReactRouter.push("/movie/" + String(params._0) + "");
+          return RescriptReactRouter.push("/movie/" + params._0 + "");
       case /* Person */4 :
       case /* Invalid */5 :
           return ;

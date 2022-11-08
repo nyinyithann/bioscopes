@@ -8,6 +8,7 @@ import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as MovieModel from "../models/MovieModel.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
+import * as DetailMovieModel from "../models/DetailMovieModel.js";
 
 var emptyMovieList_page = 0;
 
@@ -24,6 +25,8 @@ var emptyMovieList = {
   total_results: emptyMovieList_total_results
 };
 
+var emptyDetailMovie = {};
+
 var initialState_apiParams = {
   TAG: /* Category */0,
   _0: {
@@ -36,11 +39,16 @@ var initialState_apiParams = {
 var initialState = {
   apiParams: initialState_apiParams,
   movies: emptyMovieList,
+  detail_movie: emptyDetailMovie,
   loading: false,
   error: ""
 };
 
-function initialContextValue_loadMovies(param, param$1) {
+function initialContextValue_loadData(param, param$1) {
+  
+}
+
+function initialContextValue_loadDetailMovie(param, param$1) {
   
 }
 
@@ -59,9 +67,11 @@ function initialContextValue_clearMovies(param) {
 
 var initialContextValue = {
   movies: emptyMovieList,
+  detail_movie: emptyDetailMovie,
   loading: false,
   error: "",
-  loadMovies: initialContextValue_loadMovies,
+  loadData: initialContextValue_loadData,
+  loadDetailMovie: initialContextValue_loadDetailMovie,
   apiParams: initialContextValue_apiParams,
   clearMovies: initialContextValue_clearMovies
 };
@@ -95,6 +105,7 @@ function reducer(state, action) {
     return {
             apiParams: state.apiParams,
             movies: emptyMovieList,
+            detail_movie: emptyDetailMovie,
             loading: false,
             error: ""
           };
@@ -104,6 +115,7 @@ function reducer(state, action) {
         return {
                 apiParams: action._0,
                 movies: state.movies,
+                detail_movie: state.detail_movie,
                 loading: true,
                 error: ""
               };
@@ -111,10 +123,11 @@ function reducer(state, action) {
         return {
                 apiParams: state.apiParams,
                 movies: state.movies,
+                detail_movie: state.detail_movie,
                 loading: false,
                 error: action._0
               };
-    case /* Success */2 :
+    case /* SuccessMovies */2 :
         var movies = action._1;
         return {
                 apiParams: action._0,
@@ -125,6 +138,15 @@ function reducer(state, action) {
                   total_pages: movies.total_pages,
                   total_results: movies.total_results
                 },
+                detail_movie: emptyDetailMovie,
+                loading: false,
+                error: ""
+              };
+    case /* SuccessDetailMovie */3 :
+        return {
+                apiParams: action._0,
+                movies: emptyMovieList,
+                detail_movie: action._1,
                 loading: false,
                 error: ""
               };
@@ -132,30 +154,34 @@ function reducer(state, action) {
   }
 }
 
-function loadMoviesInternal(dispatch, apiParams, signal) {
-  var apiPath;
+function getApiPath(apiParams) {
   switch (apiParams.TAG | 0) {
     case /* Category */0 :
         var match = apiParams._0;
-        apiPath = "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + match.name + "?page=" + match.page.toString() + "";
-        break;
+        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + match.name + "?page=" + match.page.toString() + "";
     case /* Genre */1 :
         var match$1 = apiParams._0;
-        apiPath = "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/discover/movie?with_genres=" + String(match$1.id) + "&page=" + match$1.page.toString() + "&sort_by=" + match$1.sort_by + "";
-        break;
+        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/discover/movie?with_genres=" + String(match$1.id) + "&page=" + match$1.page.toString() + "&sort_by=" + match$1.sort_by + "";
     case /* Search */2 :
         var match$2 = apiParams._0;
-        apiPath = "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/search/movie?query=" + match$2.query + "&page=" + match$2.page.toString() + "";
-        break;
-    default:
-      apiPath = "";
+        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/search/movie?query=" + match$2.query + "&page=" + match$2.page.toString() + "";
+    case /* Movie */3 :
+        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + apiParams._0 + "?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en";
+    case /* Person */4 :
+    case /* Invalid */5 :
+        return "";
+    
   }
+}
+
+function loadDataInternal(dispatch, apiParams, signal) {
+  var apiPath = getApiPath(apiParams);
   var callback = function (result) {
     if (result.TAG === /* Ok */0) {
       var ml = MovieModel.MovieListDecoder.decode(result._0);
       if (ml.TAG === /* Ok */0) {
         return Curry._1(dispatch, {
-                    TAG: /* Success */2,
+                    TAG: /* SuccessMovies */2,
                     _0: apiParams,
                     _1: ml._0
                   });
@@ -185,7 +211,48 @@ function loadMoviesInternal(dispatch, apiParams, signal) {
         TAG: /* Loading */0,
         _0: apiParams
       });
-  MovieAPI.getMovies(apiPath, callback, Caml_option.some(signal), undefined);
+  MovieAPI.getData(apiPath, callback, Caml_option.some(signal), undefined);
+}
+
+function loadDetailMovieInternal(dispatch, apiParams, signal) {
+  debugger;
+  var apiPath = getApiPath(apiParams);
+  var callback = function (result) {
+    if (result.TAG === /* Ok */0) {
+      var dm = DetailMovieModel.Decoder.decode(result._0);
+      if (dm.TAG === /* Ok */0) {
+        return Curry._1(dispatch, {
+                    TAG: /* SuccessDetailMovie */3,
+                    _0: apiParams,
+                    _1: dm._0
+                  });
+      } else {
+        return Curry._1(dispatch, {
+                    TAG: /* Error */1,
+                    _0: dm._0
+                  });
+      }
+    }
+    var e = MovieModel.MovieErrorDecoder.decode(result._0);
+    if (e.TAG !== /* Ok */0) {
+      return Curry._1(dispatch, {
+                  TAG: /* Error */1,
+                  _0: "Unexpected error occured while reteriving movie data."
+                });
+    }
+    var errors = Belt_Array.reduce(Js_option.getWithDefault([], e._0.errors), ". ", (function (a, b) {
+            return b + a;
+          }));
+    Curry._1(dispatch, {
+          TAG: /* Error */1,
+          _0: errors
+        });
+  };
+  Curry._1(dispatch, {
+        TAG: /* Loading */0,
+        _0: apiParams
+      });
+  MovieAPI.getData(apiPath, callback, Caml_option.some(signal), undefined);
 }
 
 function MoviesProvider(Props) {
@@ -193,12 +260,18 @@ function MoviesProvider(Props) {
   var match = React.useReducer(reducer, initialState);
   var dispatch = match[1];
   var state = match[0];
-  var loadMovies = React.useMemo((function () {
+  var loadData = React.useMemo((function () {
           return function (param, param$1) {
-            return loadMoviesInternal(dispatch, param, param$1);
+            return loadDataInternal(dispatch, param, param$1);
+          };
+        }), [dispatch]);
+  var loadDetailMovie = React.useMemo((function () {
+          return function (param, param$1) {
+            return loadDetailMovieInternal(dispatch, param, param$1);
           };
         }), [dispatch]);
   var value_movies = state.movies;
+  var value_detail_movie = state.detail_movie;
   var value_loading = state.loading;
   var value_error = state.error;
   var value_apiParams = state.apiParams;
@@ -207,9 +280,11 @@ function MoviesProvider(Props) {
   };
   var value = {
     movies: value_movies,
+    detail_movie: value_detail_movie,
     loading: value_loading,
     error: value_error,
-    loadMovies: loadMovies,
+    loadData: loadData,
+    loadDetailMovie: loadDetailMovie,
     apiParams: value_apiParams,
     clearMovies: value_clearMovies
   };
@@ -227,10 +302,13 @@ var make = MoviesProvider;
 
 export {
   emptyMovieList ,
+  emptyDetailMovie ,
   initialState ,
   MoviesContext ,
   reducer ,
-  loadMoviesInternal ,
+  getApiPath ,
+  loadDataInternal ,
+  loadDetailMovieInternal ,
   make ,
   useMoviesContext ,
 }

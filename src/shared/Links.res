@@ -2,9 +2,12 @@ let apiBaseUrl = "https://api.themoviedb.org"
 let apiVersion = "3"
 
 let imageBaseUrl = "https://image.tmdb.org/t/p"
+let originalImageBaseUrl = `${imageBaseUrl}/original`
 
 let getPosterImageW342Link = (seg: string) => `${imageBaseUrl}/w342/${seg}`
-// let placeholderImage = "/assets/svgs/nothing.svg"
+let getOriginalBigImage = (seg: string) => `${originalImageBaseUrl}/${seg}`
+let getHeroImage = (seg: string) => `${imageBaseUrl}/w780/${seg}`
+
 let placeholderImage = "/assets/nothing.svg"
 
 /*

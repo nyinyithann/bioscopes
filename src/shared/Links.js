@@ -3,8 +3,18 @@
 
 var imageBaseUrl = "https://image.tmdb.org/t/p";
 
+var originalImageBaseUrl = "" + imageBaseUrl + "/original";
+
 function getPosterImageW342Link(seg) {
   return "" + imageBaseUrl + "/w342/" + seg + "";
+}
+
+function getOriginalBigImage(seg) {
+  return "" + originalImageBaseUrl + "/" + seg + "";
+}
+
+function getHeroImage(seg) {
+  return "" + imageBaseUrl + "/w780/" + seg + "";
 }
 
 var apiBaseUrl = "https://api.themoviedb.org";
@@ -17,7 +27,10 @@ export {
   apiBaseUrl ,
   apiVersion ,
   imageBaseUrl ,
+  originalImageBaseUrl ,
   getPosterImageW342Link ,
+  getOriginalBigImage ,
+  getHeroImage ,
   placeholderImage ,
 }
 /* No side effect */

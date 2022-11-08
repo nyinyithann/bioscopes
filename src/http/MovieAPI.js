@@ -86,7 +86,7 @@ function handleResponse(promise, callback, param) {
             });
 }
 
-function getMovies(apiPath, callback, signal, param) {
+function getData(apiPath, callback, signal, param) {
   return handleResponse(catchPromiseFault(checkResponseStatus(fetch(apiPath, {
                           method: "GET",
                           headers: Caml_option.some(new Headers([
@@ -115,7 +115,7 @@ export {
   checkResponseStatus ,
   catchPromiseFault ,
   handleResponse ,
-  getMovies ,
+  getData ,
   getGenres ,
 }
 /* authorization Not a pure module */

@@ -239,7 +239,7 @@ function GenreList(Props) {
             }, React.createElement("div", {
                   className: "flex font-nav tracking-widest w-full items-center pb-4 gap-2"
                 }, React.createElement("div", {
-                      className: "text-lg sm:text-2xl md:text-3xl w-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-center gap-2 py-[0.2rem]"
+                      className: "text-lg sm:text-2xl md:text-3xl w-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-start gap-2 py-[0.2rem] px-[0.6rem]"
                     }, React.createElement(Solid.CameraIcon, {
                           className: "h-3 w-3 pl-1"
                         }), "BIOSCOPES", React.createElement(Solid.CameraIcon, {
