@@ -1,3 +1,9 @@
+type sort_info = {id: string, name: string}
+let popularity: sort_info = {id: "popularity.desc", name: "Popularity"}
+let vote_average: sort_info = {id: "vote_average.desc", name: "Vote Average"}
+let original_title: sort_info = {id: "original_title.asc", name: "Original Title"}
+let release_date: sort_info = {id: "release_date.desc", name: "Release Date"}
+
 type movie = {
   adult?: bool,
   backdrop_path?: string,
@@ -89,8 +95,6 @@ module MovieListDecoder = {
   })
 
   let decode = (. ~json: Js.Json.t): result<movielist, string> => {
-    let d = Json.decode(json, movieList)
-    Js.log(d)
-    d
+    Json.decode(json, movieList)
   }
 }

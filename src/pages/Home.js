@@ -19,7 +19,7 @@ function string(prim) {
 }
 
 var sidebarOpenRef = {
-  contents: true
+  contents: false
 };
 
 function Home(Props) {
@@ -28,7 +28,7 @@ function Home(Props) {
       });
   var setSidebarOpen = match[1];
   var sidebarOpen = match[0];
-  React.useMemo((function () {
+  React.useEffect((function () {
           sidebarOpenRef.contents = DomBinding.checkMediaQuery("(min-width: 600px)");
         }), []);
   React.useEffect((function () {
@@ -156,7 +156,7 @@ function Home(Props) {
                 }, React.createElement("div", {
                       className: "w-full flex flex-col flex-1 bg-white"
                     }, React.createElement("div", {
-                          className: "h-auto w-auto flex flex-col z-50"
+                          className: "h-auto flex flex-col z-50"
                         }, React.createElement("div", {
                               className: "sticky top-0 z-50 flex h-14 flex-shrink-0 bg-white",
                               id: "navbar"

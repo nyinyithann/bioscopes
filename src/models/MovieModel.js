@@ -66,9 +66,7 @@ var movieList = Json_Decode$JsonCombinators.object(function (fields) {
     });
 
 function decode$2(json) {
-  var d = Json$JsonCombinators.decode(json, movieList);
-  console.log(d);
-  return d;
+  return Json$JsonCombinators.decode(json, movieList);
 }
 
 var MovieListDecoder = {
@@ -77,7 +75,31 @@ var MovieListDecoder = {
   decode: decode$2
 };
 
+var popularity = {
+  id: "popularity.desc",
+  name: "Popularity"
+};
+
+var vote_average = {
+  id: "vote_average.desc",
+  name: "Vote Average"
+};
+
+var original_title = {
+  id: "original_title.asc",
+  name: "Original Title"
+};
+
+var release_date = {
+  id: "release_date.desc",
+  name: "Release Date"
+};
+
 export {
+  popularity ,
+  vote_average ,
+  original_title ,
+  release_date ,
   MovieErrorDecoder ,
   MovieDecoder ,
   MovieListDecoder ,

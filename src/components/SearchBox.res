@@ -1,20 +1,29 @@
 @get external getValue: Dom.element => string = "value"
+@set external setValue: (Dom.element, string) => unit = "value"
 
 @react.component
 let make = () => {
-  let (_, setQueryParam) = UrlQueryParam.useQueryParams()
+  let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
   let inputRef = React.useRef(Js.Nullable.null)
+
+  React.useEffect2(() => {
+    switch queryParam {
+    | Search({query}) =>
+      switch Js.Nullable.toOption(inputRef.current) {
+      | Some(elem) => setValue(elem, query)
+      | None => ()
+      }
+    | _ => ()
+    }
+    None
+  }, (queryParam, inputRef.current))
 
   let handleKeyDown = e => {
     open ReactEvent.Keyboard
     if key(e) == "Enter" {
       preventDefault(e)
       switch Js.Nullable.toOption(inputRef.current) {
-      | Some(elem) => 
-          { 
-              Js.log(getValue(elem))
-              setQueryParam(UrlQueryParam.Search({query: getValue(elem), page: 1}))
-          }
+      | Some(elem) => setQueryParam(UrlQueryParam.Search({query: getValue(elem), page: 1}))
 
       | None => ()
       }
@@ -29,7 +38,7 @@ let make = () => {
     </div>
     <input
       id="search-field"
-      className="block w-full rounded-md pl-[2rem] text-gray-900 placeholder-slate-400 outline-none ring-0 border-0 bg-100 focus:bg-200 focus:border-[1px] focus:border-slate-100 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm"
+      className="block w-full rounded-md pl-[2rem] text-gray-900 placeholder-slate-400 outline-none ring-0 border-0 bg-200 hover:bg-300 focus:bg-300 focus:border-[1px] focus:border-slate-100 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm"
       ref={ReactDOM.Ref.domRef(inputRef)}
       placeholder="Search"
       type_="search"

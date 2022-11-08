@@ -11,11 +11,7 @@ module OverlayLayer = {
 module LazyLoadWrapper = {
   @react.component
   let make = (~enabled, ~height, ~offset, ~children) => {
-    <>
-      {enabled
-        ? <LazyLoad height offset onContentVisible={() => Js.log("loaded")}> {children} </LazyLoad>
-        : <> {children} </>}
-    </>
+    <> {enabled ? <LazyLoad height offset> {children} </LazyLoad> : <> {children} </>} </>
   }
 }
 

@@ -34,10 +34,7 @@ function Image$LazyLoadWrapper(Props) {
   return React.createElement(React.Fragment, undefined, enabled ? React.createElement(ReactLazyLoad, {
                     children: children,
                     offset: offset,
-                    height: height,
-                    onContentVisible: (function (param) {
-                        console.log("loaded");
-                      })
+                    height: height
                   }) : React.createElement(React.Fragment, undefined, children));
 }
 

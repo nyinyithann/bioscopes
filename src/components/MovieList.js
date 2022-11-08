@@ -6,6 +6,7 @@ import * as Links from "../shared/Links.js";
 import * as React from "react";
 import * as Rating from "./Rating.js";
 import * as Loading from "./Loading.js";
+import * as FilterBox from "./FilterBox.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as ErrorDisplay from "./ErrorDisplay.js";
@@ -77,6 +78,9 @@ function MovieList(Props) {
   var currentPage = Js_option.getWithDefault(0, movies.page);
   var totalPages = Js_option.getWithDefault(0, movies.total_pages);
   var viewingTitleRef = React.useRef("");
+  var isGenreRef = {
+    contents: false
+  };
   React.useMemo((function () {
           switch (apiParams.TAG | 0) {
             case /* Category */0 :
@@ -97,17 +101,21 @@ function MovieList(Props) {
                   viewingTitleRef.current = display;
                 }
                 window.document.title = display + " Movies";
+                isGenreRef.contents = false;
                 return ;
             case /* Genre */1 :
                 var display$1 = apiParams._0.display;
                 viewingTitleRef.current = display$1;
                 window.document.title = display$1 + " Movies";
+                isGenreRef.contents = true;
                 return ;
             case /* Search */2 :
                 viewingTitleRef.current = "Search: '" + apiParams._0.query + "'";
                 window.document.title = viewingTitleRef.current;
+                isGenreRef.contents = false;
                 return ;
             default:
+              isGenreRef.contents = false;
               return ;
           }
         }), [movies]);
@@ -204,8 +212,14 @@ function MovieList(Props) {
     return React.createElement("div", {
                 className: "flex flex-col bg-white"
               }, React.createElement("div", {
-                    className: "font-nav text-[1.2rem] text-500 p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200"
-                  }, viewingTitleRef.current), React.createElement("div", {
+                    className: "flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200"
+                  }, React.createElement("div", {
+                        className: "font-nav text-[1.2rem] text-500"
+                      }, viewingTitleRef.current), React.createElement("div", {
+                        className: "" + (
+                          isGenreRef.contents ? "flex" : "hidden"
+                        ) + " justify-start ml-auto pr-4"
+                      }, React.createElement(FilterBox.make, {}))), React.createElement("div", {
                     className: "w-full h-full flex flex-1 flex-wrap p-1 pt-4 gap-[1rem] sm:gap-[1.4rem] justify-center items-center px-[1rem] sm:px-[2rem] bg-white",
                     id: "movie-list-here"
                   }, movieList.length === 0 ? React.createElement("div", {
@@ -219,7 +233,7 @@ function MovieList(Props) {
                                         key: m.id.toString()
                                       });
                           }))), React.createElement("div", {
-                    className: "flex gap-2 px-4"
+                    className: "flex gap-2 px-4 pt-[2rem]"
                   }, currentPage > 1 ? React.createElement("button", {
                           className: "flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group",
                           type: "button",

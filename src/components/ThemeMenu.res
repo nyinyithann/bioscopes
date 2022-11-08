@@ -66,7 +66,7 @@ module ColorButton = {
       <button
         type_="button"
         ariaLabel="color"
-        className="flex h-8 w-8 items-center justify-center rounded-full p-1 shadow hover:ring-2 hover:ring-slate-300 focus:shadow-600 focus:outline-none dark:shadow-xl dark:shadow-gray-800 md:h-6 md:w-6"
+        className="flex h-8 w-8 items-center justify-center rounded-full p-1 shadow hover:ring-2 hover:ring-400 focus:shadow-600 focus:outline-none dark:shadow-xl dark:shadow-gray-800 md:h-6 md:w-6"
         style={ReactDOM.Style.make(~backgroundColor=color, ())}
         onClick
       />,
@@ -89,15 +89,14 @@ let make = () => {
   <Menu className="relative z-50 flex items-center justify-center text-left">
     {<>
       <Menu.Button
-        className="flex h-8 w-8 items-center justify-center rounded-full border-transparent bg-200 text-700 outline-none ring-0 hover:bg-400 hover:text-white dark:border-[1px] dark:border-slate-400 dark:bg-slate-400 dark:hover:bg-slate-700">
+        className="flex h-8 w-8 items-center justify-center rounded-full border-transparent bg-300 text-700 outline-none ring-0 hover:bg-400 hover:text-white dark:border-[1px] dark:border-slate-400 dark:bg-slate-400 dark:hover:bg-slate-700">
         <Heroicons.Solid.ColorSwatchIcon className="self-center w-5 h-5 text-900 dark:text-white" />
       </Menu.Button>
       <Menu.Items
-        className="absolute right-14 top-9 mt-3 flex w-[12rem] origin-top-right flex-col rounded bg-white shadow-md border-[1px] focus:outline-none dark:border-[1px] dark:border-slate-500 dark:bg-slate-600 md:w-40 gap-[1rem] p-2">
+        className="absolute right-14 top-9 mt-3 flex w-[12rem] origin-top-right flex-col rounded shadow-md border-[1px] focus:outline-none dark:border-[1px] dark:border-slate-500 dark:bg-slate-600 md:w-40 gap-[1rem] p-2 bg-200">
         {themeList
         ->Array.map(({category, themes}) => {
-          <div
-            key={category} className="z-10 flex items-center justify-center bg-white gap-[1rem]">
+          <div key={category} className="z-10 flex items-center justify-center bg-200 gap-[1rem]">
             {themes
             ->Array.map(({color, name}) =>
               <Menu.Item key={name} className="flex flex-row items-center justify-center gap-2 p-1">

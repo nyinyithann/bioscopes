@@ -64,6 +64,7 @@ let make = () => {
   let totalPages = Js.Option.getWithDefault(0, movies.total_pages)
 
   let viewingTitleRef = React.useRef("")
+  let isGenreRef = ref(false)
 
   React.useMemo1(() => {
     switch apiParams {
@@ -83,19 +84,22 @@ let make = () => {
           viewingTitleRef.current = display
         }
         DomBinding.setTitle(DomBinding.htmlDoc, display ++ " Movies")
+        isGenreRef.contents = false
       }
 
     | Genre({display}) => {
         viewingTitleRef.current = display
         DomBinding.setTitle(DomBinding.htmlDoc, display ++ " Movies")
+        isGenreRef.contents = true
       }
 
     | Search({query}) => {
         viewingTitleRef.current = `Search: '${query}'`
         DomBinding.setTitle(DomBinding.htmlDoc, viewingTitleRef.current)
+        isGenreRef.contents = false
       }
 
-    | _ => ()
+    | _ => isGenreRef.contents = false
     }
   }, [movies])
 
@@ -138,8 +142,11 @@ let make = () => {
   } else {
     <div className="flex flex-col bg-white">
       <div
-        className="font-nav text-[1.2rem] text-500 p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200">
-        {viewingTitleRef.current->string}
+        className="flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200">
+        <div className="font-nav text-[1.2rem] text-500"> {viewingTitleRef.current->string} </div>
+        <div className=`${isGenreRef.contents ? "flex" : "hidden"} justify-start ml-auto pr-4`>
+          <FilterBox />
+        </div>
       </div>
       <div
         id="movie-list-here"
@@ -158,7 +165,7 @@ let make = () => {
             )
             ->array}
       </div>
-      <div className="flex gap-2 px-4">
+      <div className="flex gap-2 px-4 pt-[2rem]">
         {currentPage > 1
           ? <button
               type_="button"

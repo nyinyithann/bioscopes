@@ -78,7 +78,7 @@ module GenreLink = {
 @react.component
 let make = () => {
   let (state, setState) = React.useState(_ => Loading)
-  let (_, setQueryParam) = UrlQueryParam.useQueryParams()
+  let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
 
   React.useEffect0(() => {
     let callback = result => {
@@ -116,10 +116,13 @@ let make = () => {
     let dataDisplay = target(e)["getAttribute"](. "data-display")
     switch int_of_string_opt(dataId) {
     | Some(id) if id < 0 => setQueryParam(Category({name: dataName, display: dataDisplay, page: 1}))
-    | Some(id) if id > 0 =>
-      setQueryParam(
-        Genre({id, name: dataName, display: dataDisplay, page: 1, sort_by: "popularity.desc"}),
-      )
+    | Some(id) if id > 0 => {
+        let sort_by = switch queryParam {
+        | Genre({sort_by}) => sort_by
+        | _ => MovieModel.popularity.id
+        }
+        setQueryParam(Genre({id, name: dataName, display: dataDisplay, page: 1, sort_by}))
+      }
     | None | _ => ()
     }
   })

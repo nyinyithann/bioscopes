@@ -107,9 +107,8 @@ module Transition = {
     ~beforeLeave: unit => unit=?,
     ~afterLeave: unit => unit=?,
     ~className: string=?,
-    ~children: React.element=?
+    ~children: React.element=?,
   ) => React.element = "Transition"
-
 
   module Child = {
     @module("@headlessui/react") @scope("Transition") @react.component
@@ -130,7 +129,112 @@ module Transition = {
       ~beforeLeave: unit => unit=?,
       ~afterLeave: unit => unit=?,
       ~className: string=?,
-      ~children: React.element=?
+      ~children: React.element=?,
     ) => React.element = "Child"
+  }
+}
+
+module Listbox = {
+  @module("@headlessui/react") @react.component
+  external make: (
+    @as("as") ~as_: 'a=?,
+    ~disabled: bool=?,
+    ~value: 'v=?,
+    ~defaultValue: 'v=?,
+    ~by: ('v, 'v) => bool=?,
+    ~onChange: 'v => unit=?,
+    ~horizontal: bool=?,
+    ~name: string=?,
+    ~multiple: bool=?,
+    ~className: string=?,
+    ~children: React.element,
+  ) => React.element = "Listbox"
+
+  module Button = {
+    @module("@headlessui/react") @scope("Listbox") @react.component
+    external make: (
+      @as("as") ~as_: 'a=?,
+      ~className: string=?,
+      ~children: React.element=?,
+    ) => React.element = "Button"
+  }
+
+  module Options = {
+    @module("@headlessui/react") @scope("Listbox") @react.component
+    external make: (
+      @as("as") ~as_: 'a=?,
+      ~static: bool=?,
+      ~unmount: bool=?,
+      ~className: string=?,
+      ~children: React.element,
+    ) => React.element = "Options"
+  }
+
+  module Option = {
+    type render_props = {active: bool, selected: bool, disabled: bool}
+    @module("@headlessui/react") @scope("Listbox") @react.component
+    external make: (
+      @as("as") ~as_: 'a=?,
+      ~value: 'v=?,
+      ~disabled: bool=?,
+      ~className: string=?,
+      ~children: render_props => React.element,
+    ) => React.element = "Option"
+  }
+}
+
+module Tab = {
+  type render_props = {selected: bool}
+  @module("@headlessui/react") @react.component
+  external make: (
+    @as("as") ~as_: 'a=?,
+    ~disabled: bool=?,
+    ~className: string=?,
+    ~children: render_props => React.element,
+  ) => React.element = "Tab"
+
+  module Group = {
+    type render_props = {selectedIndex: int}
+    @module("@headlessui/react") @scope("Tab") @react.component
+    external make: (
+      @as("as") ~as_: 'a=?,
+      ~defaultValue: int=?,
+      ~selectedIndex: int=?,
+      ~onChange: int => unit=?,
+      ~vertical: bool=?,
+      ~manual: bool=?,
+      ~className: string=?,
+      ~children: render_props => React.element,
+    ) => React.element = "Group"
+  }
+
+  module List = {
+    type render_props = {selectedIndex: int}
+    @module("@headlessui/react") @scope("Tab") @react.component
+    external make: (
+      @as("as") ~as_: 'a=?,
+      ~className: string=?,
+      ~children: render_props => React.element,
+    ) => React.element = "List"
+  }
+  
+  module Panels = {
+    type render_props = {selectedIndex: int}
+    @module("@headlessui/react") @scope("Tab") @react.component
+    external make: (
+      @as("as") ~as_: 'a=?,
+      ~className: string=?,
+      ~children: render_props => React.element,
+    ) => React.element = "Panels"
+  }
+  
+  module Panel = {
+    type render_props = {selectedIndex: int}
+    @module("@headlessui/react") @scope("Tab") @react.component
+    external make: (
+      @as("as") ~as_: 'a=?,
+      ~className: string=?,
+      ~children: render_props => React.element,
+    ) => React.element = "Panel"
   }
 }

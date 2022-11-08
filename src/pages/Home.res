@@ -1,14 +1,15 @@
 let {string} = module(React)
 
-let sidebarOpenRef = ref(true)
+let sidebarOpenRef = ref(false)
 
 @react.component
 let make = () => {
   open HeadlessUI
   let (sidebarOpen, setSidebarOpen) = React.useState(_ => sidebarOpenRef.contents)
 
-  React.useMemo0(() => {
+  React.useEffect0(() => {
     sidebarOpenRef.contents = DomBinding.checkMediaQuery("(min-width: 600px)")
+    None
   })
 
   React.useEffect1(() => {
@@ -97,7 +98,7 @@ let make = () => {
           ? "ml-[12rem] sm:ml-[14rem] md:ml-[16rem]"
           : ""} flex flex-1 flex-col h-full`}>
       <div className="w-full flex flex-col flex-1 bg-white">
-        <div className="h-auto w-auto flex flex-col z-50">
+        <div className="h-auto flex flex-col z-50">
           <div id="navbar" className="sticky top-0 z-50 flex h-14 flex-shrink-0 bg-white">
             <button
               type_="button"

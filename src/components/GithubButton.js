@@ -11,7 +11,7 @@ function GithubButton(Props) {
             }, React.createElement("span", {
                   className: "sr-only"
                 }, "Biscopes Github Repository"), React.createElement("svg", {
-                  className: "w-8 h-8",
+                  className: "w-8 h-8 fill-klor-300 hover:fill-klor-400",
                   fill: "currentColor",
                   viewBox: "0 0 16 16"
                 }, React.createElement("path", {

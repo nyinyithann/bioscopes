@@ -8,6 +8,7 @@ import * as MovieAPI from "../http/MovieAPI.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as GenreModel from "../models/GenreModel.js";
+import * as MovieModel from "../models/MovieModel.js";
 import * as Pervasives from "rescript/lib/es6/pervasives.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as ErrorDisplay from "./ErrorDisplay.js";
@@ -101,6 +102,7 @@ function GenreList(Props) {
   var state = match[0];
   var match$1 = UrlQueryParam.useQueryParams(undefined);
   var setQueryParam = match$1[1];
+  var queryParam = match$1[0];
   React.useEffect((function () {
           var callback = function (result) {
             if (result.TAG === /* Ok */0) {
@@ -161,32 +163,34 @@ function GenreList(Props) {
           var dataName = e.target.getAttribute("data-name");
           var dataDisplay = e.target.getAttribute("data-display");
           var id = Pervasives.int_of_string_opt(dataId);
-          if (id !== undefined) {
-            if (id < 0) {
-              return Curry._1(setQueryParam, {
-                          TAG: /* Category */0,
-                          _0: {
-                            name: dataName,
-                            display: dataDisplay,
-                            page: 1
-                          }
-                        });
-            } else if (id > 0) {
-              return Curry._1(setQueryParam, {
-                          TAG: /* Genre */1,
-                          _0: {
-                            id: id,
-                            name: dataName,
-                            display: dataDisplay,
-                            page: 1,
-                            sort_by: "popularity.desc"
-                          }
-                        });
-            } else {
-              return ;
-            }
+          if (id === undefined) {
+            return ;
           }
-          
+          if (id < 0) {
+            return Curry._1(setQueryParam, {
+                        TAG: /* Category */0,
+                        _0: {
+                          name: dataName,
+                          display: dataDisplay,
+                          page: 1
+                        }
+                      });
+          }
+          if (id <= 0) {
+            return ;
+          }
+          var sort_by;
+          sort_by = queryParam.TAG === /* Genre */1 ? queryParam._0.sort_by : MovieModel.popularity.id;
+          Curry._1(setQueryParam, {
+                TAG: /* Genre */1,
+                _0: {
+                  id: id,
+                  name: dataName,
+                  display: dataDisplay,
+                  page: 1,
+                  sort_by: sort_by
+                }
+              });
         }), []);
   var tmp;
   tmp = typeof state === "number" ? React.createElement(Loading.make, {

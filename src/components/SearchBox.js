@@ -8,7 +8,21 @@ import * as Solid from "@heroicons/react/solid";
 function SearchBox(Props) {
   var match = UrlQueryParam.useQueryParams(undefined);
   var setQueryParam = match[1];
+  var queryParam = match[0];
   var inputRef = React.useRef(null);
+  React.useEffect((function () {
+          if (queryParam.TAG === /* Search */2) {
+            var elem = inputRef.current;
+            if (!(elem == null)) {
+              elem.value = queryParam._0.query;
+            }
+            
+          }
+          
+        }), [
+        queryParam,
+        inputRef.current
+      ]);
   var handleKeyDown = function (e) {
     if (e.key !== "Enter") {
       return ;
@@ -16,7 +30,6 @@ function SearchBox(Props) {
     e.preventDefault();
     var elem = inputRef.current;
     if (!(elem == null)) {
-      console.log(elem.value);
       return Curry._1(setQueryParam, {
                   TAG: /* Search */2,
                   _0: {
@@ -36,7 +49,7 @@ function SearchBox(Props) {
                       className: "h-5 w-5"
                     })), React.createElement("input", {
                   ref: inputRef,
-                  className: "block w-full rounded-md pl-[2rem] text-gray-900 placeholder-slate-400 outline-none ring-0 border-0 bg-100 focus:bg-200 focus:border-[1px] focus:border-slate-100 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm",
+                  className: "block w-full rounded-md pl-[2rem] text-gray-900 placeholder-slate-400 outline-none ring-0 border-0 bg-200 hover:bg-300 focus:bg-300 focus:border-[1px] focus:border-slate-100 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm",
                   id: "search-field",
                   maxLength: 128,
                   name: "search",
