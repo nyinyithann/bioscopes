@@ -7,10 +7,17 @@ type video = {
 type image = {
   aspect_ratio?: float,
   height?: float,
-  width?: float,
+  iso_639_1?: string,
   file_path?: string,
   vote_average?: float,
-  vote_count?: float,
+  vote_count?: int,
+  width?: float,
+}
+
+type images = {
+    backdrops? : array<image>,
+    logos? : array<image>,
+    posters? : array<image>,
 }
 
 type cast = {
@@ -62,6 +69,12 @@ type credits = {
       crew?: array<crew>
   }
 
+  type spoken_language = {
+      english_name?: string,
+      iso_639_1?: string,
+      name? : string,
+  }
+  
 type detail_movie = {
   adult?: bool,
   backdrop_path?: string,
@@ -70,12 +83,14 @@ type detail_movie = {
   original_language?: string,
   original_title?: string,
   overview?: string,
+  tagline?: string,
   popularity?: float,
   poster_path?: string,
   release_date?: string,
   runtime?: float,
   status?: string,
   title?: string,
+  homepage?: string,
   video?: bool,
   vote_average?: float,
   vote_count?: int,
@@ -84,9 +99,9 @@ type detail_movie = {
   external_ids?: external_ids,
   production_companies?: array<production_company>,
   videos?: videos,
-  backdrops?: array<image>,
-  posters?: array<image>,
   credits? : credits,
+  images? : images,
+  spoken_languages? : array<spoken_language>
 }
 
 module Decoder = {
@@ -101,11 +116,19 @@ module Decoder = {
 
   let image = object(fields => {
     aspect_ratio: ?Marshal.to_opt(. fields, "aspect_ratio", float),
+    iso_639_1: ?Marshal.to_opt(. fields, "iso_639_1", string),
     height: ?Marshal.to_opt(. fields, "height", float),
     width: ?Marshal.to_opt(. fields, "width", float),
     file_path: ?Marshal.to_opt(. fields, "file_path", string),
     vote_average: ?Marshal.to_opt(. fields, "vote_average", float),
-    vote_count: ?Marshal.to_opt(. fields, "vote_count", float),
+    vote_count: ?Marshal.to_opt(. fields, "vote_count", int),
+  })
+
+  
+  let images = object(fields => {
+    backdrops: ?Marshal.to_opt(. fields, "backdrops", array(image)),
+    logos: ?Marshal.to_opt(. fields, "logos", array(image)),
+    posters: ?Marshal.to_opt(. fields, "posters", array(image)),
   })
 
   let cast = object(fields => {
@@ -147,6 +170,12 @@ module Decoder = {
     name: ?Marshal.to_opt(. fields, "name", string),
     origin_country: ?Marshal.to_opt(. fields, "origin_country", string),
   })
+  
+  let spoken_language = object(fields => {
+    name: ?Marshal.to_opt(. fields, "name", string),
+    iso_639_1: ?Marshal.to_opt(. fields, "iso_639_1", string),
+    english_name: ?Marshal.to_opt(. fields, "english_name", string),
+  })
 
   let videos = object(fields => {
       results: ?Marshal.to_opt(. fields, "results", array(video))
@@ -165,9 +194,12 @@ module Decoder = {
     id: fields.required(. "id", int),
     original_language: ?Marshal.to_opt(. fields, "original_language", string),
     original_title: ?Marshal.to_opt(. fields, "original_title", string),
+    status: ?Marshal.to_opt(. fields, "status", string),
     overview: ?Marshal.to_opt(. fields, "overview", string),
+    tagline: ?Marshal.to_opt(. fields, "tagline", string),
     popularity: ?Marshal.to_opt(. fields, "popularity", float),
     poster_path: ?Marshal.to_opt(. fields, "poster_path", string),
+    homepage: ?Marshal.to_opt(. fields, "homepage", string),
     release_date: ?Marshal.to_opt(. fields, "release_date", string),
     runtime: ?Marshal.to_opt(. fields, "runtime", float),
     budget: ?Marshal.to_opt(. fields, "budget", float),
@@ -183,14 +215,13 @@ module Decoder = {
     vote_average: ?Marshal.to_opt(. fields, "vote_average", float),
     vote_count: ?Marshal.to_opt(. fields, "vote_count", int),
     videos: ?Marshal.to_opt(. fields, "videos", videos),
-    backdrops: ?Marshal.to_opt(. fields, "videos", array(image)),
-    posters: ?Marshal.to_opt(. fields, "posters", array(image)),
     credits: ?Marshal.to_opt(. fields, "credits", credits),
+    images: ?Marshal.to_opt(. fields, "images", images),
+    spoken_languages: ?Marshal.to_opt(. fields, "spoken_languages", array(spoken_language)),
+    
   })
 
   let decode = (. ~json: Js.Json.t): result<detail_movie, string> => {
-    let d = Json.decode(json, detail_movie)
-    %debugger
-    d
+    Json.decode(json, detail_movie)
   }
 }

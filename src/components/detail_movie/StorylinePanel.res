@@ -3,41 +3,101 @@ let {string, int, float, array} = module(React)
 module Pair = {
   @react.component
   let make = (~title, ~value) => {
-    <div className="flex w-full">
-      <span className="w-1/3 overflow-ellipsis"> {Util.toStringElement(title)} </span>
-      <span className="w-2/3 overflow-ellipsis"> {Util.toStringElement(value)} </span>
-    </div>
+    Util.isEmptyString(value)
+      ? React.null
+      : <div className="flex w-full">
+          <span className="w-1/3 overflow-ellipsis"> {Util.toStringElement(title)} </span>
+          <span className="w-2/3 overflow-ellipsis"> {Util.toStringElement(value)} </span>
+        </div>
+  }
+}
+
+let getDirectorIdAndName = (movie: DetailMovieModel.detail_movie) => {
+  open Belt
+  try {
+    movie.credits
+    ->Option.flatMap(c =>
+      c.crew->Option.flatMap(crews =>
+        crews->Array.getBy(
+          crew => Option.getWithDefault(crew.job, "")->Js.String2.toLowerCase == "director",
+        )
+      )
+    )
+    ->Option.flatMap(d => Some((Option.getWithDefault(d.id, 0), Option.getWithDefault(d.name, ""))))
+    ->Option.getExn
+  } catch {
+  | _ => (0, "")
   }
 }
 
 module DirectorLink = {
   @react.component
   let make = (~movie: DetailMovieModel.detail_movie, ~onClick) => {
-  /*   open Belt */
-  /*   let director = */
-  /*     movie.credits->Option.getExn */
-  /*     ->Option.map(crews => */
-  /*       crews->Array.getBy(crew => */
-  /*         Option.getWithDefault(crew.job, "")->Js.String2.toLowerCase == "director" */
-  /*       ) */
-  /*     ) */
-  /*     ->Option.getWithDefault(Some(({job: ""}: DetailMovieModel.crew))) */
-  /*     ->Option.getWithDefault(({job: ""}: DetailMovieModel.crew)) */
-  /*     %debugger */
-  /**/
-  /*   { */
-  /*     Option.getWithDefault(director.job, "") != "" */
-  /*       ? <div className="flex w-full"> */
-  /*           <span className="w-1/3 overflow-ellipsis"> {Util.toStringElement("Director")} </span> */
-  /*           <span className="w-2/3 overflow-ellipsis"> */
-  /*             {Util.toStringElement(Option.getExn(director.job))} */
-  /*           </span> */
-  /*         </div> */
-  /*       : React.null */
-  /*   } */
-  /* } */
-      <></>
+    let (id, name) = getDirectorIdAndName(movie)
+
+    {
+      id != 0
+        ? <div className="flex w-full">
+            <span className="w-1/3 overflow-ellipsis"> {Util.toStringElement("Director")} </span>
+            <span className="w-2/3 overflow-ellipsis" onClick={_ => onClick(id)}>
+              {Util.toStringElement(name)}
+            </span>
+          </div>
+        : React.null
+    }
+  }
 }
+
+let getSpokenLanguages = (movie: DetailMovieModel.detail_movie) => {
+  open Belt
+  let spls =
+    movie.spoken_languages
+    ->Option.flatMap(sls => sls->Array.map(sl => sl.name->Option.getWithDefault(""))->Some)
+    ->Option.getWithDefault([])
+    ->Array.reduce("", (x, y) => x ++ ", " ++ y)
+  Js.String2.startsWith(spls, ", ") ? Js.String2.substr(spls, ~from=2) : spls
+}
+
+let getProductionCompanies = (movie: DetailMovieModel.detail_movie) => {
+  open Belt
+  let names =
+    movie.production_companies
+    ->Option.flatMap(cmps => cmps->Array.map(cmp => cmp.name->Option.getWithDefault(""))->Some)
+    ->Option.getWithDefault([])
+    ->Array.reduce("", (x, y) => x ++ ", " ++ y)
+  Js.String2.startsWith(names, ", ") ? Js.String2.substr(names, ~from=2) : names
+}
+
+let getGenres = (movie: DetailMovieModel.detail_movie) => {
+  open Belt
+  switch movie.genres {
+  | Some(gns) => gns->Array.map(g => (g.id, g.name))
+  | None => []
+  }
+}
+
+module GenreLinks = {
+  @react.component
+  let make = (~movie: DetailMovieModel.detail_movie, ~onClick) => {
+    let links = getGenres(movie)
+
+    {
+      Util.isEmptyArray(links)
+        ? React.null
+        : <div className="flex w-full">
+            <span className="w-1/3 overflow-ellipsis"> {Util.toStringElement("Genres")} </span>
+            <div className="w-2/3 overflow-ellipsis flex flex-wrap items-center gap-2">
+              {links
+              ->Belt.Array.map(((id, name)) =>
+                <span key={Util.itos(id)} onClick={_ => onClick(id)} className="span-link">
+                  {Util.toStringElement(name)}
+                </span>
+              )
+              ->array}
+            </div>
+          </div>
+    }
+  }
 }
 
 @react.component
@@ -63,23 +123,66 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
 
   | None => ""
   }
-
-  /* let director = switch movie.crews { */
-  /* | Some(cs) => { */
-  /* switch cs -> Belt.Array.getBy(x => Js.String2.toLowerCase(x.Job) == "") */
-  /* } */
-  /* | None => "" */
-  /* } */
+  let budget = Util.getOrFloatZero(movie.budget)->DomBinding.flotToLocaleString("en-GB")
+  let revenue = Util.getOrFloatZero(movie.revenue)->DomBinding.flotToLocaleString("en-GB")
+  let status = Util.getOrEmptyString(movie.status)
+  let imdbId =
+    movie.external_ids
+    ->Belt.Option.flatMap(x => Some(Util.getOrEmptyString(x.imdb_id)))
+    ->Util.getOrEmptyString
+  let twitterId =
+    movie.external_ids
+    ->Belt.Option.flatMap(x => Some(Util.getOrEmptyString(x.twitter_id)))
+    ->Util.getOrEmptyString
+  let facebookId =
+    movie.external_ids
+    ->Belt.Option.flatMap(x => Some(Util.getOrEmptyString(x.facebook_id)))
+    ->Util.getOrEmptyString
+  let insgagramId =
+    movie.external_ids
+    ->Belt.Option.flatMap(x => Some(Util.getOrEmptyString(x.instagram_id)))
+    ->Util.getOrEmptyString
+let website = movie.homepage -> Util.getOrEmptyString
 
   <div className="flex flex-col w-full">
     <div className="flex flex-col w-full gap-1">
       <span className="text-[1.2rem] font-semibold"> {Util.toStringElement("Storyline")} </span>
-      <span className="prose break-words"> sotryline </span>
+      <span className="prose break-words w-full"> sotryline </span>
     </div>
-    <div className="flex flex-col w-full prose pt-4">
+    <div className="flex flex-col w-full prose-base pt-4">
       <Pair title={"Released"} value={releasedDate} />
       <Pair title={"Runtime"} value={runtime} />
-      <DirectorLink movie onClick={() => ()}/>
+      <DirectorLink movie onClick={id => DomBinding.pop(Util.itos(id))} />
+      {Util.getOrFloatZero(movie.budget) == 0.
+        ? React.null
+        : <Pair title={"Budget"} value={`$${budget}`} />}
+      {Util.getOrFloatZero(movie.revenue) == 0.
+        ? React.null
+        : <Pair title={"Revenue"} value={`$${revenue}`} />}
+      <GenreLinks movie onClick={id => DomBinding.pop(Util.itos(id))} />
+      <Pair title={"Status"} value={status} />
+      <Pair title={"Language"} value={getSpokenLanguages(movie)} />
+      <Pair title={"Production"} value={getProductionCompanies(movie)} />
+    </div>
+    <div className="flex w-full">
+      <div className="flex w-1/3" />
+      <ul className="flex gap-4 pt-4 w-2/3">
+        <li>
+          <Twitter id={twitterId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+        </li>
+        <li>
+          <Facebook id={facebookId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+        </li>
+        <li>
+          <Instagram id={insgagramId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+        </li>
+        <li>
+          <Imdb id={imdbId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+        </li>
+        <li>
+          <WebsiteLink link={website} className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900" />
+        </li>
+      </ul>
     </div>
   </div>
 }

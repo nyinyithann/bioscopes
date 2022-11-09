@@ -6,6 +6,7 @@ import * as Links from "../../shared/Links.js";
 import * as React from "react";
 import * as Rating from "../Rating.js";
 import * as Loading from "../Loading.js";
+import * as DomBinding from "../../bindings/DomBinding.js";
 
 function string(prim) {
   return prim;
@@ -29,7 +30,6 @@ function Hero(Props) {
         return false;
       });
   var setLoaded = match[1];
-  var imgPath = Links.getHeroImage(Util.getOrEmptyString(movie.poster_path));
   var title = Util.getOrEmptyString(movie.title);
   var voteAverage = String(Util.getOrIntZero(movie.vote_count));
   var releaseYear = Util.getOrEmptyString(movie.release_date).substring(0, 4);
@@ -41,18 +41,35 @@ function Hero(Props) {
   } else {
     runtime = "";
   }
+  var imgPathRef = React.useRef("");
+  var imgHeight = React.useRef("16rem");
+  React.useMemo((function () {
+          if (DomBinding.checkMediaQuery("(max-width: 900px)")) {
+            imgPathRef.current = Links.getOriginalBigImage(Util.getOrEmptyString(movie.backdrop_path));
+          } else {
+            imgPathRef.current = Links.getHeroImage(Util.getOrEmptyString(movie.poster_path));
+          }
+          if (DomBinding.checkMediaQuery("(max-width: 600px)")) {
+            imgHeight.current = "14rem";
+          }
+          if (DomBinding.checkMediaQuery("(max-width: 900px)")) {
+            imgHeight.current = "20rem";
+            return ;
+          }
+          
+        }), [movie]);
   return React.createElement("div", {
               className: "flex w-full relative"
             }, match[0] ? null : React.createElement("div", {
-                    className: "absolute top-[20rem] w-full h-full flex flex-col items-center justify-center animate-pulse bg-50"
+                    className: "absolute top-[3rem] w-full h-full flex flex-col items-center justify-center"
                   }, React.createElement(Loading.make, {
                         className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
                       })), React.createElement("div", {
                   className: "flex flex-col w-full"
                 }, React.createElement("img", {
-                      className: "w-full h-[36rem] sm:h-[70rem]",
+                      className: "w-full " + imgHeight.current + "",
                       alt: "Poster",
-                      src: imgPath,
+                      src: imgPathRef.current,
                       onError: (function (e) {
                           if (e.target.src !== Links.placeholderImage) {
                             e.target.src = Links.placeholderImage;

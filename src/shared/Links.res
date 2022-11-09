@@ -8,6 +8,13 @@ let getPosterImageW342Link = (seg: string) => `${imageBaseUrl}/w342/${seg}`
 let getOriginalBigImage = (seg: string) => `${originalImageBaseUrl}/${seg}`
 let getHeroImage = (seg: string) => `${imageBaseUrl}/w780/${seg}`
 
+let getImdbLink = (id: string) => `https://www.imdb.com/title/${id}`
+let getTwitterLink = (id: string) => `https://twitter.com/${id}`
+let getFacebookLink = (id: string) => `https://www.facebook.com/${id}`
+let getInstagramLink = (id: string) => `https://instagram.com/${id}`
+
+let getYoutubeImageLink = (id: string) => `https://img.youtube.com/vi/${id}/mqdefault.jpg`
+
 let placeholderImage = "/assets/nothing.svg"
 
 /*

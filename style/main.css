@@ -13,4 +13,8 @@ boty {
     .control-color {
         @apply bg-200 text-600 hover:bg-300 hover:text-900
     }
+
+    .span-link {
+        @apply text-600 underline hover:text-900 cursor-pointer
+    }
 }

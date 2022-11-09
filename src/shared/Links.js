@@ -17,6 +17,26 @@ function getHeroImage(seg) {
   return "" + imageBaseUrl + "/w780/" + seg + "";
 }
 
+function getImdbLink(id) {
+  return "https://www.imdb.com/title/" + id + "";
+}
+
+function getTwitterLink(id) {
+  return "https://twitter.com/" + id + "";
+}
+
+function getFacebookLink(id) {
+  return "https://www.facebook.com/" + id + "";
+}
+
+function getInstagramLink(id) {
+  return "https://instagram.com/" + id + "";
+}
+
+function getYoutubeImageLink(id) {
+  return "https://img.youtube.com/vi/" + id + "/mqdefault.jpg";
+}
+
 var apiBaseUrl = "https://api.themoviedb.org";
 
 var apiVersion = "3";
@@ -31,6 +51,11 @@ export {
   getPosterImageW342Link ,
   getOriginalBigImage ,
   getHeroImage ,
+  getImdbLink ,
+  getTwitterLink ,
+  getFacebookLink ,
+  getInstagramLink ,
+  getYoutubeImageLink ,
   placeholderImage ,
 }
 /* No side effect */

@@ -39,6 +39,14 @@ var stoi = Caml_format.int_of_string;
 
 var stof = Caml_format.float_of_string;
 
+function isEmptyString(str) {
+  return str.length === 0;
+}
+
+function isEmptyArray(arr) {
+  return arr.length === 0;
+}
+
 export {
   getOrEmptyString ,
   getOrIntZero ,
@@ -50,5 +58,7 @@ export {
   ftos ,
   stoi ,
   stof ,
+  isEmptyString ,
+  isEmptyArray ,
 }
 /* No side effect */

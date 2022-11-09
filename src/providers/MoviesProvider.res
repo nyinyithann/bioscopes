@@ -39,9 +39,8 @@ let emptyDetailMovie: DetailMovieModel.detail_movie = {
   vote_average: ?None,
   vote_count: ?None,
   videos: ?None,
-  backdrops: ?None,
-  posters: ?None,
   credits: ?None,
+  images: ?None,
 }
 
 let initialState = {
