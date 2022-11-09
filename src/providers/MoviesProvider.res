@@ -179,7 +179,6 @@ let loadDataInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signal
 }
 
 let loadDetailMovieInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signal) => {
-  %debugger
   let apiPath = getApiPath(apiParams)
 
   let callback = result => {

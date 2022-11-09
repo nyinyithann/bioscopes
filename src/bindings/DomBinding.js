@@ -5,7 +5,12 @@ function checkMediaQuery(query) {
   return window.matchMedia(query).matches;
 }
 
+function pop(msg) {
+  window.alert(msg);
+}
+
 export {
   checkMediaQuery ,
+  pop ,
 }
 /* No side effect */

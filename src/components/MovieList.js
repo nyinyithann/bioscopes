@@ -92,7 +92,6 @@ function MovieList(Props) {
             case /* Category */0 :
                 var display = queryParam._0.display;
                 if (display.toLowerCase() === "upcoming") {
-                  console.log(movies.dates);
                   var ds = movies.dates;
                   var msg;
                   if (ds !== undefined) {

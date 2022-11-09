@@ -9,8 +9,7 @@ module Poster = {
     ~vote_average: option<float>,
     ~release_date: option<string>,
   ) => {
-
-      let (_, setQueryParam) = UrlQueryParam.useQueryParams()
+    let (_, setQueryParam) = UrlQueryParam.useQueryParams()
 
     open Js.String2
     let imgLink = switch poster_path {
@@ -80,7 +79,6 @@ let make = () => {
     switch queryParam {
     | Category({display}) => {
         if Js.String2.toLowerCase(display) == "upcoming" {
-          Js.log(movies.dates)
           let msg = switch movies.dates {
           | Some(ds) =>
             switch (ds.maximum, ds.minimum) {

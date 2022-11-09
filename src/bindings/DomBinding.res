@@ -5,3 +5,4 @@
 let checkMediaQuery = query => matches(Webapi.Dom.Window.matchMedia(Webapi.Dom.window, query))
 
 @send external alert: (Webapi.Dom.Window.t, string) => unit = "alert"
+let pop = msg => alert(Webapi.Dom.window, msg)

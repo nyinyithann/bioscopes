@@ -3,7 +3,10 @@
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as Links from "../shared/Links.js";
 import * as React from "react";
+import * as Loading from "./Loading.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
+import * as DomBinding from "../bindings/DomBinding.js";
+import * as ErrorDisplay from "./ErrorDisplay.js";
 import * as MoviesProvider from "../providers/MoviesProvider.js";
 
 function Movie$Hero(Props) {
@@ -18,12 +21,17 @@ function Movie$Hero(Props) {
       });
   var setErr = match$1[1];
   return React.createElement("div", {
-              className: "flex relative w-full"
-            }, React.createElement("img", {
-                  className: "w-[24rem] h-[36rem]",
+              className: "flex relative"
+            }, match[0] ? null : React.createElement("div", {
+                    className: "absolute top-[20rem] w-full h-full flex flex-col items-center justify-center animate-pulse bg-50"
+                  }, React.createElement(Loading.make, {
+                        className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
+                      })), React.createElement("img", {
+                  className: "w-full h-[40rem] sm:h-[70rem]",
                   alt: "Poster",
                   src: imgPath,
                   onError: (function (e) {
+                      DomBinding.pop("error");
                       Curry._1(setErr, (function (param) {
                               return true;
                             }));
@@ -53,6 +61,7 @@ function Movie(Props) {
   var id = Props.id;
   var match = MoviesProvider.useMoviesContext(undefined);
   var loadDetailMovie = match.loadDetailMovie;
+  var error = match.error;
   var detail_movie = match.detail_movie;
   React.useMemo((function () {
           var t = detail_movie.title;
@@ -75,15 +84,33 @@ function Movie(Props) {
                     controller.abort("Cancel the request");
                   });
         }), []);
-  return React.createElement("main", {
-              className: "flex p-4 border-t-[2px] border-slate-200"
-            }, React.createElement("div", {
-                  className: "flex w-full h-[80rem]"
-                }, React.createElement("div", {
-                      className: "w-[50%] bg-red-500 h-20"
-                    }), React.createElement("div", {
-                      className: "w-[50%] bg-400 h-20"
-                    })));
+  if (error.length > 0) {
+    return React.createElement(ErrorDisplay.make, {
+                errorMessage: error
+              });
+  } else if (match.loading) {
+    return React.createElement(Loading.make, {
+                className: "w-[6rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-green-500 fill-50 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
+              });
+  } else {
+    return React.createElement("main", {
+                className: "flex border-t-[2px] border-slate-200"
+              }, React.createElement("div", {
+                    className: "flex md:hidden flex-col w-full h-full"
+                  }, React.createElement("div", {
+                        className: "w-full"
+                      }, React.createElement(Movie$Hero, {
+                            movie: detail_movie
+                          })), React.createElement("div", {
+                        className: "w-full bg-green-100 h-40 border-2"
+                      })), React.createElement("div", {
+                    className: "hidden md:flex w-full h-[80rem]"
+                  }, React.createElement("div", {
+                        className: "w-2/5 bg-200 border-2"
+                      }), React.createElement("div", {
+                        className: "w-3/5 bg-green-100 border-2"
+                      })));
+  }
 }
 
 var make = Movie;

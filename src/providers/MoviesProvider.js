@@ -215,7 +215,6 @@ function loadDataInternal(dispatch, apiParams, signal) {
 }
 
 function loadDetailMovieInternal(dispatch, apiParams, signal) {
-  debugger;
   var apiPath = getApiPath(apiParams);
   var callback = function (result) {
     if (result.TAG === /* Ok */0) {
