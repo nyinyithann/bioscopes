@@ -37,7 +37,9 @@ function MovieList$Poster(Props) {
     e.preventDefault();
     Curry._1(setQueryParam, {
           TAG: /* Movie */3,
-          _0: id
+          _0: {
+            id: id
+          }
         });
   };
   return React.createElement("button", {

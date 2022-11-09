@@ -25,30 +25,28 @@ let make = () => {
         _,
       )
     ),
-    {"id": None},
+    (),
   )
 
-  let getLazyMovie = (id: string) =>
-    React.createElement(
-      Lazy.lazy_(() =>
-        Lazy.import_("../components/Movie.js")->Js.Promise.then_(
-          comp => Js.Promise.resolve({"default": comp["make"]}),
-          _,
-        )
-      ),
-      {"id": Some(id)},
-    )
+  let lazyMovie = React.createElement(
+    Lazy.lazy_(() =>
+      Lazy.import_("../components/detail_movie/Movie.js")->Js.Promise.then_(
+        comp => Js.Promise.resolve({"default": comp["make"]}),
+        _,
+      )
+    ),
+    (),
+  )
 
-  let getLazyPerson = (id: string) =>
-    React.createElement(
-      Lazy.lazy_(() =>
-        Lazy.import_("../components/Person.js")->Js.Promise.then_(
-          comp => Js.Promise.resolve({"default": comp["make"]}),
-          _,
-        )
-      ),
-      {"id": Some(id)},
-    )
+  let lazyPerson = React.createElement(
+    Lazy.lazy_(() =>
+      Lazy.import_("../components/Person.js")->Js.Promise.then_(
+        comp => Js.Promise.resolve({"default": comp["make"]}),
+        _,
+      )
+    ),
+    (),
+  )
 
   let url = RescriptReactRouter.useUrl()
   let component = switch url.path {
@@ -56,8 +54,8 @@ let make = () => {
   | list{"genre"}
   | list{"search"} =>
     <SuspensionLoader> lazyMovieList </SuspensionLoader>
-  | list{"movie", id, ..._} => <SuspensionLoader> {getLazyMovie(id)} </SuspensionLoader> 
-  | list{"person", id, ..._} => <SuspensionLoader> {getLazyPerson(id)} </SuspensionLoader>
+  | list{"movie"} => <SuspensionLoader> lazyMovie </SuspensionLoader>
+  | list{"person"} => <SuspensionLoader> lazyPerson </SuspensionLoader>
   | _ => <div> {"Todo: To create a proper component to display message"->string} </div>
   }
 
@@ -89,7 +87,9 @@ let make = () => {
                 <div className="relative w-full">
                   <button
                     type_="button"
-                    className={`${sidebarOpenRef.contents ? "block" : "hidden"} pr-4 outline-none absolute right-[-0.8rem] top-[0.3rem]`}
+                    className={`${sidebarOpenRef.contents
+                        ? "block"
+                        : "hidden"} pr-4 outline-none absolute right-[-0.8rem] top-[0.3rem]`}
                     onClick={_ => {
                       sidebarOpenRef.contents = false
                       setSidebarOpen(_ => false)
@@ -138,9 +138,7 @@ let make = () => {
               </div>
             </div>
           </div>
-          <div className="z-30 bg-white">
-            {component} 
-          </div>
+          <div className="z-30 bg-white"> {component} </div>
           <footer className="h-8" />
         </div>
       </div>

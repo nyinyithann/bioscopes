@@ -24,7 +24,7 @@ let emptyMovieList: MovieModel.movielist = {
 let emptyDetailMovie: DetailMovieModel.detail_movie = {
   adult: ?None,
   backdrop_path: ?None,
-  genre_ids: ?None,
+  genres: ?None,
   id: ?None,
   original_language: ?None,
   original_title: ?None,
@@ -41,8 +41,7 @@ let emptyDetailMovie: DetailMovieModel.detail_movie = {
   videos: ?None,
   backdrops: ?None,
   posters: ?None,
-  casts: ?None,
-  crews: ?None,
+  credits: ?None,
 }
 
 let initialState = {
@@ -144,7 +143,7 @@ let getApiPath = apiParams => {
       )}&page=${Js.Int.toString(page)}&sort_by=${sort_by}`
   | Search({query, page}) =>
     `${apiBaseUrl}/${apiVersion}/search/movie?query=${query}&page=${Js.Int.toString(page)}`
-  | Movie(id) =>
+  | Movie({id}) =>
     `${apiBaseUrl}/${apiVersion}/movie/${id}?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en`
   | _ => ""
   }

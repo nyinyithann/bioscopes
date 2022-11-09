@@ -40,33 +40,23 @@ function Home(Props) {
                                       default: comp.make
                                     });
                         }), __x);
-          }), {
-        id: undefined
-      });
-  var getLazyMovie = function (id) {
-    return React.createElement(React.lazy(function (param) {
-                    var __x = import("../components/Movie.js");
-                    return Js_promise.then_((function (comp) {
-                                  return Promise.resolve({
-                                              default: comp.make
-                                            });
-                                }), __x);
-                  }), {
-                id: id
-              });
-  };
-  var getLazyPerson = function (id) {
-    return React.createElement(React.lazy(function (param) {
-                    var __x = import("../components/Person.js");
-                    return Js_promise.then_((function (comp) {
-                                  return Promise.resolve({
-                                              default: comp.make
-                                            });
-                                }), __x);
-                  }), {
-                id: id
-              });
-  };
+          }), undefined);
+  var lazyMovie = React.createElement(React.lazy(function (param) {
+            var __x = import("../components/detail_movie/Movie.js");
+            return Js_promise.then_((function (comp) {
+                          return Promise.resolve({
+                                      default: comp.make
+                                    });
+                        }), __x);
+          }), undefined);
+  var lazyPerson = React.createElement(React.lazy(function (param) {
+            var __x = import("../components/Person.js");
+            return Js_promise.then_((function (comp) {
+                          return Promise.resolve({
+                                      default: comp.make
+                                    });
+                        }), __x);
+          }), undefined);
   var url = RescriptReactRouter.useUrl(undefined, undefined);
   var match$1 = url.path;
   var component;
@@ -75,23 +65,21 @@ function Home(Props) {
     var exit$1 = 0;
     switch (match$1.hd) {
       case "movie" :
-          var match$2 = match$1.tl;
-          if (match$2) {
-            component = React.createElement(SuspensionLoader.make, {
-                  children: getLazyMovie(match$2.hd)
-                });
-          } else {
+          if (match$1.tl) {
             exit = 1;
+          } else {
+            component = React.createElement(SuspensionLoader.make, {
+                  children: lazyMovie
+                });
           }
           break;
       case "person" :
-          var match$3 = match$1.tl;
-          if (match$3) {
-            component = React.createElement(SuspensionLoader.make, {
-                  children: getLazyPerson(match$3.hd)
-                });
-          } else {
+          if (match$1.tl) {
             exit = 1;
+          } else {
+            component = React.createElement(SuspensionLoader.make, {
+                  children: lazyPerson
+                });
           }
           break;
       case "genre" :

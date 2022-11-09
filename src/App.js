@@ -29,9 +29,7 @@ function App(Props) {
                                       default: comp.make
                                     });
                         }), __x);
-          }), {
-        id: undefined
-      });
+          }), undefined);
   var lazyAbout = React.createElement(React.lazy(function (param) {
             var __x = import("./pages/About.js");
             return Js_promise.then_((function (comp) {
@@ -39,9 +37,7 @@ function App(Props) {
                                       default: comp.make
                                     });
                         }), __x);
-          }), {
-        id: undefined
-      });
+          }), undefined);
   var url = RescriptReactRouter.useUrl(undefined, undefined);
   var match = url.path;
   var component;

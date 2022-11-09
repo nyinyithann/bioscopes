@@ -166,7 +166,7 @@ function getApiPath(apiParams) {
         var match$2 = apiParams._0;
         return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/search/movie?query=" + match$2.query + "&page=" + match$2.page.toString() + "";
     case /* Movie */3 :
-        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + apiParams._0 + "?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en";
+        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + apiParams._0.id + "?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en";
     case /* Person */4 :
     case /* Invalid */5 :
         return "";

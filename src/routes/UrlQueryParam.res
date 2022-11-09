@@ -1,13 +1,14 @@
 type category_param = {name: string, display: string, page: int}
 type genre_param = {id: int, name: string, display: string, page: int, sort_by: string}
 type search_param = {query: string, page: int}
+type id_param = {id: string}
 
 type query_param =
   | Category(category_param)
   | Genre(genre_param)
   | Search(search_param)
-  | Movie(string)
-  | Person(string)
+  | Movie(id_param)
+  | Person(id_param)
   | Invalid(string)
 
 module Converter_category_param = Marshal.Make({
@@ -73,6 +74,23 @@ module Converter_search_param = Marshal.Make({
   }
 })
 
+module Converter_id_param = Marshal.Make({
+  open! JsonCombinators
+  open! JsonCombinators.Json.Decode
+  type t = id_param
+
+  let to = object(fields => {
+    id: fields.required(. "id", string),
+  })
+
+  let from = (o: t) => {
+    open! JsonCombinators.Json.Encode
+    Unsafe.object({
+      "id": string(o.id),
+    })
+  }
+})
+
 let useQueryParams = (): (query_param, query_param => unit) => {
   let url = RescriptReactRouter.useUrl()
   let queryParam = switch (url.path, url.search) {
@@ -90,6 +108,11 @@ let useQueryParams = (): (query_param, query_param => unit) => {
   | (list{"search"}, q) =>
     switch Converter_search_param.parse(. q) {
     | Ok(p) => Search(p)
+    | Error(msg) => Invalid(msg)
+    }
+  | (list{"movie"}, q) =>
+    switch Converter_id_param.parse(. q) {
+    | Ok(p) => Movie(p)
     | Error(msg) => Invalid(msg)
     }
   | _ => Invalid("Invalid Route")
@@ -120,7 +143,9 @@ let useQueryParams = (): (query_param, query_param => unit) => {
       }
 
     | Movie(id) => {
-        let seg = `/movie/${id}`
+        let seg =
+          `/movie?` ++
+          Converter_id_param.stringfy(. id)->URLSearchParams.make->URLSearchParams.toString
         RescriptReactRouter.push(seg)
       }
 

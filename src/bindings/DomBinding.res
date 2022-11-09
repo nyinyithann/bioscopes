@@ -6,3 +6,5 @@ let checkMediaQuery = query => matches(Webapi.Dom.Window.matchMedia(Webapi.Dom.w
 
 @send external alert: (Webapi.Dom.Window.t, string) => unit = "alert"
 let pop = msg => alert(Webapi.Dom.window, msg)
+
+@send external toLocaleString: (Js.Date.t, string, {..}) => string = "toLocaleString"

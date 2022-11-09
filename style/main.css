@@ -8,3 +8,9 @@ boty {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .control-color {
+        @apply bg-200 text-600 hover:bg-300 hover:text-900
+    }
+}

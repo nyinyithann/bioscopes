@@ -10,7 +10,7 @@ let make = () => {
         _,
       )
     ),
-    {"id": None},
+    (),
   )
 
   let lazyAbout = React.createElement(
@@ -20,7 +20,7 @@ let make = () => {
         _,
       )
     ),
-    {"id": None},
+    (),
   )
 
   let url = RescriptReactRouter.useUrl()

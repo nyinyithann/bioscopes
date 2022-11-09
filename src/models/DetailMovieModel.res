@@ -41,10 +41,31 @@ type crew = {
   job?: string,
 }
 
+type external_ids = {
+  imdb_id?: string,
+  facebook_id?: string,
+  instagram_id?: string,
+  twitter_id?: string,
+}
+
+type production_company = {
+  name?: string,
+  origin_country?: string,
+}
+
+type videos = {
+    results? : array<video>
+}
+
+type credits = {
+      cast?: array<cast>,
+      crew?: array<crew>
+  }
+
 type detail_movie = {
   adult?: bool,
   backdrop_path?: string,
-  genre_ids?: array<GenreModel.genre>,
+  genres?: array<GenreModel.genre>,
   id?: int,
   original_language?: string,
   original_title?: string,
@@ -58,11 +79,14 @@ type detail_movie = {
   video?: bool,
   vote_average?: float,
   vote_count?: int,
-  videos?: array<video>,
+  budget?: float,
+  revenue?: float,
+  external_ids?: external_ids,
+  production_companies?: array<production_company>,
+  videos?: videos,
   backdrops?: array<image>,
   posters?: array<image>,
-  casts?: array<cast>,
-  crews?: array<crew>,
+  credits? : credits,
 }
 
 module Decoder = {
@@ -112,10 +136,32 @@ module Decoder = {
     job: ?Marshal.to_opt(. fields, "job", string),
   })
 
+  let external_ids = object(fields => {
+    imdb_id: ?Marshal.to_opt(. fields, "imdb_id", string),
+    facebook_id: ?Marshal.to_opt(. fields, "facebook_id", string),
+    instagram_id: ?Marshal.to_opt(. fields, "instagram_id", string),
+    twitter_id: ?Marshal.to_opt(. fields, "twitter_id", string),
+  })
+
+  let production_company = object(fields => {
+    name: ?Marshal.to_opt(. fields, "name", string),
+    origin_country: ?Marshal.to_opt(. fields, "origin_country", string),
+  })
+
+  let videos = object(fields => {
+      results: ?Marshal.to_opt(. fields, "results", array(video))
+  })
+
+
+  let credits = object(fields => {
+      cast: ?Marshal.to_opt(. fields, "cast", array(cast)),
+      crew: ?Marshal.to_opt(. fields, "crew", array(crew))
+  })
+  
   let detail_movie: Json.Decode.t<detail_movie> = object(fields => {
     adult: ?Marshal.to_opt(. fields, "adult", bool),
     backdrop_path: ?Marshal.to_opt(. fields, "backdrop_path", string),
-    genre_ids: ?Marshal.to_opt(. fields, "genre_ids", array(GenreModel.GenreDecoder.genre)),
+    genres: ?Marshal.to_opt(. fields, "genres", array(GenreModel.GenreDecoder.genre)),
     id: fields.required(. "id", int),
     original_language: ?Marshal.to_opt(. fields, "original_language", string),
     original_title: ?Marshal.to_opt(. fields, "original_title", string),
@@ -124,18 +170,27 @@ module Decoder = {
     poster_path: ?Marshal.to_opt(. fields, "poster_path", string),
     release_date: ?Marshal.to_opt(. fields, "release_date", string),
     runtime: ?Marshal.to_opt(. fields, "runtime", float),
+    budget: ?Marshal.to_opt(. fields, "budget", float),
+    revenue: ?Marshal.to_opt(. fields, "revenue", float),
+    external_ids: ?Marshal.to_opt(. fields, "external_ids", external_ids),
+    production_companies: ?Marshal.to_opt(.
+      fields,
+      "production_companies",
+      array(production_company),
+    ),
     title: ?Marshal.to_opt(. fields, "title", string),
     video: ?Marshal.to_opt(. fields, "video", bool),
     vote_average: ?Marshal.to_opt(. fields, "vote_average", float),
     vote_count: ?Marshal.to_opt(. fields, "vote_count", int),
-    videos: ?Marshal.to_opt(. fields, "videos", array(video)),
+    videos: ?Marshal.to_opt(. fields, "videos", videos),
     backdrops: ?Marshal.to_opt(. fields, "videos", array(image)),
     posters: ?Marshal.to_opt(. fields, "posters", array(image)),
-    casts: ?Marshal.to_opt(. fields, "casts", array(cast)),
-    crews: ?Marshal.to_opt(. fields, "crews", array(crew)),
+    credits: ?Marshal.to_opt(. fields, "credits", credits),
   })
-  
+
   let decode = (. ~json: Js.Json.t): result<detail_movie, string> => {
-    Json.decode(json, detail_movie)
+    let d = Json.decode(json, detail_movie)
+    %debugger
+    d
   }
 }

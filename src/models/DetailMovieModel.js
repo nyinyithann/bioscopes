@@ -56,11 +56,40 @@ var crew = Json_Decode$JsonCombinators.object(function (fields) {
             };
     });
 
+var external_ids = Json_Decode$JsonCombinators.object(function (fields) {
+      return {
+              imdb_id: Marshal.to_opt(fields, "imdb_id", Json_Decode$JsonCombinators.string),
+              facebook_id: Marshal.to_opt(fields, "facebook_id", Json_Decode$JsonCombinators.string),
+              instagram_id: Marshal.to_opt(fields, "instagram_id", Json_Decode$JsonCombinators.string),
+              twitter_id: Marshal.to_opt(fields, "twitter_id", Json_Decode$JsonCombinators.string)
+            };
+    });
+
+var production_company = Json_Decode$JsonCombinators.object(function (fields) {
+      return {
+              name: Marshal.to_opt(fields, "name", Json_Decode$JsonCombinators.string),
+              origin_country: Marshal.to_opt(fields, "origin_country", Json_Decode$JsonCombinators.string)
+            };
+    });
+
+var videos = Json_Decode$JsonCombinators.object(function (fields) {
+      return {
+              results: Marshal.to_opt(fields, "results", Json_Decode$JsonCombinators.array(video))
+            };
+    });
+
+var credits = Json_Decode$JsonCombinators.object(function (fields) {
+      return {
+              cast: Marshal.to_opt(fields, "cast", Json_Decode$JsonCombinators.array(cast)),
+              crew: Marshal.to_opt(fields, "crew", Json_Decode$JsonCombinators.array(crew))
+            };
+    });
+
 var detail_movie = Json_Decode$JsonCombinators.object(function (fields) {
       return {
               adult: Marshal.to_opt(fields, "adult", Json_Decode$JsonCombinators.bool),
               backdrop_path: Marshal.to_opt(fields, "backdrop_path", Json_Decode$JsonCombinators.string),
-              genre_ids: Marshal.to_opt(fields, "genre_ids", Json_Decode$JsonCombinators.array(GenreModel.GenreDecoder.genre)),
+              genres: Marshal.to_opt(fields, "genres", Json_Decode$JsonCombinators.array(GenreModel.GenreDecoder.genre)),
               id: fields.required("id", Json_Decode$JsonCombinators.$$int),
               original_language: Marshal.to_opt(fields, "original_language", Json_Decode$JsonCombinators.string),
               original_title: Marshal.to_opt(fields, "original_title", Json_Decode$JsonCombinators.string),
@@ -73,16 +102,21 @@ var detail_movie = Json_Decode$JsonCombinators.object(function (fields) {
               video: Marshal.to_opt(fields, "video", Json_Decode$JsonCombinators.bool),
               vote_average: Marshal.to_opt(fields, "vote_average", Json_Decode$JsonCombinators.$$float),
               vote_count: Marshal.to_opt(fields, "vote_count", Json_Decode$JsonCombinators.$$int),
-              videos: Marshal.to_opt(fields, "videos", Json_Decode$JsonCombinators.array(video)),
+              budget: Marshal.to_opt(fields, "budget", Json_Decode$JsonCombinators.$$float),
+              revenue: Marshal.to_opt(fields, "revenue", Json_Decode$JsonCombinators.$$float),
+              external_ids: Marshal.to_opt(fields, "external_ids", external_ids),
+              production_companies: Marshal.to_opt(fields, "production_companies", Json_Decode$JsonCombinators.array(production_company)),
+              videos: Marshal.to_opt(fields, "videos", videos),
               backdrops: Marshal.to_opt(fields, "videos", Json_Decode$JsonCombinators.array(image)),
               posters: Marshal.to_opt(fields, "posters", Json_Decode$JsonCombinators.array(image)),
-              casts: Marshal.to_opt(fields, "casts", Json_Decode$JsonCombinators.array(cast)),
-              crews: Marshal.to_opt(fields, "crews", Json_Decode$JsonCombinators.array(crew))
+              credits: Marshal.to_opt(fields, "credits", credits)
             };
     });
 
 function decode(json) {
-  return Json$JsonCombinators.decode(json, detail_movie);
+  var d = Json$JsonCombinators.decode(json, detail_movie);
+  debugger;
+  return d;
 }
 
 var Decoder = {
@@ -90,6 +124,10 @@ var Decoder = {
   image: image,
   cast: cast,
   crew: crew,
+  external_ids: external_ids,
+  production_company: production_company,
+  videos: videos,
+  credits: credits,
   detail_movie: detail_movie,
   decode: decode
 };

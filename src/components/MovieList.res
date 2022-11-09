@@ -25,7 +25,7 @@ module Poster = {
     let handleClick = e => {
       open ReactEvent.Mouse
       preventDefault(e)
-      setQueryParam(UrlQueryParam.Movie(id))
+      setQueryParam(UrlQueryParam.Movie({id : id}))
     }
 
     <button

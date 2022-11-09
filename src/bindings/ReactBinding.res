@@ -4,12 +4,11 @@ module Suspense = {
     "Suspense"
 }
 
-type props = {"id": option<string>}
 module Lazy = {
-  @val external import_: string => Js.Promise.t<{"make": React.component<props>}> = "import"
+  @val external import_: string => Js.Promise.t<{"make": React.component<unit>}> = "import"
 
   @module("react")
-  external lazy_: (unit => Js.Promise.t<{"default": React.component<props>}>) => React.component<
-    props,
+  external lazy_: (unit => Js.Promise.t<{"default": React.component<unit>}>) => React.component<
+    unit,
   > = "lazy"
 }
