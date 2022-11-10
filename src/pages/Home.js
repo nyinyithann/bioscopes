@@ -163,9 +163,7 @@ function Home(Props) {
                     }, React.createElement("div", {
                           className: "h-auto flex flex-col z-50"
                         }, React.createElement("div", {
-                              className: "" + (
-                                willNavTransparent.contents ? "bg-transparent" : "bg-white"
-                              ) + " sticky top-0 z-50 flex h-14 flex-shrink-0",
+                              className: "bg-white sticky top-0 z-50 flex h-14 flex-shrink-0",
                               id: "navbar"
                             }, React.createElement("button", {
                                   className: "" + (

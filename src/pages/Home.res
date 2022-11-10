@@ -121,11 +121,12 @@ let make = () => {
           : ""} flex flex-1 flex-col h-full`}>
       <div className="w-full flex flex-col flex-1 bg-white">
         <div className="h-auto flex flex-col z-50">
-          <div
-            id="navbar"
-            className={`${willNavTransparent.contents
-                ? "bg-transparent"
-                : "bg-white"} sticky top-0 z-50 flex h-14 flex-shrink-0`}>
+          /* <div */
+          /* id="navbar" */
+          /* className={`${willNavTransparent.contents */
+          /* ? "bg-transparent" */
+          /* : "bg-white"} sticky top-0 z-50 flex h-14 flex-shrink-0`}> */
+          <div id="navbar" className="bg-white sticky top-0 z-50 flex h-14 flex-shrink-0">
             <button
               type_="button"
               className={`${sidebarOpenRef.contents ? "hidden" : "block"} px-4 outline-none`}

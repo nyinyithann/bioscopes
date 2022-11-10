@@ -15,7 +15,7 @@ module HeroText = {
     | None => ""
     }
 
-    <div className=`flex flex-col w-full p-[0.6rem] gap-2 ${textColor}`>
+    <div className={`flex flex-col w-full p-[0.6rem] gap-2 ${textColor}`}>
       <span className="font-nav text-[2rem]"> {title->string} </span>
       <div className="flex w-full gap-4">
         <Rating ratingValue={movie.vote_average} />
@@ -78,6 +78,8 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     (),
   )
 
+  let sotryline = Util.getOrEmptyString(movie.overview)->Util.toStringElement
+
   <div className="flex w-full">
     <div className="flex flex-col w-full">
       <div className="relative flex flex-col w-full">
@@ -105,7 +107,9 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
             />
           : React.null}
         {imgWidthRef.current != 100
-          ? <div id="top-overlayed-image-container" className="z-0 relative flex w-full h-full bg-black">
+          ? <div
+              id="top-overlayed-image-container"
+              className="z-0 relative flex w-full h-full bg-black">
               <div
                 id="overlayed-image-container"
                 style={imageStyle}
@@ -125,7 +129,8 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                 />
               </div>
               <div className="absolute top-[20%] left-[6%] z-50">
-              <HeroText movie textColor="text-white"/>
+                <HeroText movie textColor="text-white" />
+                <span className="break-words w-full flex text-white prose pl-2 pt-2"> sotryline </span>
               </div>
             </div>
           : React.null}

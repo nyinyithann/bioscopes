@@ -90,7 +90,9 @@ let make = () => {
                       </Tab.Panel>
                       <Tab.Panel key="videos-panel">
                         {props => {
-                          <div> {"panel2"->string} </div>
+                          <div className="flex w-full p-2">
+                            <VideoPanel movie={detail_movie} />
+                          </div>
                         }}
                       </Tab.Panel>
                       <Tab.Panel key="photos-panel">
@@ -105,11 +107,6 @@ let make = () => {
             }}
           </Tab.Group>
         </div>
-      </div>
-      /* desktop */
-      <div className="hidden w-full h-[80rem]">
-        <div className="w-2/5 bg-200 border-2" />
-        <div className="w-3/5 bg-green-100 border-2" />
       </div>
     </main>
   }

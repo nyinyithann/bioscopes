@@ -102,6 +102,7 @@ function Hero(Props) {
     height: "" + imgHeightRef.current.toString() + "rem",
     width: "" + imgWidthRef.current.toString() + "vw"
   };
+  var sotryline = Util.toStringElement(Util.getOrEmptyString(movie.overview));
   return React.createElement("div", {
               className: "flex w-full"
             }, React.createElement("div", {
@@ -158,7 +159,9 @@ function Hero(Props) {
                               }, React.createElement(Hero$HeroText, {
                                     movie: movie,
                                     textColor: "text-white"
-                                  }))) : null, match[0] ? null : React.createElement("div", {
+                                  }), React.createElement("span", {
+                                    className: "break-words w-full flex text-white prose pl-2 pt-2"
+                                  }, sotryline))) : null, match[0] ? null : React.createElement("div", {
                             className: "absolute top-[" + (imgHeightRef.current / 2 | 0).toString() + "rem)] w-full h-full flex flex-col items-center justify-center"
                           }, React.createElement(Loading.make, {
                                 className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"

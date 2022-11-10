@@ -144,7 +144,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     ->Util.getOrEmptyString
   let website = movie.homepage->Util.getOrEmptyString
 
-  <div className="flex flex-col w-full prose pl-10">
+  <div className="flex flex-col w-full prose pl-2 sm:pl-10">
     <div className="flex flex-col w-full gap-1">
       <span className="text-[1.2rem] font-semibold"> {Util.toStringElement("Storyline")} </span>
       <span className="break-words w-full flex"> sotryline </span>

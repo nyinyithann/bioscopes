@@ -4,6 +4,7 @@ import * as Hero from "./Hero.js";
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Loading from "../Loading.js";
+import * as VideoPanel from "./VideoPanel.js";
 import * as ErrorDisplay from "../ErrorDisplay.js";
 import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../../providers/MoviesProvider.js";
@@ -117,7 +118,11 @@ function Movie(Props) {
                                                                     key: "overview-panel"
                                                                   }), React.createElement(React$1.Tab.Panel, {
                                                                     children: (function (props) {
-                                                                        return React.createElement("div", undefined, "panel2");
+                                                                        return React.createElement("div", {
+                                                                                    className: "flex w-full p-2"
+                                                                                  }, React.createElement(VideoPanel.make, {
+                                                                                        movie: detail_movie
+                                                                                      }));
                                                                       }),
                                                                     key: "videos-panel"
                                                                   }), React.createElement(React$1.Tab.Panel, {
@@ -129,13 +134,7 @@ function Movie(Props) {
                                                   })
                                               }));
                               })
-                          }))), React.createElement("div", {
-                    className: "hidden w-full h-[80rem]"
-                  }, React.createElement("div", {
-                        className: "w-2/5 bg-200 border-2"
-                      }), React.createElement("div", {
-                        className: "w-3/5 bg-green-100 border-2"
-                      })));
+                          }))));
   }
 }
 

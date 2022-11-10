@@ -214,7 +214,7 @@ function StorylinePanel(Props) {
             })));
   var website = Util.getOrEmptyString(movie.homepage);
   return React.createElement("div", {
-              className: "flex flex-col w-full prose pl-10"
+              className: "flex flex-col w-full prose pl-2 sm:pl-10"
             }, React.createElement("div", {
                   className: "flex flex-col w-full gap-1"
                 }, React.createElement("span", {
