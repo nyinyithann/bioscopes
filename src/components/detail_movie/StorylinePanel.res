@@ -142,14 +142,14 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     movie.external_ids
     ->Belt.Option.flatMap(x => Some(Util.getOrEmptyString(x.instagram_id)))
     ->Util.getOrEmptyString
-let website = movie.homepage -> Util.getOrEmptyString
+  let website = movie.homepage->Util.getOrEmptyString
 
-  <div className="flex flex-col w-full">
+  <div className="flex flex-col w-full prose pl-10">
     <div className="flex flex-col w-full gap-1">
       <span className="text-[1.2rem] font-semibold"> {Util.toStringElement("Storyline")} </span>
-      <span className="prose break-words w-full"> sotryline </span>
+      <span className="break-words w-full flex"> sotryline </span>
     </div>
-    <div className="flex flex-col w-full prose-base pt-4">
+    <div className="flex flex-col w-full pt-4">
       <Pair title={"Released"} value={releasedDate} />
       <Pair title={"Runtime"} value={runtime} />
       <DirectorLink movie onClick={id => DomBinding.pop(Util.itos(id))} />
@@ -164,25 +164,14 @@ let website = movie.homepage -> Util.getOrEmptyString
       <Pair title={"Language"} value={getSpokenLanguages(movie)} />
       <Pair title={"Production"} value={getProductionCompanies(movie)} />
     </div>
-    <div className="flex w-full">
-      <div className="flex w-1/3" />
-      <ul className="flex gap-4 pt-4 w-2/3">
-        <li>
-          <Twitter id={twitterId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-        </li>
-        <li>
-          <Facebook id={facebookId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-        </li>
-        <li>
-          <Instagram id={insgagramId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-        </li>
-        <li>
-          <Imdb id={imdbId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-        </li>
-        <li>
-          <WebsiteLink link={website} className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900" />
-        </li>
-      </ul>
+    <div className="flex w-full justify-start gap-[1.4rem] pt-4">
+      <Twitter id={twitterId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+      <Facebook id={facebookId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+      <Instagram id={insgagramId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+      <Imdb id={imdbId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+      <WebsiteLink
+        link={website} className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
+      />
     </div>
   </div>
 }

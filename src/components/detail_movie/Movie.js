@@ -55,14 +55,14 @@ function Movie(Props) {
     return React.createElement("main", {
                 className: "flex border-t-[2px] border-slate-200"
               }, React.createElement("div", {
-                    className: "flex md:hidden flex-col w-full h-full"
+                    className: "flex flex-col w-full h-full"
                   }, React.createElement("div", {
                         className: "w-full",
                         id: "hero_container"
                       }, React.createElement(Hero.make, {
                             movie: detail_movie
                           })), React.createElement("div", {
-                        className: "w-full flex",
+                        className: "w-full flex pt-1",
                         id: "movie_info_tab_container"
                       }, React.createElement(React$1.Tab.Group, {
                             children: (function (selectedIndex) {
@@ -130,7 +130,7 @@ function Movie(Props) {
                                               }));
                               })
                           }))), React.createElement("div", {
-                    className: "hidden md:flex w-full h-[80rem]"
+                    className: "hidden w-full h-[80rem]"
                   }, React.createElement("div", {
                         className: "w-2/5 bg-200 border-2"
                       }), React.createElement("div", {

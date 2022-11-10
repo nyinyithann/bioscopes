@@ -214,15 +214,15 @@ function StorylinePanel(Props) {
             })));
   var website = Util.getOrEmptyString(movie.homepage);
   return React.createElement("div", {
-              className: "flex flex-col w-full"
+              className: "flex flex-col w-full prose pl-10"
             }, React.createElement("div", {
                   className: "flex flex-col w-full gap-1"
                 }, React.createElement("span", {
                       className: "text-[1.2rem] font-semibold"
                     }, Util.toStringElement("Storyline")), React.createElement("span", {
-                      className: "prose break-words w-full"
+                      className: "break-words w-full flex"
                     }, sotryline)), React.createElement("div", {
-                  className: "flex flex-col w-full prose-base pt-4"
+                  className: "flex flex-col w-full pt-4"
                 }, React.createElement(StorylinePanel$Pair, {
                       title: "Released",
                       value: releasedDate
@@ -255,27 +255,23 @@ function StorylinePanel(Props) {
                       title: "Production",
                       value: getProductionCompanies(movie)
                     })), React.createElement("div", {
-                  className: "flex w-full"
-                }, React.createElement("div", {
-                      className: "flex w-1/3"
-                    }), React.createElement("ul", {
-                      className: "flex gap-4 pt-4 w-2/3"
-                    }, React.createElement("li", undefined, React.createElement(Twitter.make, {
-                              id: twitterId,
-                              className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
-                            })), React.createElement("li", undefined, React.createElement(Facebook.make, {
-                              id: facebookId,
-                              className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
-                            })), React.createElement("li", undefined, React.createElement(Instagram.make, {
-                              id: insgagramId,
-                              className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
-                            })), React.createElement("li", undefined, React.createElement(Imdb.make, {
-                              id: imdbId,
-                              className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
-                            })), React.createElement("li", undefined, React.createElement(WebsiteLink.make, {
-                              link: website,
-                              className: "h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
-                            })))));
+                  className: "flex w-full justify-start gap-[1.4rem] pt-4"
+                }, React.createElement(Twitter.make, {
+                      id: twitterId,
+                      className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                    }), React.createElement(Facebook.make, {
+                      id: facebookId,
+                      className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                    }), React.createElement(Instagram.make, {
+                      id: insgagramId,
+                      className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                    }), React.createElement(Imdb.make, {
+                      id: imdbId,
+                      className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                    }), React.createElement(WebsiteLink.make, {
+                      link: website,
+                      className: "h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
+                    })));
 }
 
 var make = StorylinePanel;

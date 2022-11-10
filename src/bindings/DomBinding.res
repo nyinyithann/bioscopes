@@ -2,7 +2,11 @@
 @set external setTitle: (Dom.document, string) => unit = "title"
 
 @get external matches: Webapi.Dom.Window.mediaQueryList => bool = "matches"
-let checkMediaQuery = query => matches(Webapi.Dom.Window.matchMedia(Webapi.Dom.window, query))
+
+@send external addEventListener: 
+(Webapi.Dom.Window.mediaQueryList, string, Webapi.Dom.Event.t => unit) => unit = "addEventListener"
+
+@send external removeEventListener: (Webapi.Dom.Window.mediaQueryList, string, Webapi.Dom.Event.t => unit) => unit = "removeEventListener"
 
 @send external alert: (Webapi.Dom.Window.t, string) => unit = "alert"
 let pop = msg => alert(Webapi.Dom.window, msg)

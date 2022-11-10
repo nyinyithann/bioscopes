@@ -5,8 +5,8 @@ import * as React from "react";
 import * as GenreList from "../components/GenreList.js";
 import * as SearchBox from "../components/SearchBox.js";
 import * as ThemeMenu from "../components/ThemeMenu.js";
-import * as DomBinding from "../bindings/DomBinding.js";
 import * as Js_promise from "rescript/lib/es6/js_promise.js";
+import * as MediaQuery from "../hooks/MediaQuery.js";
 import * as GithubButton from "../components/GithubButton.js";
 import * as SuspensionLoader from "../components/SuspensionLoader.js";
 import * as React$1 from "@headlessui/react";
@@ -21,6 +21,10 @@ var sidebarOpenRef = {
   contents: false
 };
 
+var willNavTransparent = {
+  contents: false
+};
+
 function Home(Props) {
   var match = React.useState(function () {
         return sidebarOpenRef.contents;
@@ -28,7 +32,7 @@ function Home(Props) {
   var setSidebarOpen = match[1];
   var sidebarOpen = match[0];
   React.useEffect((function () {
-          sidebarOpenRef.contents = DomBinding.checkMediaQuery("(min-width: 600px)");
+          sidebarOpenRef.contents = MediaQuery.matchMedia("(min-width: 600px)");
         }), []);
   React.useEffect((function () {
           sidebarOpenRef.contents = sidebarOpen;
@@ -62,12 +66,12 @@ function Home(Props) {
   var component;
   var exit = 0;
   if (match$1) {
-    var exit$1 = 0;
     switch (match$1.hd) {
       case "movie" :
           if (match$1.tl) {
             exit = 1;
           } else {
+            willNavTransparent.contents = true;
             component = React.createElement(SuspensionLoader.make, {
                   children: lazyMovie
                 });
@@ -84,28 +88,25 @@ function Home(Props) {
           break;
       case "genre" :
       case "search" :
-          exit$1 = 2;
+          exit = match$1.tl ? 1 : 2;
           break;
       default:
         exit = 1;
     }
-    if (exit$1 === 2) {
-      if (match$1.tl) {
-        exit = 1;
-      } else {
+  } else {
+    exit = 2;
+  }
+  switch (exit) {
+    case 1 :
+        component = React.createElement("div", undefined, "Todo: To create a proper component to display message");
+        break;
+    case 2 :
+        willNavTransparent.contents = false;
         component = React.createElement(SuspensionLoader.make, {
               children: lazyMovieList
             });
-      }
-    }
+        break;
     
-  } else {
-    component = React.createElement(SuspensionLoader.make, {
-          children: lazyMovieList
-        });
-  }
-  if (exit === 1) {
-    component = React.createElement("div", undefined, "Todo: To create a proper component to display message");
   }
   return React.createElement("div", undefined, React.createElement("div", {
                   className: "w-[12rem] sm:w-[14rem] md:w-[16rem]"
@@ -162,7 +163,9 @@ function Home(Props) {
                     }, React.createElement("div", {
                           className: "h-auto flex flex-col z-50"
                         }, React.createElement("div", {
-                              className: "sticky top-0 z-50 flex h-14 flex-shrink-0 bg-white",
+                              className: "" + (
+                                willNavTransparent.contents ? "bg-transparent" : "bg-white"
+                              ) + " sticky top-0 z-50 flex h-14 flex-shrink-0",
                               id: "navbar"
                             }, React.createElement("button", {
                                   className: "" + (
@@ -197,6 +200,7 @@ var make = Home;
 export {
   string ,
   sidebarOpenRef ,
+  willNavTransparent ,
   make ,
 }
 /* react Not a pure module */

@@ -47,7 +47,7 @@ function MovieList$Poster(Props) {
               type: "button",
               onClick: handleClick
             }, React.createElement($$Image.make, {
-                  overlayEnabled: true,
+                  overlayEnabled: false,
                   lazyLoadEnabled: true,
                   lazyLoadOffset: 50,
                   className: "flex-shrink-0 group-hover:saturate-150 border-[2px] border-slate-200 rounded-md",
@@ -62,7 +62,7 @@ function MovieList$Poster(Props) {
                 }), React.createElement("p", {
                   className: "" + (
                     title$1.length > 50 ? "text-[0.7rem]" : "text-[0.95rem]"
-                  ) + " break-words transform duration-300 group-hover:text-yellow-200 pt-[0.3rem] flex justify-center items-center text-center"
+                  ) + " break-words transform duration-300 group-hover:text-yellow-200 pt-[0.3rem] flex justify-center items-center text-center text-900"
                 }, title$1), React.createElement(Rating.make, {
                   ratingValue: vote_average
                 }), releaseYear.length === 4 ? React.createElement("div", {

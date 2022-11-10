@@ -1,6 +1,7 @@
 let {string} = module(React)
 
 let sidebarOpenRef = ref(false)
+let willNavTransparent = ref(false)
 
 @react.component
 let make = () => {
@@ -8,7 +9,7 @@ let make = () => {
   let (sidebarOpen, setSidebarOpen) = React.useState(_ => sidebarOpenRef.contents)
 
   React.useEffect0(() => {
-    sidebarOpenRef.contents = DomBinding.checkMediaQuery("(min-width: 600px)")
+    sidebarOpenRef.contents = MediaQuery.matchMedia("(min-width: 600px)")
     None
   })
 
@@ -52,9 +53,16 @@ let make = () => {
   let component = switch url.path {
   | list{}
   | list{"genre"}
-  | list{"search"} =>
-    <SuspensionLoader> lazyMovieList </SuspensionLoader>
-  | list{"movie"} => <SuspensionLoader> lazyMovie </SuspensionLoader>
+  | list{"search"} => {
+      willNavTransparent.contents = false
+      <SuspensionLoader> lazyMovieList </SuspensionLoader>
+    }
+
+  | list{"movie"} => {
+      willNavTransparent.contents = true
+      <SuspensionLoader> lazyMovie </SuspensionLoader>
+    }
+
   | list{"person"} => <SuspensionLoader> lazyPerson </SuspensionLoader>
   | _ => <div> {"Todo: To create a proper component to display message"->string} </div>
   }
@@ -113,7 +121,11 @@ let make = () => {
           : ""} flex flex-1 flex-col h-full`}>
       <div className="w-full flex flex-col flex-1 bg-white">
         <div className="h-auto flex flex-col z-50">
-          <div id="navbar" className="sticky top-0 z-50 flex h-14 flex-shrink-0 bg-white">
+          <div
+            id="navbar"
+            className={`${willNavTransparent.contents
+                ? "bg-transparent"
+                : "bg-white"} sticky top-0 z-50 flex h-14 flex-shrink-0`}>
             <button
               type_="button"
               className={`${sidebarOpenRef.contents ? "hidden" : "block"} px-4 outline-none`}

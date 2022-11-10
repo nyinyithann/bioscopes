@@ -4,7 +4,7 @@ import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Loading from "./Loading.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
-import * as DomBinding from "../bindings/DomBinding.js";
+import * as MediaQuery from "../hooks/MediaQuery.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import ReactLazyLoad from "react-lazy-load";
 
@@ -64,7 +64,7 @@ function $$Image(Props) {
         return false;
       });
   var setErr = match$1[1];
-  var isMobile = DomBinding.checkMediaQuery(Js_option.getWithDefault("(max-width: 600px)", sm_mediaQuery));
+  var isMobile = MediaQuery.matchMedia(Js_option.getWithDefault("(max-width: 600px)", sm_mediaQuery));
   var cn = isMobile ? "w-[" + Js_option.getWithDefault(0, width).toString() + "px] h-[" + Js_option.getWithDefault(0, height).toString() + "px] " + Js_option.getWithDefault("", className) + "" : "w-[" + Js_option.getWithDefault(0, sm_width).toString() + "px] h-[" + Js_option.getWithDefault(0, sm_height).toString() + "px] " + Js_option.getWithDefault("", className) + "";
   var w = (
       isMobile ? Js_option.getWithDefault(0, width) : Js_option.getWithDefault(0, sm_width)

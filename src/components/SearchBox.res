@@ -34,11 +34,11 @@ let make = () => {
     id="search-container"
     className="relative w-[12rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center">
     <div className="pointer-events-none absolute inset-y-0 left-1 flex items-center">
-      <Heroicons.Solid.SearchIcon className="h-5 w-5" />
+      <Heroicons.Solid.SearchIcon className="h-5 w-5 fill-klor-400" />
     </div>
     <input
       id="search-field"
-      className="block w-full rounded-md pl-[2rem] text-gray-900 placeholder-slate-400 outline-none ring-0 border-0 bg-200 hover:bg-300 focus:bg-300 focus:border-[1px] focus:border-slate-100 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm"
+      className="block w-full rounded-md pl-[2rem] placeholder-klor-400 outline-none ring-0 border-0 bg-200 hover:bg-300 focus:bg-300 focus:border-[1px] focus:border-slate-100 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm text-900"
       ref={ReactDOM.Ref.domRef(inputRef)}
       placeholder="Search"
       type_="search"

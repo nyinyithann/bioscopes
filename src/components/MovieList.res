@@ -36,7 +36,7 @@ module Poster = {
         alt="A poster"
         src={imgLink}
         className="flex-shrink-0 group-hover:saturate-150 border-[2px] border-slate-200 rounded-md"
-        overlayEnabled={true}
+        overlayEnabled={false}
         lazyLoadEnabled={true}
         lazyLoadOffset={50.}
         width={160.}
@@ -49,7 +49,7 @@ module Poster = {
       <p
         className={`${length(title) > 50
             ? "text-[0.7rem]"
-            : "text-[0.95rem]"} break-words transform duration-300 group-hover:text-yellow-200 pt-[0.3rem] flex justify-center items-center text-center`}>
+            : "text-[0.95rem]"} break-words transform duration-300 group-hover:text-yellow-200 pt-[0.3rem] flex justify-center items-center text-center text-900`}>
         {title->string}
       </p>
       <Rating ratingValue={vote_average} />

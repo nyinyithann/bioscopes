@@ -75,6 +75,10 @@ module.exports = {
         800: withOpacityValue('--color-primary-800'),
         900: withOpacityValue('--color-primary-900'),
       },
+      backgroundImage: {
+        'gradient-title_1': `linear-gradient(90deg,#000 0,transparent 50%,transparent)`,
+        'gradient-title': `linear-gradient(90deg,#000 0,transparent 80%,transparent)`,
+      },
       ringColor: {
         transparent: 'var(--color-primary-transparent)',
         50: withOpacityValue('--color-primary-50'),
