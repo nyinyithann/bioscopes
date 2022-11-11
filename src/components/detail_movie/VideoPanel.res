@@ -39,7 +39,9 @@ module VideoImage = {
               />
               <div
                 className="absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-50 bg-opacity-0 sm:bg-opacity-10 hover:bg-opacity-0 hover:cursor-pointer group">
-                <Heroicons.Solid.PlayIcon className="h-12 w-12 fill-klor-100 stroke-white group-hover:fill-klor-300" />
+                <Heroicons.Solid.PlayIcon
+                  className="h-12 w-12 fill-klor-100 stroke-white group-hover:fill-klor-300"
+                />
               </div>
             </div>
           </>
@@ -51,13 +53,16 @@ module VideoImage = {
 @react.component
 let make = (~movie: DetailMovieModel.detail_movie) => {
   let videos = getVideos(~movie)
-  <div className="flex flex-wrap flex-shrink-0 gap-4 w-full items-center justify-start">
-    {videos
-    ->Belt.Array.map(video =>
-      <VideoImage
-        key={Util.getOrEmptyString(video.key)} video className="w-full h-[16rem]"
-      />
-    )
-    ->array}
-  </div>
+  if Util.isEmptyArray(videos) {
+    <NotAvailable thing={"videos"} />
+  } else {
+    <div
+      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full">
+      {videos
+      ->Belt.Array.map(video =>
+        <VideoImage key={Util.getOrEmptyString(video.key)} video className="w-full" />
+      )
+      ->array}
+    </div>
+  }
 }

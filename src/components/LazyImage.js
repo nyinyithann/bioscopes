@@ -8,25 +8,7 @@ import * as MediaQuery from "../hooks/MediaQuery.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import ReactLazyLoad from "react-lazy-load";
 
-function Image$OverlayLayer(Props) {
-  var className = Props.className;
-  var enabled = Props.enabled;
-  var children = Props.children;
-  var cn = "" + Js_option.getWithDefault("", className) + " flex flex-col items-center justify-center\"";
-  if (Js_option.getWithDefault(false, enabled)) {
-    return React.createElement("div", {
-                className: cn
-              }, Js_option.getWithDefault(null, children));
-  } else {
-    return React.createElement(React.Fragment, undefined, Js_option.getWithDefault(null, children));
-  }
-}
-
-var OverlayLayer = {
-  make: Image$OverlayLayer
-};
-
-function Image$LazyLoadWrapper(Props) {
+function LazyImage$LazyLoadWrapper(Props) {
   var enabled = Props.enabled;
   var height = Props.height;
   var offset = Props.offset;
@@ -39,15 +21,13 @@ function Image$LazyLoadWrapper(Props) {
 }
 
 var LazyLoadWrapper = {
-  make: Image$LazyLoadWrapper
+  make: LazyImage$LazyLoadWrapper
 };
 
-function $$Image(Props) {
-  var overlayClass = Props.overlayClass;
-  var overlayEnabled = Props.overlayEnabled;
+function LazyImage(Props) {
+  var className = Props.className;
   var lazyLoadEnabled = Props.lazyLoadEnabled;
   var lazyLoadOffset = Props.lazyLoadOffset;
-  var className = Props.className;
   var width = Props.width;
   var height = Props.height;
   var sm_width = Props.sm_width;
@@ -108,22 +88,17 @@ function $$Image(Props) {
                     className: "absolute top-[calc(h /. 2.)] w-full h-full flex flex-col items-center justify-center animate-pulse bg-50"
                   }, React.createElement(Loading.make, {
                         className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
-                      })), React.createElement(Image$OverlayLayer, {
-                  className: Js_option.getWithDefault("", overlayClass),
-                  enabled: Js_option.getWithDefault(false, overlayEnabled),
-                  children: React.createElement(Image$LazyLoadWrapper, {
-                        enabled: Js_option.getWithDefault(false, lazyLoadEnabled),
-                        height: isMobile ? Js_option.getWithDefault(0, height) : Js_option.getWithDefault(0, sm_height),
-                        offset: Js_option.getWithDefault(0, lazyLoadOffset),
-                        children: React.createElement("img", tmp)
-                      })
+                      })), React.createElement(LazyImage$LazyLoadWrapper, {
+                  enabled: Js_option.getWithDefault(false, lazyLoadEnabled),
+                  height: isMobile ? Js_option.getWithDefault(0, height) : Js_option.getWithDefault(0, sm_height),
+                  offset: Js_option.getWithDefault(0, lazyLoadOffset),
+                  children: React.createElement("img", tmp)
                 }));
 }
 
-var make = $$Image;
+var make = LazyImage;
 
 export {
-  OverlayLayer ,
   LazyLoadWrapper ,
   make ,
 }

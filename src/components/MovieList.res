@@ -32,11 +32,10 @@ module Poster = {
       type_="button"
       className="relative flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md"
       onClick={handleClick}>
-      <Image
+      <LazyImage
         alt="A poster"
         src={imgLink}
         className="flex-shrink-0 group-hover:saturate-150 border-[2px] border-slate-200 rounded-md"
-        overlayEnabled={false}
         lazyLoadEnabled={true}
         lazyLoadOffset={50.}
         width={160.}

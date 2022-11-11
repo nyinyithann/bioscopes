@@ -7,6 +7,7 @@ import * as React from "react";
 import * as Loading from "../Loading.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
+import * as NotAvailable from "./NotAvailable.js";
 import * as Solid from "@heroicons/react/solid";
 
 function string(prim) {
@@ -75,15 +76,21 @@ var VideoImage = {
 function VideoPanel(Props) {
   var movie = Props.movie;
   var videos = getVideos(movie);
-  return React.createElement("div", {
-              className: "flex flex-wrap flex-shrink-0 gap-4 w-full items-center justify-start"
-            }, Belt_Array.map(videos, (function (video) {
-                    return React.createElement(VideoPanel$VideoImage, {
-                                video: video,
-                                className: "w-full h-[16rem]",
-                                key: Util.getOrEmptyString(video.key)
-                              });
-                  })));
+  if (Util.isEmptyArray(videos)) {
+    return React.createElement(NotAvailable.make, {
+                thing: "videos"
+              });
+  } else {
+    return React.createElement("div", {
+                className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full"
+              }, Belt_Array.map(videos, (function (video) {
+                      return React.createElement(VideoPanel$VideoImage, {
+                                  video: video,
+                                  className: "w-full",
+                                  key: Util.getOrEmptyString(video.key)
+                                });
+                    })));
+  }
 }
 
 var make = VideoPanel;

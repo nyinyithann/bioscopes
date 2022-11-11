@@ -34,11 +34,11 @@ function StorylinePanel$Pair(Props) {
   if (Util.isEmptyString(value)) {
     return null;
   } else {
-    return React.createElement("div", {
+    return React.createElement("dl", {
                 className: "flex w-full"
-              }, React.createElement("span", {
+              }, React.createElement("dt", {
                     className: "w-1/3 overflow-ellipsis"
-                  }, Util.toStringElement(title)), React.createElement("span", {
+                  }, Util.toStringElement(title)), React.createElement("dd", {
                     className: "w-2/3 overflow-ellipsis"
                   }, Util.toStringElement(value)));
   }
@@ -191,7 +191,7 @@ function StorylinePanel(Props) {
   }
   var x$1 = movie.runtime;
   var runtime;
-  if (x$1 !== undefined) {
+  if (x$1 !== undefined && x$1 !== 0) {
     var t = x$1 | 0;
     runtime = "" + Util.itos(t / 60 | 0) + "h " + Util.itos(t % 60) + "min";
   } else {
@@ -219,7 +219,7 @@ function StorylinePanel(Props) {
                   className: "flex flex-col w-full gap-1"
                 }, React.createElement("span", {
                       className: "text-[1.2rem] font-semibold"
-                    }, Util.toStringElement("Storyline")), React.createElement("span", {
+                    }, "Storyline"), React.createElement("span", {
                       className: "break-words w-full flex"
                     }, sotryline)), React.createElement("div", {
                   className: "flex flex-col w-full pt-4"

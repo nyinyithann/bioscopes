@@ -54,15 +54,15 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     if isMobile {
       setSize(_ => {width: 100, height: 16})
     } else if isSmallScreen {
-      setSize(_ => {width: 100, height: 26})
+      setSize(_ => {width: 100, height: 26}) 
     } else if isMediumScreen {
-      setSize(_ => {width: 100, height: 28})
+      setSize(_ => {width: 100, height: 28})  
     } else if isLargeScreen {
-      setSize(_ => {width: 70, height: 34})
+      setSize(_ => {width: 70, height: 32}) 
     } else if isVeryLargeScreen {
       setSize(_ => {width: 70, height: 46})
     } else {
-      setSize(_ => {width: 70, height: 34})
+      setSize(_ => {width: 70, height: 32}) 
     }
   }
   let handleWindowSizeChange = _ => updateLayout()

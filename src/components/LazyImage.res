@@ -1,13 +1,3 @@
-module OverlayLayer = {
-  @react.component
-  let make = (~className=?, ~enabled=?, ~children=?) => {
-    let cn = `${Js.Option.getWithDefault("", className)} flex flex-col items-center justify-center"`
-    Js.Option.getWithDefault(false, enabled)
-      ? <div className={cn}> {Js.Option.getWithDefault(React.null, children)} </div>
-      : <> {Js.Option.getWithDefault(React.null, children)} </>
-  }
-}
-
 module LazyLoadWrapper = {
   @react.component
   let make = (~enabled, ~height, ~offset, ~children) => {
@@ -17,11 +7,9 @@ module LazyLoadWrapper = {
 
 @react.component
 let make = (
-  ~overlayClass=?,
-  ~overlayEnabled=?,
+  ~className=?,
   ~lazyLoadEnabled=?,
   ~lazyLoadOffset=?,
-  ~className=?,
   ~width=?,
   ~height=?,
   ~sm_width=?,
@@ -58,27 +46,24 @@ let make = (
           />
         </div>
       : React.null}
-    <OverlayLayer
-      className={getWithDefault("", overlayClass)} enabled={getWithDefault(false, overlayEnabled)}>
-      <LazyLoadWrapper
-        enabled={getWithDefault(false, lazyLoadEnabled)}
-        offset={getWithDefault(0., lazyLoadOffset)}
-        height={isMobile ? getWithDefault(0., height) : getWithDefault(0., sm_height)}>
-        <img
-          className={cn}
-          style={imgStyle}
-          src
-          ?alt
-          onLoad={_ => setLoaded(_ => true)}
-          onError={e => {
-            setErr(_ => true)
-            open ReactEvent.Media
-            if target(e)["src"] !== placeholderPath {
-              target(e)["src"] = placeholderPath
-            }
-          }}
-        />
-      </LazyLoadWrapper>
-    </OverlayLayer>
+    <LazyLoadWrapper
+      enabled={getWithDefault(false, lazyLoadEnabled)}
+      offset={getWithDefault(0., lazyLoadOffset)}
+      height={isMobile ? getWithDefault(0., height) : getWithDefault(0., sm_height)}>
+      <img
+        className={cn}
+        style={imgStyle}
+        src
+        ?alt
+        onLoad={_ => setLoaded(_ => true)}
+        onError={e => {
+          setErr(_ => true)
+          open ReactEvent.Media
+          if target(e)["src"] !== placeholderPath {
+            target(e)["src"] = placeholderPath
+          }
+        }}
+      />
+    </LazyLoadWrapper>
   </div>
 }

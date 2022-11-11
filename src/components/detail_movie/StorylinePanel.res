@@ -5,10 +5,10 @@ module Pair = {
   let make = (~title, ~value) => {
     Util.isEmptyString(value)
       ? React.null
-      : <div className="flex w-full">
-          <span className="w-1/3 overflow-ellipsis"> {Util.toStringElement(title)} </span>
-          <span className="w-2/3 overflow-ellipsis"> {Util.toStringElement(value)} </span>
-        </div>
+      : <dl className="flex w-full">
+          <dt className="w-1/3 overflow-ellipsis"> {Util.toStringElement(title)} </dt>
+          <dd className="w-2/3 overflow-ellipsis"> {Util.toStringElement(value)} </dd>
+        </dl>
   }
 }
 
@@ -115,7 +115,9 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     }
   | None => ""
   }
+
   let runtime = switch movie.runtime {
+  | Some(x) if x == 0. => ""
   | Some(x) => {
       let t = int_of_float(x)
       `${(t / 60)->Util.itos}h ${mod(t, 60)->Util.itos}min`
@@ -146,7 +148,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
 
   <div className="flex flex-col w-full prose pl-2 sm:pl-10">
     <div className="flex flex-col w-full gap-1">
-      <span className="text-[1.2rem] font-semibold"> {Util.toStringElement("Storyline")} </span>
+      <span className="text-[1.2rem] font-semibold"> {"Storyline"->string} </span>
       <span className="break-words w-full flex"> sotryline </span>
     </div>
     <div className="flex flex-col w-full pt-4">

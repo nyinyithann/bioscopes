@@ -104,7 +104,7 @@ function Hero(Props) {
       return Curry._1(setSize, (function (param) {
                     return {
                             width: 70,
-                            height: 34
+                            height: 32
                           };
                   }));
     } else if (isVeryLargeScreen) {
@@ -118,7 +118,7 @@ function Hero(Props) {
       return Curry._1(setSize, (function (param) {
                     return {
                             width: 70,
-                            height: 34
+                            height: 32
                           };
                   }));
     }
