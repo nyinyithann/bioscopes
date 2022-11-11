@@ -61,46 +61,82 @@ function Hero(Props) {
         return false;
       });
   var setLoaded = match[1];
-  var isMobile = MediaQuery.useMediaQuery("(max-width: 600px)");
-  var isSmallScreen = MediaQuery.useMediaQuery("(max-width: 700px)");
-  var isMediumScreen = MediaQuery.useMediaQuery("(max-width: 1000px)");
-  var isLargeScreen = MediaQuery.useMediaQuery("(max-width: 1300px)");
-  var isVeryLargeScreen = MediaQuery.useMediaQuery("(min-width: 1500px)");
   var imgPathRef = React.useRef("");
-  var imgHeightRef = React.useRef(18);
-  var imgWidthRef = React.useRef(100);
+  var match$1 = React.useState(function () {
+        return {
+                width: 100,
+                height: 18
+              };
+      });
+  var setSize = match$1[1];
+  var size = match$1[0];
   React.useMemo((function () {
           imgPathRef.current = Links.getOriginalBigImage(Util.getOrEmptyString(movie.backdrop_path));
         }), [movie]);
-  React.useLayoutEffect((function () {
-          if (isMobile) {
-            imgHeightRef.current = 16;
-            imgWidthRef.current = 100;
-          } else if (isSmallScreen) {
-            imgHeightRef.current = 26;
-            imgWidthRef.current = 100;
-          } else if (isMediumScreen) {
-            imgHeightRef.current = 28;
-            imgWidthRef.current = 100;
-          } else if (isLargeScreen || !isVeryLargeScreen) {
-            imgHeightRef.current = 34;
-            imgWidthRef.current = 70;
-          } else {
-            imgHeightRef.current = 46;
-            imgWidthRef.current = 70;
-          }
-        }), [
-        movie,
-        isMobile,
-        isSmallScreen,
-        isMediumScreen,
-        isLargeScreen,
-        isVeryLargeScreen
-      ]);
+  var updateLayout = function (param) {
+    var isMobile = MediaQuery.matchMedia("(max-width: 600px)");
+    var isSmallScreen = MediaQuery.matchMedia("(max-width: 700px)");
+    var isMediumScreen = MediaQuery.matchMedia("(max-width: 1000px)");
+    var isLargeScreen = MediaQuery.matchMedia("(max-width: 1300px)");
+    var isVeryLargeScreen = MediaQuery.matchMedia("(min-width: 1500px)");
+    if (isMobile) {
+      return Curry._1(setSize, (function (param) {
+                    return {
+                            width: 100,
+                            height: 16
+                          };
+                  }));
+    } else if (isSmallScreen) {
+      return Curry._1(setSize, (function (param) {
+                    return {
+                            width: 100,
+                            height: 26
+                          };
+                  }));
+    } else if (isMediumScreen) {
+      return Curry._1(setSize, (function (param) {
+                    return {
+                            width: 100,
+                            height: 28
+                          };
+                  }));
+    } else if (isLargeScreen) {
+      return Curry._1(setSize, (function (param) {
+                    return {
+                            width: 70,
+                            height: 34
+                          };
+                  }));
+    } else if (isVeryLargeScreen) {
+      return Curry._1(setSize, (function (param) {
+                    return {
+                            width: 70,
+                            height: 46
+                          };
+                  }));
+    } else {
+      return Curry._1(setSize, (function (param) {
+                    return {
+                            width: 70,
+                            height: 34
+                          };
+                  }));
+    }
+  };
+  var handleWindowSizeChange = function (param) {
+    updateLayout(undefined);
+  };
+  React.useEffect((function () {
+          updateLayout(undefined);
+          window.addEventListener("resize", handleWindowSizeChange);
+          return (function (param) {
+                    window.removeEventListener("resize", handleWindowSizeChange);
+                  });
+        }), []);
   var tagline = Util.getOrEmptyString(movie.tagline);
   var imageStyle = {
-    height: "" + imgHeightRef.current.toString() + "rem",
-    width: "" + imgWidthRef.current.toString() + "vw"
+    height: "" + size.height.toString() + "rem",
+    width: "" + size.width.toString() + "vw"
   };
   var sotryline = Util.toStringElement(Util.getOrEmptyString(movie.overview));
   return React.createElement("div", {
@@ -111,9 +147,9 @@ function Hero(Props) {
                       className: "relative flex flex-col w-full"
                     }, Util.isEmptyString(tagline) ? null : React.createElement("span", {
                             className: "" + (
-                              imgWidthRef.current === 100 ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full pr-4" : "top-0 left-0 text-[1.4rem] rounded-br-full pr-8"
+                              size.width === 100 ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full pr-4" : "top-0 left-0 text-[1.4rem] rounded-br-full pr-8"
                             ) + " absolute z-50 p-1 w-auto font-nav font-extrabold text-500 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-20"
-                          }, Util.toStringElement(tagline)), imgWidthRef.current === 100 ? React.createElement("img", {
+                          }, Util.toStringElement(tagline)), size.width === 100 ? React.createElement("img", {
                             className: "w-full transition transform ease-in-out duration-100 ml-auto z-0",
                             style: imageStyle,
                             alt: "Poster",
@@ -130,7 +166,7 @@ function Hero(Props) {
                                         return true;
                                       }));
                               })
-                          }) : null, imgWidthRef.current !== 100 ? React.createElement("div", {
+                          }) : null, size.width !== 100 ? React.createElement("div", {
                             className: "z-0 relative flex w-full h-full bg-black",
                             id: "top-overlayed-image-container"
                           }, React.createElement("div", {
@@ -162,10 +198,10 @@ function Hero(Props) {
                                   }), React.createElement("span", {
                                     className: "break-words w-full flex text-white prose pl-2 pt-2"
                                   }, sotryline))) : null, match[0] ? null : React.createElement("div", {
-                            className: "absolute top-[" + (imgHeightRef.current / 2 | 0).toString() + "rem)] w-full h-full flex flex-col items-center justify-center"
+                            className: "absolute top-[" + (size.height / 2 | 0).toString() + "rem)] w-full h-full flex flex-col items-center justify-center"
                           }, React.createElement(Loading.make, {
                                 className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
-                              }))), imgWidthRef.current === 100 ? React.createElement(Hero$HeroText, {
+                              }))), size.width === 100 ? React.createElement(Hero$HeroText, {
                         movie: movie,
                         textColor: "text-900"
                       }) : null));

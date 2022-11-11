@@ -38,7 +38,7 @@ module VideoImage = {
                 }}
               />
               <div
-                className="absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-50 bg-opacity-0 sm:bg-opacity-20 hover:bg-opacity-0 group">
+                className="absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-50 bg-opacity-0 sm:bg-opacity-10 hover:bg-opacity-0 hover:cursor-pointer group">
                 <Heroicons.Solid.PlayIcon className="h-12 w-12 fill-klor-100 stroke-white group-hover:fill-klor-300" />
               </div>
             </div>

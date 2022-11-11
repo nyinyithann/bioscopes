@@ -64,7 +64,7 @@ function $$Image(Props) {
         return false;
       });
   var setErr = match$1[1];
-  var isMobile = MediaQuery.matchMedia(Js_option.getWithDefault("(max-width: 600px)", sm_mediaQuery));
+  var isMobile = MediaQuery.useMediaQuery(Js_option.getWithDefault("(max-width: 600px)", sm_mediaQuery));
   var cn = isMobile ? "w-[" + Js_option.getWithDefault(0, width).toString() + "px] h-[" + Js_option.getWithDefault(0, height).toString() + "px] " + Js_option.getWithDefault("", className) + "" : "w-[" + Js_option.getWithDefault(0, sm_width).toString() + "px] h-[" + Js_option.getWithDefault(0, sm_height).toString() + "px] " + Js_option.getWithDefault("", className) + "";
   var w = (
       isMobile ? Js_option.getWithDefault(0, width) : Js_option.getWithDefault(0, sm_width)

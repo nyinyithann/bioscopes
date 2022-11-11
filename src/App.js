@@ -78,17 +78,17 @@ function App(Props) {
         break;
     
   }
-  var match$1 = ThemeHook.useTheme("theme-gray");
+  var match$1 = ThemeHook.useTheme("theme-emerald");
   return React.createElement(ThemeSwitchProvider.make, {
               value: match$1[1],
               children: React.createElement("div", {
                     className: "" + match$1[0] + " flex flex-col"
-                  }, React.createElement(ErrorBoundary.make, {
-                        children: React.createElement(MoviesProvider.make, {
-                              children: React.createElement("div", {
-                                    className: "h-screen bg-white dark:bg-slate-500"
-                                  }, React.createElement("div", undefined, component))
-                            })
+                  }, React.createElement(MoviesProvider.make, {
+                        children: React.createElement("div", {
+                              className: "h-screen bg-white dark:bg-slate-500"
+                            }, React.createElement(ErrorBoundary.make, {
+                                  children: component
+                                }))
                       }))
             });
 }

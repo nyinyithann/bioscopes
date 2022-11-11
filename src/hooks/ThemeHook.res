@@ -1,4 +1,4 @@
-let themeKey = "RescriptTailwindTemplate_Theme"
+let themeKey = "Bioscopes_theme_key"
 
 let useTheme = defaultTheme => {
   open Dom.Storage2
@@ -18,11 +18,7 @@ let useTheme = defaultTheme => {
       localStorage->setItem(themeKey, themeName)
       ignore(setStoredTheme(_prev => themeName))
     } catch {
-    | Js.Exn.Error(e) =>
-      switch Js.Exn.message(e) {
-      | Some(msg) => Js.log(msg)
-      | None => ()
-      }
+    | _ => ()
     }
   }
 

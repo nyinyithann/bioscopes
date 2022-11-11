@@ -10,11 +10,8 @@ let useMediaQuery = (query: string): bool => {
 
   React.useEffect1(() => {
     setMatches(_ => matchMedia(query))
-
-    let matchMediaQueryList = getMatchMedia(query)
-    matchMediaQueryList->addEventListener("change", handleChange)
-
-    Some(() => matchMediaQueryList->removeEventListener("change", handleChange))
+    Webapi.Dom.Window.addEventListener(Webapi__Dom.window, "resize", handleChange)
+    Some(() => Webapi.Dom.Window.removeEventListener(Webapi__Dom.window, "resize", handleChange))
   }, [query])
 
   matches

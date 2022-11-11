@@ -2,10 +2,8 @@
 
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
-import * as Js_exn from "rescript/lib/es6/js_exn.js";
-import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
-var themeKey = "RescriptTailwindTemplate_Theme";
+var themeKey = "Bioscopes_theme_key";
 
 function useTheme(defaultTheme) {
   var match = React.useState(function () {
@@ -30,18 +28,8 @@ function useTheme(defaultTheme) {
             }));
       return ;
     }
-    catch (raw_e){
-      var e = Caml_js_exceptions.internalToOCamlException(raw_e);
-      if (e.RE_EXN_ID === Js_exn.$$Error) {
-        var msg = e._1.message;
-        if (msg !== undefined) {
-          console.log(msg);
-          return ;
-        } else {
-          return ;
-        }
-      }
-      throw e;
+    catch (exn){
+      return ;
     }
   };
   return [

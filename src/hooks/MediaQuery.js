@@ -25,10 +25,9 @@ function useMediaQuery(query) {
           Curry._1(setMatches, (function (param) {
                   return window.matchMedia(query).matches;
                 }));
-          var matchMediaQueryList = window.matchMedia(query);
-          matchMediaQueryList.addEventListener("change", handleChange);
+          window.addEventListener("resize", handleChange);
           return (function (param) {
-                    matchMediaQueryList.removeEventListener("change", handleChange);
+                    window.removeEventListener("resize", handleChange);
                   });
         }), [query]);
   return match[0];

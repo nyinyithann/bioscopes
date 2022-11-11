@@ -35,7 +35,7 @@ let make = (
   open Js.Float
   let (loaded, setLoaded) = React.useState(_ => false)
   let (err, setErr) = React.useState(_ => false)
-  let isMobile = MediaQuery.matchMedia(getWithDefault("(max-width: 600px)", sm_mediaQuery))
+  let isMobile = MediaQuery.useMediaQuery(getWithDefault("(max-width: 600px)", sm_mediaQuery))
   let cn = isMobile
     ? `w-[${getWithDefault(0., width)->toString}px] h-[${getWithDefault(
           0.,

@@ -29,52 +29,58 @@ module HeroText = {
   }
 }
 
+type size = {
+  width: int,
+  height: int,
+}
+
 @react.component
 let make = (~movie: DetailMovieModel.detail_movie) => {
   let (loaded, setLoaded) = React.useState(_ => false)
-
-  let isMobile = MediaQuery.useMediaQuery("(max-width: 600px)")
-  let isSmallScreen = MediaQuery.useMediaQuery("(max-width: 700px)")
-  let isMediumScreen = MediaQuery.useMediaQuery("(max-width: 1000px)")
-  let isLargeScreen = MediaQuery.useMediaQuery("(max-width: 1300px)")
-  let isVeryLargeScreen = MediaQuery.useMediaQuery("(min-width: 1500px)")
-
   let imgPathRef = React.useRef("")
-  let imgHeightRef = React.useRef(18)
-  let imgWidthRef = React.useRef(100)
+
+  let (size, setSize) = React.useState(_ => {width: 100, height: 18})
 
   React.useMemo1(() => {
     imgPathRef.current = Links.getOriginalBigImage(Util.getOrEmptyString(movie.backdrop_path))
   }, [movie])
 
-  React.useLayoutEffect6(() => {
+  let updateLayout = () => {
+    let isMobile = MediaQuery.matchMedia("(max-width: 600px)")
+    let isSmallScreen = MediaQuery.matchMedia("(max-width: 700px)")
+    let isMediumScreen = MediaQuery.matchMedia("(max-width: 1000px)")
+    let isLargeScreen = MediaQuery.matchMedia("(max-width: 1300px)")
+    let isVeryLargeScreen = MediaQuery.matchMedia("(min-width: 1500px)")
     if isMobile {
-      imgHeightRef.current = 16
-      imgWidthRef.current = 100
+      setSize(_ => {width: 100, height: 16})
     } else if isSmallScreen {
-      imgHeightRef.current = 26
-      imgWidthRef.current = 100
+      setSize(_ => {width: 100, height: 26})
     } else if isMediumScreen {
-      imgHeightRef.current = 28
-      imgWidthRef.current = 100
+      setSize(_ => {width: 100, height: 28})
     } else if isLargeScreen {
-      imgHeightRef.current = 34
-      imgWidthRef.current = 70
+      setSize(_ => {width: 70, height: 34})
     } else if isVeryLargeScreen {
-      imgHeightRef.current = 46
-      imgWidthRef.current = 70
+      setSize(_ => {width: 70, height: 46})
     } else {
-      imgHeightRef.current = 34
-      imgWidthRef.current = 70
+      setSize(_ => {width: 70, height: 34})
     }
-    None
-  }, (movie, isMobile, isSmallScreen, isMediumScreen, isLargeScreen, isVeryLargeScreen))
+  }
+  let handleWindowSizeChange = _ => updateLayout()
+
+  React.useEffect0(() => {
+    updateLayout()
+    Webapi.Dom.Window.addEventListener(Webapi__Dom.window, "resize", handleWindowSizeChange)
+    Some(
+      () =>
+        Webapi.Dom.Window.removeEventListener(Webapi__Dom.window, "resize", handleWindowSizeChange),
+    )
+  })
 
   let tagline = Util.getOrEmptyString(movie.tagline)
 
   let imageStyle = ReactDOM.Style.make(
-    ~width=`${imgWidthRef.current->Js.Int.toString}vw`,
-    ~height=`${imgHeightRef.current->Js.Int.toString}rem`,
+    ~width=`${size.width->Js.Int.toString}vw`,
+    ~height=`${size.height->Js.Int.toString}rem`,
     (),
   )
 
@@ -86,12 +92,12 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
         {Util.isEmptyString(tagline)
           ? React.null
           : <span
-              className={`${imgWidthRef.current == 100
+              className={`${size.width == 100
                   ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full pr-4"
                   : "top-0 left-0 text-[1.4rem] rounded-br-full pr-8"} absolute z-50 p-1 w-auto font-nav font-extrabold text-500 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-20`}>
               {Util.toStringElement(tagline)}
             </span>}
-        {imgWidthRef.current == 100
+        {size.width == 100
           ? <img
               alt="Poster"
               className="w-full transition transform ease-in-out duration-100 ml-auto z-0"
@@ -106,7 +112,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
               }}
             />
           : React.null}
-        {imgWidthRef.current != 100
+        {size.width != 100
           ? <div
               id="top-overlayed-image-container"
               className="z-0 relative flex w-full h-full bg-black">
@@ -130,13 +136,15 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
               </div>
               <div className="absolute top-[20%] left-[6%] z-50">
                 <HeroText movie textColor="text-white" />
-                <span className="break-words w-full flex text-white prose pl-2 pt-2"> sotryline </span>
+                <span className="break-words w-full flex text-white prose pl-2 pt-2">
+                  sotryline
+                </span>
               </div>
             </div>
           : React.null}
         {!loaded
           ? <div
-              className={`absolute top-[${(imgHeightRef.current / 2)
+              className={`absolute top-[${(size.height / 2)
                   ->Js.Int.toString}rem)] w-full h-full flex flex-col items-center justify-center`}>
               <Loading
                 className="w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
@@ -144,7 +152,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
             </div>
           : React.null}
       </div>
-      {imgWidthRef.current == 100 ? <HeroText movie textColor="text-900" /> : React.null}
+      {size.width == 100 ? <HeroText movie textColor="text-900" /> : React.null}
     </div>
   </div>
 }
