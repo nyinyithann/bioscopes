@@ -41,7 +41,7 @@ function SearchBox(Props) {
     
   };
   return React.createElement("div", {
-              className: "relative w-[14rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center",
+              className: "relative w-[16rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center",
               id: "search-container"
             }, React.createElement("div", {
                   className: "pointer-events-none absolute inset-y-0 left-1 flex items-center"

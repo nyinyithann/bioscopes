@@ -63,50 +63,45 @@ function FilterBox(Props) {
         });
   };
   return React.createElement("div", {
-              className: "w-[10rem] flex items-center justify-center text-[0.9rem] rounded bg-200 text-700 py-1 px-2 outline-none ring-0 hover:bg-300"
+              className: "w-[10rem] flex items-center justify-center text-[0.9rem] rounded-md text-700 py-1 px-2 outline-none ring-0 hover:bg-300"
             }, React.createElement(React$1.Listbox, {
                   value: selectedRef.contents,
                   onChange: onChange,
-                  children: null
-                }, React.createElement(React$1.Listbox.Button, {
-                      className: "relative flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none",
-                      children: null
-                    }, React.createElement("span", {
-                          className: "block truncate"
-                        }, selectedRef.contents.name), React.createElement("div", {
-                          className: "ml-auto"
-                        }, React.createElement("svg", {
-                              className: "w-6 h-6",
-                              fill: "currentColor",
-                              viewBox: "0 0 24 24",
-                              xmlns: "http://www.w3.org/2000/svg"
-                            }, React.createElement("path", {
-                                  clipRule: "evenodd",
-                                  d: "M11.47 4.72a.75.75 0 011.06 0l3.75 3.75a.75.75 0 01-1.06 1.06L12 6.31 8.78 9.53a.75.75 0 01-1.06-1.06l3.75-3.75zm-3.75 9.75a.75.75 0 011.06 0L12 17.69l3.22-3.22a.75.75 0 111.06 1.06l-3.75 3.75a.75.75 0 01-1.06 0l-3.75-3.75a.75.75 0 010-1.06z",
-                                  fillRule: "evenodd"
-                                })))), React.createElement(React$1.Listbox.Options, {
-                      className: "absolute mt-[11.2rem] w-[10rem] rounded bg-200 py-2 outline-none ring-0",
-                      children: Belt_Array.map(filter_data, (function (item) {
-                              return React.createElement(React$1.Listbox.Option, {
-                                          value: item,
-                                          className: "flex w-full",
-                                          children: (function (param) {
-                                              return React.createElement("div", {
-                                                          className: "" + (
-                                                            param.active ? "bg-300" : ""
-                                                          ) + " flex w-full pl-2 p-1"
-                                                        }, param.selected ? React.createElement(Solid.CheckIcon, {
-                                                                className: "h-6 w-6 fill-klor-500"
-                                                              }) : React.createElement("span", {
-                                                                className: "block h-6 w-6"
-                                                              }), React.createElement("span", {
-                                                              className: " w-full pl-4"
-                                                            }, item.name));
-                                            }),
-                                          key: item.id
-                                        });
-                            }))
-                    })));
+                  children: React.createElement("div", {
+                        className: "w-full relative flex"
+                      }, React.createElement(React$1.Listbox.Button, {
+                            className: "flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none",
+                            children: null
+                          }, React.createElement("span", {
+                                className: "block truncate"
+                              }, selectedRef.contents.name), React.createElement("div", {
+                                className: "ml-auto"
+                              }, React.createElement(Solid.ChevronDownIcon, {
+                                    className: "w-4 h-4"
+                                  }))), React.createElement(React$1.Listbox.Options, {
+                            className: "absolute top-[2rem] -left-2 w-[10rem] rounded bg-200 py-1 outline-none ring-0",
+                            children: Belt_Array.map(filter_data, (function (item) {
+                                    return React.createElement(React$1.Listbox.Option, {
+                                                value: item,
+                                                className: "flex w-full",
+                                                children: (function (param) {
+                                                    return React.createElement("div", {
+                                                                className: "" + (
+                                                                  param.active ? "bg-300" : ""
+                                                                ) + " flex w-full pl-2 items-center p-[1px]"
+                                                              }, param.selected ? React.createElement(Solid.CheckIcon, {
+                                                                      className: "h-6 w-6 fill-klor-500"
+                                                                    }) : React.createElement("span", {
+                                                                      className: "block h-6 w-6"
+                                                                    }), React.createElement("span", {
+                                                                    className: " w-full pl-4"
+                                                                  }, item.name));
+                                                  }),
+                                                key: item.id
+                                              });
+                                  }))
+                          }))
+                }));
 }
 
 var make = FilterBox;

@@ -6,6 +6,7 @@ import * as React from "react";
 import * as Rating from "./Rating.js";
 import * as Loading from "./Loading.js";
 import * as FilterBox from "./FilterBox.js";
+import * as GenreList from "./GenreList.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as LazyImage from "./LazyImage.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
@@ -219,9 +220,7 @@ function MovieList(Props) {
                 className: "flex flex-col bg-white"
               }, React.createElement("div", {
                     className: "flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200"
-                  }, React.createElement("div", {
-                        className: "font-nav text-[1.2rem] text-500"
-                      }, viewingTitleRef.current), React.createElement("div", {
+                  }, React.createElement("div", undefined, React.createElement(GenreList.make, {})), React.createElement("div", {
                         className: "" + (
                           isGenreRef.contents ? "flex" : "hidden"
                         ) + " justify-start ml-auto pr-4"

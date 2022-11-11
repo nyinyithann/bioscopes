@@ -1,3 +1,5 @@
+let {string, array} = module(React)
+
 type state =
   | Loading
   | Error(string)
@@ -5,80 +7,118 @@ type state =
 
 let cache = ref(Js.Dict.empty())
 
-let staticItems = [
+let staticItemLookup = [
   {
     "id": -1,
-    "name": "Popular",
-    "dataName": "popular",
+    "displayName": "Popular",
     "icon": <Heroicons.Solid.HeartIcon className="w-3 h-3" />,
   },
   {
     "id": -2,
-    "name": "Top Rated",
-    "dataName": "top_rated",
+    "displayName": "Top Rated",
     "icon": <Heroicons.Solid.TrendingUpIcon className="w-3 h-3" />,
   },
   {
     "id": -3,
-    "name": "Upcoming",
-    "dataName": "upcoming",
+    "displayName": "Upcoming",
     "icon": <Heroicons.Solid.TruckIcon className="w-3 h-3" />,
   },
 ]
 
-module Title = {
-  @react.component
-  let make = (~name: string) => {
-    <div className="w-full font-nav text-lg border-b-[1px] pl-4 pb-1 border-b-indigo-100 text-500">
-      {name->React.string}
-    </div>
+let staticItems = [
+  {
+    GenreModel.id: -1,
+    name: "popular",
+  },
+  {
+    GenreModel.id: -2,
+    name: "top_rated",
+  },
+  {
+    GenreModel.id: -3,
+    name: "upcoming",
+  },
+]
+
+let getDisplayName = (genre: GenreModel.genre) => {
+  if genre.id > 0 {
+    genre.name
+  } else {
+    switch staticItemLookup->Belt.Array.getBy(x => x["id"] == genre.id) {
+    | Some(g) => g["displayName"]
+    | None => ""
+    }
+  }
+}
+
+let getIcon = (genre: GenreModel.genre) => {
+  let filmIcon = <Heroicons.Solid.FilmIcon className="w-3 h-3" />
+
+  if genre.id > 0 {
+    filmIcon
+  } else {
+    switch staticItemLookup->Belt.Array.getBy(x => x["id"] == genre.id) {
+    | Some(g) => g["icon"]
+    | None => filmIcon
+    }
   }
 }
 
 module GenreLink = {
   @react.component
-  let make = (
-    ~id: int,
-    ~name: string,
-    ~dataName: option<string>=?,
-    ~icon: option<React.element>=?,
-    ~onClick,
-  ) => {
-    let (queryParam, _) = UrlQueryParam.useQueryParams()
-    let hl = "bg-gradient-to-r from-teal-400 to-blue-400 text-yellow-200"
-    let highligh = switch queryParam {
-    | Category(c) if c.name == Js.Option.getWithDefault("", dataName) => hl
-    | Genre(g) if g.id == id => hl
-    | _ => ""
+  let make = (~genre: GenreModel.genre, ~active: bool, ~selected: bool, ~onClick) => {
+    let handleClick = e => {
+      ReactEvent.Mouse.preventDefault(e)
+      onClick(genre)
     }
-
-    React.cloneElement(
-      <button
-        type_="button"
-        className={`${highligh} text-base text-left active:to-blue-500 transition duration-150 ease-linear pl-[3rem] py-1 flex gap-2 items-center hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:text-yellow-200 snap-start`}
-        onClick>
-        {switch icon {
-        | Some(x) => x
-        | None => <Heroicons.Solid.FilmIcon className="w-3 h-3" />
-        }}
+    let name = getDisplayName(genre)
+    let icon = getIcon(genre)
+    <button type_="button" className="flex items-center gap-4 w-full" onClick={handleClick}>
+      <div
+        className={`${active || selected
+            ? "bg-300"
+            : ""} flex items-center w-full px-2 gap-4 p-[1px]`}>
+        icon
         {name->React.string}
-      </button>,
-      {
-        "data-id": id,
-        "data-display": name,
-        "data-name": switch dataName {
-        | Some(n) => n
-        | None => name
-        },
-      },
-    )
+        {selected
+          ? <Heroicons.Solid.CheckIcon className="h-6 w-6 fill-klor-500 ml-auto" />
+          : <span className="block h-6 w-6" />}
+      </div>
+    </button>
   }
 }
 
+let selectedRef = ref(staticItems[0])
+
 @react.component
 let make = () => {
+  open HeadlessUI
   let (state, setState) = React.useState(_ => Loading)
   let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
+
+  React.useMemo1(() => {
+    switch queryParam {
+    | Category({name}) =>
+      switch state {
+      | Success(genres) =>
+        switch genres->Belt.Array.getBy(g => g.name == name) {
+        | Some(s) => selectedRef.contents = s
+        | _ => ()
+        }
+      | _ => ()
+      }
+    | Genre({id}) =>
+      switch state {
+      | Success(genres) =>
+        switch genres->Belt.Array.getBy(g => g.id == id) {
+        | Some(s) => selectedRef.contents = s
+        | _ => ()
+        }
+      | _ => ()
+      }
+    | _ => ()
+    }
+  }, [queryParam])
 
   React.useEffect0(() => {
     let callback = result => {
@@ -86,8 +126,9 @@ let make = () => {
       | Ok(json) =>
         switch GenreModel.GenreDecoder.decode(. ~json) {
         | Ok(genreList) =>
-          Js.Dict.set(cache.contents, "genres", genreList.genres)
-          setState(_ => Success(genreList.genres))
+          let genres = Belt.Array.concat(staticItems, genreList.genres)
+          Js.Dict.set(cache.contents, "genres", genres)
+          setState(_ => Success(genres))
         | Error(msg) => setState(_ => Error(msg))
         }
       | Error(json) =>
@@ -109,75 +150,59 @@ let make = () => {
     Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
   })
 
-  let onClick = React.useCallback0(e => {
-    open ReactEvent.Mouse
-    let dataId = target(e)["getAttribute"](. "data-id")
-    let dataName = target(e)["getAttribute"](. "data-name")
-    let dataDisplay = target(e)["getAttribute"](. "data-display")
-    switch int_of_string_opt(dataId) {
-    | Some(id) if id < 0 => setQueryParam(Category({name: dataName, display: dataDisplay, page: 1}))
-    | Some(id) if id > 0 => {
-        let sort_by = switch queryParam {
-        | Genre({sort_by}) => sort_by
-        | _ => MovieModel.popularity.id
-        }
-        setQueryParam(Genre({id, name: dataName, display: dataDisplay, page: 1, sort_by}))
+  let onClick = React.useCallback0((genre: GenreModel.genre) => {
+    if genre.id < 0 {
+      setQueryParam(Category({name: genre.name, display: genre.name, page: 1}))
+    }
+    if genre.id > 0 {
+      let sort_by = switch queryParam {
+      | Genre({sort_by}) => sort_by
+      | _ => MovieModel.popularity.id
       }
-    | None | _ => ()
+      setQueryParam(Genre({id: genre.id, name: genre.name, display: genre.name, page: 1, sort_by}))
     }
   })
 
-  <div className="flex flex-col items-start justify-center z-50">
-    <div className="flex font-nav tracking-widest w-full items-center pb-4 gap-2">
-      <div
-        className="text-lg sm:text-2xl md:text-3xl w-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-start gap-2 py-[0.2rem] px-[0.6rem]">
-        <Heroicons.Solid.CameraIcon className="h-3 w-3 pl-1" />
-        {"BIOSCOPES"->React.string}
-        <Heroicons.Solid.CameraIcon className="h-3 w-3 pr-1" />
-      </div>
-    </div>
+  <div
+    className="flex w-[10rem] items-center justify-center text-[0.9rem] text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300">
     {switch state {
     | Loading =>
       <Loading
-        className="w-[4rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
+        className="w-[4rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
       />
     | Error(errorMessage) =>
       <div className="flex flex-wrap w-full h-auto">
         <ErrorDisplay errorMessage />
       </div>
     | Success(genres) =>
-      <div className="w-full">
-        <div className="flex flex-col w-full">
-          <Title name="Discover" />
-          <div className="pt-1 w-full flex flex-col">
-            {staticItems
-            ->Belt.Array.map(x => {
-              <GenreLink
-                key={x["dataName"]}
-                id={x["id"]}
-                name={x["name"]}
-                dataName={x["dataName"]}
-                icon={x["icon"]}
-                onClick
-              />
-            })
-            ->React.array}
-          </div>
-        </div>
-        <div className="flex flex-col w-full">
-          <Title name="Genres" />
-          <div className="pt-1 flex flex-col items-start justify-start h-[60vh] md:h-[68vh]">
-            <div
-              className="w-full flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-thumb-rounded snap-y">
-              {genres
-              ->Belt.Array.map(x => {
-                <GenreLink key={x.id->Js.Int.toString} id={x.id} name={x.name} onClick />
-              })
-              ->React.array}
+      <Listbox value={selectedRef.contents}>
+        <div className="w-full relative flex">
+          <Listbox.Button
+            className="flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none">
+            <div className="flex w-full items-center gap-4">
+              {getIcon(selectedRef.contents)}
+              <span className="block truncate">
+                {getDisplayName(selectedRef.contents)->string}
+              </span>
             </div>
-          </div>
+            <div className="ml-auto">
+              <Heroicons.Solid.ChevronDownIcon className="w-4 h-4" />
+            </div>
+          </Listbox.Button>
+          <Listbox.Options
+            className="absolute top-[2rem] -left-2 w-[12rem] rounded bg-200 py-2 outline-none ring-0">
+            {genres
+            ->Belt.Array.map(genre =>
+              <Listbox.Option key={genre.id->string_of_int} value={genre} className="flex w-full">
+                {({active, selected}) => {
+                  <GenreLink genre onClick active selected />
+                }}
+              </Listbox.Option>
+            )
+            ->array}
+          </Listbox.Options>
         </div>
-      </div>
+      </Listbox>
     }}
   </div>
 }

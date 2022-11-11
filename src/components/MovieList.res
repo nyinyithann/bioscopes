@@ -25,7 +25,7 @@ module Poster = {
     let handleClick = e => {
       open ReactEvent.Mouse
       preventDefault(e)
-      setQueryParam(UrlQueryParam.Movie({id : id}))
+      setQueryParam(UrlQueryParam.Movie({id: id}))
     }
 
     <button
@@ -150,7 +150,9 @@ let make = () => {
     <div className="flex flex-col bg-white">
       <div
         className="flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200">
-        <div className="font-nav text-[1.2rem] text-500"> {viewingTitleRef.current->string} </div>
+        <div>
+          <GenreList />
+        </div>
         <div className={`${isGenreRef.contents ? "flex" : "hidden"} justify-start ml-auto pr-4`}>
           <FilterBox />
         </div>

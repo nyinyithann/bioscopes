@@ -5,93 +5,130 @@ import * as React from "react";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as Loading from "./Loading.js";
 import * as MovieAPI from "../http/MovieAPI.js";
-import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
+import * as Caml_array from "rescript/lib/es6/caml_array.js";
 import * as GenreModel from "../models/GenreModel.js";
 import * as MovieModel from "../models/MovieModel.js";
-import * as Pervasives from "rescript/lib/es6/pervasives.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as ErrorDisplay from "./ErrorDisplay.js";
 import * as UrlQueryParam from "../routes/UrlQueryParam.js";
+import * as React$1 from "@headlessui/react";
 import * as Solid from "@heroicons/react/solid";
+
+function string(prim) {
+  return prim;
+}
+
+function array(prim) {
+  return prim;
+}
 
 var cache = {
   contents: {}
 };
 
-var staticItems = [
+var staticItemLookup = [
   {
     id: -1,
-    name: "Popular",
-    dataName: "popular",
+    displayName: "Popular",
     icon: React.createElement(Solid.HeartIcon, {
           className: "w-3 h-3"
         })
   },
   {
     id: -2,
-    name: "Top Rated",
-    dataName: "top_rated",
+    displayName: "Top Rated",
     icon: React.createElement(Solid.TrendingUpIcon, {
           className: "w-3 h-3"
         })
   },
   {
     id: -3,
-    name: "Upcoming",
-    dataName: "upcoming",
+    displayName: "Upcoming",
     icon: React.createElement(Solid.TruckIcon, {
           className: "w-3 h-3"
         })
   }
 ];
 
-function GenreList$Title(Props) {
-  var name = Props.name;
-  return React.createElement("div", {
-              className: "w-full font-nav text-lg border-b-[1px] pl-4 pb-1 border-b-indigo-100 text-500"
-            }, name);
+var staticItems = [
+  {
+    id: -1,
+    name: "popular"
+  },
+  {
+    id: -2,
+    name: "top_rated"
+  },
+  {
+    id: -3,
+    name: "upcoming"
+  }
+];
+
+function getDisplayName(genre) {
+  if (genre.id > 0) {
+    return genre.name;
+  }
+  var g = Belt_Array.getBy(staticItemLookup, (function (x) {
+          return x.id === genre.id;
+        }));
+  if (g !== undefined) {
+    return Caml_option.valFromOption(g).displayName;
+  } else {
+    return "";
+  }
 }
 
-var Title = {
-  make: GenreList$Title
-};
+function getIcon(genre) {
+  var filmIcon = React.createElement(Solid.FilmIcon, {
+        className: "w-3 h-3"
+      });
+  if (genre.id > 0) {
+    return filmIcon;
+  }
+  var g = Belt_Array.getBy(staticItemLookup, (function (x) {
+          return x.id === genre.id;
+        }));
+  if (g !== undefined) {
+    return Caml_option.valFromOption(g).icon;
+  } else {
+    return filmIcon;
+  }
+}
 
 function GenreList$GenreLink(Props) {
-  var id = Props.id;
-  var name = Props.name;
-  var dataName = Props.dataName;
-  var icon = Props.icon;
+  var genre = Props.genre;
+  var active = Props.active;
+  var selected = Props.selected;
   var onClick = Props.onClick;
-  var match = UrlQueryParam.useQueryParams(undefined);
-  var queryParam = match[0];
-  var hl = "bg-gradient-to-r from-teal-400 to-blue-400 text-yellow-200";
-  var highligh;
-  switch (queryParam.TAG | 0) {
-    case /* Category */0 :
-        highligh = queryParam._0.name === Js_option.getWithDefault("", dataName) ? hl : "";
-        break;
-    case /* Genre */1 :
-        highligh = queryParam._0.id === id ? hl : "";
-        break;
-    default:
-      highligh = "";
-  }
-  return React.cloneElement(React.createElement("button", {
-                  className: "" + highligh + " text-base text-left active:to-blue-500 transition duration-150 ease-linear pl-[3rem] py-1 flex gap-2 items-center hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:text-yellow-200 snap-start",
-                  type: "button",
-                  onClick: onClick
-                }, icon !== undefined ? Caml_option.valFromOption(icon) : React.createElement(Solid.FilmIcon, {
-                        className: "w-3 h-3"
-                      }), name), {
-              "data-id": id,
-              "data-display": name,
-              "data-name": dataName !== undefined ? dataName : name
-            });
+  var handleClick = function (e) {
+    e.preventDefault();
+    Curry._1(onClick, genre);
+  };
+  var name = getDisplayName(genre);
+  var icon = getIcon(genre);
+  return React.createElement("button", {
+              className: "flex items-center gap-4 w-full",
+              type: "button",
+              onClick: handleClick
+            }, React.createElement("div", {
+                  className: "" + (
+                    active || selected ? "bg-300" : ""
+                  ) + " flex items-center w-full px-2 gap-4 p-[1px]"
+                }, icon, name, selected ? React.createElement(Solid.CheckIcon, {
+                        className: "h-6 w-6 fill-klor-500 ml-auto"
+                      }) : React.createElement("span", {
+                        className: "block h-6 w-6"
+                      })));
 }
 
 var GenreLink = {
   make: GenreList$GenreLink
+};
+
+var selectedRef = {
+  contents: Caml_array.get(staticItems, 0)
 };
 
 function GenreList(Props) {
@@ -103,17 +140,57 @@ function GenreList(Props) {
   var match$1 = UrlQueryParam.useQueryParams(undefined);
   var setQueryParam = match$1[1];
   var queryParam = match$1[0];
+  React.useMemo((function () {
+          switch (queryParam.TAG | 0) {
+            case /* Category */0 :
+                var name = queryParam._0.name;
+                if (typeof state === "number") {
+                  return ;
+                }
+                if (state.TAG === /* Error */0) {
+                  return ;
+                }
+                var s = Belt_Array.getBy(state._0, (function (g) {
+                        return g.name === name;
+                      }));
+                if (s !== undefined) {
+                  selectedRef.contents = s;
+                  return ;
+                } else {
+                  return ;
+                }
+            case /* Genre */1 :
+                var id = queryParam._0.id;
+                if (typeof state === "number") {
+                  return ;
+                }
+                if (state.TAG === /* Error */0) {
+                  return ;
+                }
+                var s$1 = Belt_Array.getBy(state._0, (function (g) {
+                        return g.id === id;
+                      }));
+                if (s$1 !== undefined) {
+                  selectedRef.contents = s$1;
+                  return ;
+                } else {
+                  return ;
+                }
+            default:
+              return ;
+          }
+        }), [queryParam]);
   React.useEffect((function () {
           var callback = function (result) {
             if (result.TAG === /* Ok */0) {
               var genreList = GenreModel.GenreDecoder.decode(result._0);
               if (genreList.TAG === /* Ok */0) {
-                var genreList$1 = genreList._0;
-                cache.contents["genres"] = genreList$1.genres;
+                var genres = Belt_Array.concat(staticItems, genreList._0.genres);
+                cache.contents["genres"] = genres;
                 return Curry._1(setState, (function (param) {
                               return {
                                       TAG: /* Success */1,
-                                      _0: genreList$1.genres
+                                      _0: genres
                                     };
                             }));
               }
@@ -158,25 +235,18 @@ function GenreList(Props) {
                     controller.abort("Cancel the request");
                   });
         }), []);
-  var onClick = React.useCallback((function (e) {
-          var dataId = e.target.getAttribute("data-id");
-          var dataName = e.target.getAttribute("data-name");
-          var dataDisplay = e.target.getAttribute("data-display");
-          var id = Pervasives.int_of_string_opt(dataId);
-          if (id === undefined) {
-            return ;
+  var onClick = React.useCallback((function (genre) {
+          if (genre.id < 0) {
+            Curry._1(setQueryParam, {
+                  TAG: /* Category */0,
+                  _0: {
+                    name: genre.name,
+                    display: genre.name,
+                    page: 1
+                  }
+                });
           }
-          if (id < 0) {
-            return Curry._1(setQueryParam, {
-                        TAG: /* Category */0,
-                        _0: {
-                          name: dataName,
-                          display: dataDisplay,
-                          page: 1
-                        }
-                      });
-          }
-          if (id <= 0) {
+          if (genre.id <= 0) {
             return ;
           }
           var sort_by;
@@ -184,9 +254,9 @@ function GenreList(Props) {
           Curry._1(setQueryParam, {
                 TAG: /* Genre */1,
                 _0: {
-                  id: id,
-                  name: dataName,
-                  display: dataDisplay,
+                  id: genre.id,
+                  name: genre.name,
+                  display: genre.name,
                   page: 1,
                   sort_by: sort_by
                 }
@@ -194,66 +264,64 @@ function GenreList(Props) {
         }), []);
   var tmp;
   tmp = typeof state === "number" ? React.createElement(Loading.make, {
-          className: "w-[4rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
+          className: "w-[4rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
         }) : (
       state.TAG === /* Error */0 ? React.createElement("div", {
               className: "flex flex-wrap w-full h-auto"
             }, React.createElement(ErrorDisplay.make, {
                   errorMessage: state._0
-                })) : React.createElement("div", {
-              className: "w-full"
-            }, React.createElement("div", {
-                  className: "flex flex-col w-full"
-                }, React.createElement(GenreList$Title, {
-                      name: "Discover"
-                    }), React.createElement("div", {
-                      className: "pt-1 w-full flex flex-col"
-                    }, Belt_Array.map(staticItems, (function (x) {
-                            return React.createElement(GenreList$GenreLink, {
-                                        id: x.id,
-                                        name: x.name,
-                                        dataName: x.dataName,
-                                        icon: x.icon,
-                                        onClick: onClick,
-                                        key: x.dataName
-                                      });
-                          })))), React.createElement("div", {
-                  className: "flex flex-col w-full"
-                }, React.createElement(GenreList$Title, {
-                      name: "Genres"
-                    }), React.createElement("div", {
-                      className: "pt-1 flex flex-col items-start justify-start h-[60vh] md:h-[68vh]"
-                    }, React.createElement("div", {
-                          className: "w-full flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-thumb-rounded snap-y"
-                        }, Belt_Array.map(state._0, (function (x) {
-                                return React.createElement(GenreList$GenreLink, {
-                                            id: x.id,
-                                            name: x.name,
-                                            onClick: onClick,
-                                            key: x.id.toString()
+                })) : React.createElement(React$1.Listbox, {
+              value: selectedRef.contents,
+              children: React.createElement("div", {
+                    className: "w-full relative flex"
+                  }, React.createElement(React$1.Listbox.Button, {
+                        className: "flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none",
+                        children: null
+                      }, React.createElement("div", {
+                            className: "flex w-full items-center gap-4"
+                          }, getIcon(selectedRef.contents), React.createElement("span", {
+                                className: "block truncate"
+                              }, getDisplayName(selectedRef.contents))), React.createElement("div", {
+                            className: "ml-auto"
+                          }, React.createElement(Solid.ChevronDownIcon, {
+                                className: "w-4 h-4"
+                              }))), React.createElement(React$1.Listbox.Options, {
+                        className: "absolute top-[2rem] -left-2 w-[12rem] rounded bg-200 py-2 outline-none ring-0",
+                        children: Belt_Array.map(state._0, (function (genre) {
+                                return React.createElement(React$1.Listbox.Option, {
+                                            value: genre,
+                                            className: "flex w-full",
+                                            children: (function (param) {
+                                                return React.createElement(GenreList$GenreLink, {
+                                                            genre: genre,
+                                                            active: param.active,
+                                                            selected: param.selected,
+                                                            onClick: onClick
+                                                          });
+                                              }),
+                                            key: String(genre.id)
                                           });
-                              }))))))
+                              }))
+                      }))
+            })
     );
   return React.createElement("div", {
-              className: "flex flex-col items-start justify-center z-50"
-            }, React.createElement("div", {
-                  className: "flex font-nav tracking-widest w-full items-center pb-4 gap-2"
-                }, React.createElement("div", {
-                      className: "text-lg sm:text-2xl md:text-3xl w-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-start gap-2 py-[0.2rem] px-[0.6rem]"
-                    }, React.createElement(Solid.CameraIcon, {
-                          className: "h-3 w-3 pl-1"
-                        }), "BIOSCOPES", React.createElement(Solid.CameraIcon, {
-                          className: "h-3 w-3 pr-1"
-                        }))), tmp);
+              className: "flex w-[10rem] items-center justify-center text-[0.9rem] text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300"
+            }, tmp);
 }
 
 var make = GenreList;
 
 export {
+  string ,
+  array ,
   cache ,
+  staticItemLookup ,
   staticItems ,
-  Title ,
+  getDisplayName ,
+  getIcon ,
   GenreLink ,
+  selectedRef ,
   make ,
 }
-/* staticItems Not a pure module */
+/* staticItemLookup Not a pure module */

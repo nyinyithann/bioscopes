@@ -32,7 +32,7 @@ let make = () => {
 
   <div
     id="search-container"
-    className="relative w-[14rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center">
+    className="relative w-[16rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center">
     <div className="pointer-events-none absolute inset-y-0 left-1 flex items-center">
       <Heroicons.Solid.SearchIcon className="h-5 w-5 fill-klor-400" />
     </div>
