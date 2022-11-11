@@ -60,7 +60,12 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
       className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full">
       {videos
       ->Belt.Array.map(video =>
-        <VideoImage key={Util.getOrEmptyString(video.key)} video className="w-full" />
+        <VideoImage
+          key={Util.getOrEmptyString(video.key)}
+          video
+          className="w-full border-[2px] border-slate-200 rounded-md
+"
+        />
       )
       ->array}
     </div>

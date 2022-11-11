@@ -100,18 +100,22 @@ let reducer = (state: state, action) => {
       error: "",
     }
   | SuccessMovies(apiParams, movies) => {
-      apiParams,
-      movies: {
-        MovieModel.dates: ?movies.dates,
-        page: ?movies.page,
-        total_pages: ?movies.total_pages,
-        total_results: ?movies.total_results,
-        results: ?movies.results,
-      },
-      detail_movie: emptyDetailMovie,
-      loading: false,
-      error: "",
+      %debugger
+      {
+        apiParams,
+        movies: {
+          MovieModel.dates: ?movies.dates,
+          page: ?movies.page,
+          total_pages: ?movies.total_pages,
+          total_results: ?movies.total_results,
+          results: ?movies.results,
+        },
+        detail_movie: emptyDetailMovie,
+        loading: false,
+        error: "",
+      }
     }
+
   | SuccessDetailMovie(apiParams, detailMovie) => {
       apiParams,
       movies: emptyMovieList,
@@ -141,9 +145,9 @@ let getApiPath = apiParams => {
         id,
       )}&page=${Js.Int.toString(page)}&sort_by=${sort_by}`
   | Search({query, page}) =>
-    `${apiBaseUrl}/${apiVersion}/search/movie?query=${query}&page=${Js.Int.toString(page)}`
-  | Movie({id}) =>
-    `${apiBaseUrl}/${apiVersion}/movie/${id}?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en`
+    `${apiBaseUrl}/${apiVersion}/search/multi?query=${query}&page=${Js.Int.toString(page)}`
+  | Movie({id, media_type}) =>
+    `${apiBaseUrl}/${apiVersion}/${media_type}/${id}?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en`
   | _ => ""
   }
 }
@@ -152,22 +156,36 @@ let loadDataInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signal
   let apiPath = getApiPath(apiParams)
 
   let callback = result => {
+    %debugger
     switch result {
     | Ok(json) =>
       switch MovieModel.MovieListDecoder.decode(. ~json) {
-      | Ok(ml) => dispatch(SuccessMovies(apiParams, ml))
-      | Error(msg) => dispatch(Error(msg))
-      }
-    | Error(json) =>
-      switch MovieModel.MovieErrorDecoder.decode(. ~json) {
-      | Ok(e) => {
-          let errors = Belt.Array.reduce(Js.Option.getWithDefault([], e.errors), ". ", (a, b) =>
-            b ++ a
-          )
-          dispatch(Error(errors))
+      | Ok(ml) => {
+          %debugger
+          dispatch(SuccessMovies(apiParams, ml))
         }
 
-      | _ => dispatch(Error("Unexpected error occured while reteriving movie data."))
+      | Error(msg) => {
+          %debugger
+          dispatch(Error(msg))
+        }
+      }
+    | Error(json) => {
+        %debugger
+        switch MovieModel.MovieErrorDecoder.decode(. ~json) {
+        | Ok(e) => {
+            %debugger
+            let errors = Belt.Array.reduce(Js.Option.getWithDefault([], e.errors), ". ", (a, b) =>
+              b ++ a
+            )
+            dispatch(Error(errors))
+          }
+
+        | _ => {
+            %debugger
+            dispatch(Error("Unexpected error occured while reteriving movie data."))
+          }
+        }
       }
     }
   }

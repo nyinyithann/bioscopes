@@ -5,6 +5,7 @@ import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Loading from "../Loading.js";
 import * as VideoPanel from "./VideoPanel.js";
+import * as PhotosPanel from "./PhotosPanel.js";
 import * as ErrorDisplay from "../ErrorDisplay.js";
 import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../../providers/MoviesProvider.js";
@@ -33,10 +34,12 @@ function Movie(Props) {
   React.useEffect((function () {
           var controller = new AbortController();
           if (queryParam.TAG === /* Movie */3) {
+            var match = queryParam._0;
             Curry._2(loadDetailMovie, {
                   TAG: /* Movie */3,
                   _0: {
-                    id: queryParam._0.id
+                    id: match.id,
+                    media_type: match.media_type
                   }
                 }, controller.signal);
           }
@@ -127,7 +130,11 @@ function Movie(Props) {
                                                                     key: "videos-panel"
                                                                   }), React.createElement(React$1.Tab.Panel, {
                                                                     children: (function (props) {
-                                                                        return React.createElement("div", undefined, "panel3");
+                                                                        return React.createElement("div", {
+                                                                                    className: "flex w-full p-2"
+                                                                                  }, React.createElement(PhotosPanel.make, {
+                                                                                        movie: detail_movie
+                                                                                      }));
                                                                       }),
                                                                     key: "photos-panel"
                                                                   }));

@@ -102,6 +102,28 @@ var credits = Json_Decode$JsonCombinators.object(function (fields) {
             };
     });
 
+var created_by = Json_Decode$JsonCombinators.object(function (fields) {
+      return {
+              id: Marshal.to_opt(fields, "id", Json_Decode$JsonCombinators.$$int),
+              credit_id: Marshal.to_opt(fields, "credit_id", Json_Decode$JsonCombinators.string),
+              name: Marshal.to_opt(fields, "name", Json_Decode$JsonCombinators.string),
+              gender: Marshal.to_opt(fields, "gender", Json_Decode$JsonCombinators.$$int),
+              profile_path: Marshal.to_opt(fields, "profile_path", Json_Decode$JsonCombinators.string)
+            };
+    });
+
+var episode = Json_Decode$JsonCombinators.object(function (fields) {
+      return {
+              air_date: Marshal.to_opt(fields, "air_date", Json_Decode$JsonCombinators.string),
+              episode_count: Marshal.to_opt(fields, "episode_count", Json_Decode$JsonCombinators.$$int),
+              id: Marshal.to_opt(fields, "id", Json_Decode$JsonCombinators.$$int),
+              name: Marshal.to_opt(fields, "name", Json_Decode$JsonCombinators.string),
+              overview: Marshal.to_opt(fields, "overview", Json_Decode$JsonCombinators.string),
+              poster_path: Marshal.to_opt(fields, "poster_path", Json_Decode$JsonCombinators.string),
+              season_number: Marshal.to_opt(fields, "season_number", Json_Decode$JsonCombinators.$$int)
+            };
+    });
+
 var detail_movie = Json_Decode$JsonCombinators.object(function (fields) {
       return {
               adult: Marshal.to_opt(fields, "adult", Json_Decode$JsonCombinators.bool),
@@ -129,7 +151,17 @@ var detail_movie = Json_Decode$JsonCombinators.object(function (fields) {
               videos: Marshal.to_opt(fields, "videos", videos),
               credits: Marshal.to_opt(fields, "credits", credits),
               images: Marshal.to_opt(fields, "images", images),
-              spoken_languages: Marshal.to_opt(fields, "spoken_languages", Json_Decode$JsonCombinators.array(spoken_language))
+              spoken_languages: Marshal.to_opt(fields, "spoken_languages", Json_Decode$JsonCombinators.array(spoken_language)),
+              created_by: Marshal.to_opt(fields, "created_by", created_by),
+              episode_run_time: Marshal.to_opt(fields, "episode_run_time", Json_Decode$JsonCombinators.array(Json_Decode$JsonCombinators.$$int)),
+              first_air_date: Marshal.to_opt(fields, "first_air_date", Json_Decode$JsonCombinators.string),
+              last_air_date: Marshal.to_opt(fields, "last_air_date", Json_Decode$JsonCombinators.string),
+              in_production: Marshal.to_opt(fields, "in_production", Json_Decode$JsonCombinators.bool),
+              name: Marshal.to_opt(fields, "name", Json_Decode$JsonCombinators.string),
+              number_of_episodes: Marshal.to_opt(fields, "number_of_episodes", Json_Decode$JsonCombinators.$$int),
+              number_of_seasons: Marshal.to_opt(fields, "number_of_seasons", Json_Decode$JsonCombinators.$$int),
+              original_name: Marshal.to_opt(fields, "original_name", Json_Decode$JsonCombinators.string),
+              episodes: Marshal.to_opt(fields, "episodes", Json_Decode$JsonCombinators.array(episode))
             };
     });
 
@@ -148,6 +180,8 @@ var Decoder = {
   spoken_language: spoken_language,
   videos: videos,
   credits: credits,
+  created_by: created_by,
+  episode: episode,
   detail_movie: detail_movie,
   decode: decode
 };

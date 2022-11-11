@@ -14,8 +14,11 @@ let make = () => {
   React.useEffect0(() => {
     let controller = Fetch.AbortController.make()
     switch queryParam {
-    | Movie({id}) =>
-      loadDetailMovie(~apiParams=Movie({id: id}), ~signal=Fetch.AbortController.signal(controller))
+    | Movie({id, media_type}) =>
+      loadDetailMovie(
+        ~apiParams=Movie({id, media_type}),
+        ~signal=Fetch.AbortController.signal(controller),
+      )
     | _ => ()
     }
 
@@ -97,7 +100,9 @@ let make = () => {
                       </Tab.Panel>
                       <Tab.Panel key="photos-panel">
                         {props => {
-                          <div> {"panel3"->string} </div>
+                          <div className="flex w-full p-2">
+                            <PhotosPanel movie={detail_movie} />
+                          </div>
                         }}
                       </Tab.Panel>
                     </>

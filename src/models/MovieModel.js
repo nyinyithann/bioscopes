@@ -35,7 +35,8 @@ var movie = Json_Decode$JsonCombinators.object(function (fields) {
               title: Marshal.to_opt(fields, "title", Json_Decode$JsonCombinators.string),
               video: Marshal.to_opt(fields, "video", Json_Decode$JsonCombinators.bool),
               vote_average: Marshal.to_opt(fields, "vote_average", Json_Decode$JsonCombinators.$$float),
-              vote_count: Marshal.to_opt(fields, "vote_count", Json_Decode$JsonCombinators.$$int)
+              vote_count: Marshal.to_opt(fields, "vote_count", Json_Decode$JsonCombinators.$$int),
+              media_type: Marshal.to_opt(fields, "media_type", Json_Decode$JsonCombinators.string)
             };
     });
 

@@ -3,6 +3,7 @@ module HeroText = {
   @react.component
   let make = (~movie: DetailMovieModel.detail_movie, ~textColor: string) => {
     let title = Util.getOrEmptyString(movie.title)
+    let name = Util.getOrEmptyString(movie.name)
     let voteAverage = Util.getOrIntZero(movie.vote_count)->string_of_int
     let releaseYear =
       Util.getOrEmptyString(movie.release_date)->Js.String2.substring(~from=0, ~to_=4)
@@ -16,7 +17,9 @@ module HeroText = {
     }
 
     <div className={`flex flex-col w-full p-[0.6rem] gap-2 ${textColor}`}>
-      <span className="font-nav text-[2rem]"> {title->string} </span>
+      {Util.isEmptyString(name)
+        ? <span className="font-nav text-[2rem]"> {title->string} </span>
+        : <span className="font-nav text-[2rem]"> {name->string} </span>}
       <div className="flex w-full gap-4">
         <Rating ratingValue={movie.vote_average} />
         <span> {`${voteAverage} Reviews`->string} </span>

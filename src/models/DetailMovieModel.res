@@ -15,9 +15,9 @@ type image = {
 }
 
 type images = {
-    backdrops? : array<image>,
-    logos? : array<image>,
-    posters? : array<image>,
+  backdrops?: array<image>,
+  logos?: array<image>,
+  posters?: array<image>,
 }
 
 type cast = {
@@ -60,21 +60,37 @@ type production_company = {
   origin_country?: string,
 }
 
-type videos = {
-    results? : array<video>
-}
+type videos = {results?: array<video>}
 
 type credits = {
-      cast?: array<cast>,
-      crew?: array<crew>
-  }
+  cast?: array<cast>,
+  crew?: array<crew>,
+}
 
-  type spoken_language = {
-      english_name?: string,
-      iso_639_1?: string,
-      name? : string,
-  }
-  
+type spoken_language = {
+  english_name?: string,
+  iso_639_1?: string,
+  name?: string,
+}
+
+type created_by = {
+  id?: int,
+  credit_id?: string,
+  name?: string,
+  gender?: int,
+  profile_path?: string,
+}
+
+type episode = {
+  air_date?: string,
+  episode_count?: int,
+  id?: int,
+  name?: string,
+  overview?: string,
+  poster_path?: string,
+  season_number?: int,
+}
+
 type detail_movie = {
   adult?: bool,
   backdrop_path?: string,
@@ -99,9 +115,19 @@ type detail_movie = {
   external_ids?: external_ids,
   production_companies?: array<production_company>,
   videos?: videos,
-  credits? : credits,
-  images? : images,
-  spoken_languages? : array<spoken_language>
+  credits?: credits,
+  images?: images,
+  spoken_languages?: array<spoken_language>,
+  created_by?: created_by,
+  episode_run_time?: array<int>,
+  first_air_date?: string,
+  last_air_date?: string,
+  in_production?: bool,
+  name?: string,
+  number_of_episodes?: int,
+  number_of_seasons?: int,
+  original_name?: string,
+  episodes?: array<episode>,
 }
 
 module Decoder = {
@@ -124,7 +150,6 @@ module Decoder = {
     vote_count: ?Marshal.to_opt(. fields, "vote_count", int),
   })
 
-  
   let images = object(fields => {
     backdrops: ?Marshal.to_opt(. fields, "backdrops", array(image)),
     logos: ?Marshal.to_opt(. fields, "logos", array(image)),
@@ -170,7 +195,7 @@ module Decoder = {
     name: ?Marshal.to_opt(. fields, "name", string),
     origin_country: ?Marshal.to_opt(. fields, "origin_country", string),
   })
-  
+
   let spoken_language = object(fields => {
     name: ?Marshal.to_opt(. fields, "name", string),
     iso_639_1: ?Marshal.to_opt(. fields, "iso_639_1", string),
@@ -178,15 +203,32 @@ module Decoder = {
   })
 
   let videos = object(fields => {
-      results: ?Marshal.to_opt(. fields, "results", array(video))
+    results: ?Marshal.to_opt(. fields, "results", array(video)),
   })
-
 
   let credits = object(fields => {
-      cast: ?Marshal.to_opt(. fields, "cast", array(cast)),
-      crew: ?Marshal.to_opt(. fields, "crew", array(crew))
+    cast: ?Marshal.to_opt(. fields, "cast", array(cast)),
+    crew: ?Marshal.to_opt(. fields, "crew", array(crew)),
   })
-  
+
+  let created_by = object(fields => {
+    id: ?Marshal.to_opt(. fields, "id", int),
+    credit_id: ?Marshal.to_opt(. fields, "credit_id", string),
+    name: ?Marshal.to_opt(. fields, "name", string),
+    gender: ?Marshal.to_opt(. fields, "gender", int),
+    profile_path: ?Marshal.to_opt(. fields, "profile_path", string),
+  })
+
+  let episode = object(fields => {
+    air_date: ?Marshal.to_opt(. fields, "air_date", string),
+    episode_count: ?Marshal.to_opt(. fields, "episode_count", int),
+    id: ?Marshal.to_opt(. fields, "id", int),
+    name: ?Marshal.to_opt(. fields, "name", string),
+    overview: ?Marshal.to_opt(. fields, "overview", string),
+    poster_path: ?Marshal.to_opt(. fields, "poster_path", string),
+    season_number: ?Marshal.to_opt(. fields, "season_number", int),
+  })
+
   let detail_movie: Json.Decode.t<detail_movie> = object(fields => {
     adult: ?Marshal.to_opt(. fields, "adult", bool),
     backdrop_path: ?Marshal.to_opt(. fields, "backdrop_path", string),
@@ -218,7 +260,16 @@ module Decoder = {
     credits: ?Marshal.to_opt(. fields, "credits", credits),
     images: ?Marshal.to_opt(. fields, "images", images),
     spoken_languages: ?Marshal.to_opt(. fields, "spoken_languages", array(spoken_language)),
-    
+    created_by: ?Marshal.to_opt(. fields, "created_by", created_by),
+    episode_run_time: ?Marshal.to_opt(. fields, "episode_run_time", array(int)),
+    first_air_date: ?Marshal.to_opt(. fields, "first_air_date", string),
+    last_air_date: ?Marshal.to_opt(. fields, "last_air_date", string),
+    in_production: ?Marshal.to_opt(. fields, "in_production", bool),
+    name: ?Marshal.to_opt(. fields, "name", string),
+    original_name: ?Marshal.to_opt(. fields, "original_name", string),
+    number_of_episodes: ?Marshal.to_opt(. fields, "number_of_episodes", int),
+    number_of_seasons: ?Marshal.to_opt(. fields, "number_of_seasons", int),
+    episodes: ?Marshal.to_opt(. fields, "episodes", array(episode)),
   })
 
   let decode = (. ~json: Js.Json.t): result<detail_movie, string> => {

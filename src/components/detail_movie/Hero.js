@@ -28,6 +28,7 @@ function Hero$HeroText(Props) {
   var movie = Props.movie;
   var textColor = Props.textColor;
   var title = Util.getOrEmptyString(movie.title);
+  var name = Util.getOrEmptyString(movie.name);
   var voteAverage = String(Util.getOrIntZero(movie.vote_count));
   var releaseYear = Util.getOrEmptyString(movie.release_date).substring(0, 4);
   var x = movie.runtime;
@@ -40,9 +41,11 @@ function Hero$HeroText(Props) {
   }
   return React.createElement("div", {
               className: "flex flex-col w-full p-[0.6rem] gap-2 " + textColor + ""
-            }, React.createElement("span", {
-                  className: "font-nav text-[2rem]"
-                }, title), React.createElement("div", {
+            }, Util.isEmptyString(name) ? React.createElement("span", {
+                    className: "font-nav text-[2rem]"
+                  }, title) : React.createElement("span", {
+                    className: "font-nav text-[2rem]"
+                  }, name), React.createElement("div", {
                   className: "flex w-full gap-4"
                 }, React.createElement(Rating.make, {
                       ratingValue: movie.vote_average

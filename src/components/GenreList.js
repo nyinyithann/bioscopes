@@ -263,48 +263,62 @@ function GenreList(Props) {
               });
         }), []);
   var tmp;
-  tmp = typeof state === "number" ? React.createElement(Loading.make, {
+  if (typeof state === "number") {
+    tmp = React.createElement(Loading.make, {
           className: "w-[4rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
-        }) : (
-      state.TAG === /* Error */0 ? React.createElement("div", {
-              className: "flex flex-wrap w-full h-auto"
-            }, React.createElement(ErrorDisplay.make, {
-                  errorMessage: state._0
-                })) : React.createElement(React$1.Listbox, {
-              value: selectedRef.contents,
-              children: React.createElement("div", {
-                    className: "w-full relative flex"
-                  }, React.createElement(React$1.Listbox.Button, {
-                        className: "flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none",
-                        children: null
-                      }, React.createElement("div", {
-                            className: "flex w-full items-center gap-4"
-                          }, getIcon(selectedRef.contents), React.createElement("span", {
-                                className: "block truncate"
-                              }, getDisplayName(selectedRef.contents))), React.createElement("div", {
-                            className: "ml-auto"
-                          }, React.createElement(Solid.ChevronDownIcon, {
-                                className: "w-4 h-4"
-                              }))), React.createElement(React$1.Listbox.Options, {
-                        className: "absolute top-[2rem] -left-2 w-[12rem] rounded bg-200 py-2 outline-none ring-0",
-                        children: Belt_Array.map(state._0, (function (genre) {
-                                return React.createElement(React$1.Listbox.Option, {
-                                            value: genre,
-                                            className: "flex w-full",
-                                            children: (function (param) {
-                                                return React.createElement(GenreList$GenreLink, {
-                                                            genre: genre,
-                                                            active: param.active,
-                                                            selected: param.selected,
-                                                            onClick: onClick
-                                                          });
-                                              }),
-                                            key: String(genre.id)
-                                          });
-                              }))
-                      }))
-            })
-    );
+        });
+  } else if (state.TAG === /* Error */0) {
+    tmp = React.createElement("div", {
+          className: "flex flex-wrap w-full h-auto"
+        }, React.createElement(ErrorDisplay.make, {
+              errorMessage: state._0
+            }));
+  } else {
+    var tmp$1;
+    tmp$1 = queryParam.TAG === /* Search */2 ? React.createElement("div", {
+            className: "flex w-full items-center gap-4"
+          }, React.createElement("span", {
+                className: "w-[12rem] truncate"
+              }, "Search: '" + queryParam._0.query + "'"), React.createElement("div", {
+                className: "ml-auto"
+              }, React.createElement(Solid.ChevronDownIcon, {
+                    className: "w-4 h-4"
+                  }))) : React.createElement(React.Fragment, undefined, React.createElement("div", {
+                className: "flex w-full items-center gap-4"
+              }, getIcon(selectedRef.contents), React.createElement("span", {
+                    className: "block truncate"
+                  }, getDisplayName(selectedRef.contents))), React.createElement("div", {
+                className: "ml-auto"
+              }, React.createElement(Solid.ChevronDownIcon, {
+                    className: "w-4 h-4"
+                  })));
+    tmp = React.createElement(React$1.Listbox, {
+          value: selectedRef.contents,
+          children: React.createElement("div", {
+                className: "w-full relative flex"
+              }, React.createElement(React$1.Listbox.Button, {
+                    className: "flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none",
+                    children: tmp$1
+                  }), React.createElement(React$1.Listbox.Options, {
+                    className: "absolute top-[2rem] -left-2 w-[12rem] rounded bg-200 py-2 outline-none ring-0",
+                    children: Belt_Array.map(state._0, (function (genre) {
+                            return React.createElement(React$1.Listbox.Option, {
+                                        value: genre,
+                                        className: "flex w-full",
+                                        children: (function (param) {
+                                            return React.createElement(GenreList$GenreLink, {
+                                                        genre: genre,
+                                                        active: param.active,
+                                                        selected: param.selected,
+                                                        onClick: onClick
+                                                      });
+                                          }),
+                                        key: String(genre.id)
+                                      });
+                          }))
+                  }))
+        });
+  }
   return React.createElement("div", {
               className: "flex w-[10rem] items-center justify-center text-[0.9rem] text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300"
             }, tmp);

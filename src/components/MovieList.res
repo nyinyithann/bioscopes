@@ -4,6 +4,7 @@ module Poster = {
   @react.component
   let make = (
     ~id: string,
+    ~media_type: option<string>,
     ~title: option<string>,
     ~poster_path: option<string>,
     ~vote_average: option<float>,
@@ -25,7 +26,10 @@ module Poster = {
     let handleClick = e => {
       open ReactEvent.Mouse
       preventDefault(e)
-      setQueryParam(UrlQueryParam.Movie({id: id}))
+      switch media_type {
+      | Some(mt) => setQueryParam(UrlQueryParam.Movie({id, media_type: mt}))
+      | _ => setQueryParam(UrlQueryParam.Movie({id, media_type: "movie"}))
+      }
     }
 
     <button
@@ -168,6 +172,7 @@ let make = () => {
                 key={Js.Int.toString(m.id)}
                 id={m.id->Js.Int.toString}
                 title={m.title}
+                media_type={m.media_type}
                 poster_path={m.poster_path}
                 vote_average={m.vote_average}
                 release_date={m.release_date}

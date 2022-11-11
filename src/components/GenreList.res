@@ -179,15 +179,28 @@ let make = () => {
         <div className="w-full relative flex">
           <Listbox.Button
             className="flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none">
-            <div className="flex w-full items-center gap-4">
-              {getIcon(selectedRef.contents)}
-              <span className="block truncate">
-                {getDisplayName(selectedRef.contents)->string}
-              </span>
-            </div>
-            <div className="ml-auto">
-              <Heroicons.Solid.ChevronDownIcon className="w-4 h-4" />
-            </div>
+            {switch queryParam {
+            | Search({query}) =>
+              <div className="flex w-full items-center gap-4">
+                <span className="w-[12rem] truncate"> {`Search: '${query}'`->string} </span>
+                <div className="ml-auto">
+                  <Heroicons.Solid.ChevronDownIcon className="w-4 h-4" />
+                </div>
+              </div>
+
+            | _ =>
+              <>
+                <div className="flex w-full items-center gap-4">
+                  {getIcon(selectedRef.contents)}
+                  <span className="block truncate">
+                    {getDisplayName(selectedRef.contents)->string}
+                  </span>
+                </div>
+                <div className="ml-auto">
+                  <Heroicons.Solid.ChevronDownIcon className="w-4 h-4" />
+                </div>
+              </>
+            }}
           </Listbox.Button>
           <Listbox.Options
             className="absolute top-[2rem] -left-2 w-[12rem] rounded bg-200 py-2 outline-none ring-0">

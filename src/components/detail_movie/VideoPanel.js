@@ -86,7 +86,7 @@ function VideoPanel(Props) {
               }, Belt_Array.map(videos, (function (video) {
                       return React.createElement(VideoPanel$VideoImage, {
                                   video: video,
-                                  className: "w-full",
+                                  className: "w-full border-[2px] border-slate-200 rounded-md\n",
                                   key: Util.getOrEmptyString(video.key)
                                 });
                     })));

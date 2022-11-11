@@ -19,6 +19,7 @@ type movie = {
   video?: bool,
   vote_average?: float,
   vote_count?: int,
+  media_type?: string,
 }
 
 type upcoming_dates = {
@@ -70,6 +71,7 @@ module MovieDecoder = {
     video: ?Marshal.to_opt(. fields, "video", bool),
     vote_average: ?Marshal.to_opt(. fields, "vote_average", float),
     vote_count: ?Marshal.to_opt(. fields, "vote_count", int),
+    media_type: ?Marshal.to_opt(. fields, "media_type", string),
   })
 
   let decode = (. ~json: Js.Json.t): result<movie, string> => {

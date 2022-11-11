@@ -71,19 +71,38 @@ var Converter_search_param = Marshal.Make({
 
 var to$3 = Json_Decode$JsonCombinators.object(function (fields) {
       return {
-              id: fields.required("id", Json_Decode$JsonCombinators.string)
+              id: fields.required("id", Json_Decode$JsonCombinators.string),
+              media_type: fields.required("media_type", Json_Decode$JsonCombinators.string)
             };
     });
 
 function from$3(o) {
+  return {
+          id: o.id,
+          media_type: o.media_type
+        };
+}
+
+var Converter_movie_tv_param = Marshal.Make({
+      to: to$3,
+      from: from$3
+    });
+
+var to$4 = Json_Decode$JsonCombinators.object(function (fields) {
+      return {
+              id: fields.required("id", Json_Decode$JsonCombinators.string)
+            };
+    });
+
+function from$4(o) {
   return {
           id: o.id
         };
 }
 
 var Converter_id_param = Marshal.Make({
-      to: to$3,
-      from: from$3
+      to: to$4,
+      from: from$4
     });
 
 function useQueryParams(param) {
@@ -117,7 +136,7 @@ function useQueryParams(param) {
               _0: "Invalid Route"
             };
           } else {
-            var p$1 = Converter_id_param.parse(match$1);
+            var p$1 = Converter_movie_tv_param.parse(match$1);
             queryParam = p$1.TAG === /* Ok */0 ? ({
                   TAG: /* Movie */3,
                   _0: p$1._0
@@ -178,7 +197,7 @@ function useQueryParams(param) {
       case /* Search */2 :
           return RescriptReactRouter.push("/search?" + new URLSearchParams(Converter_search_param.stringfy(params._0)).toString());
       case /* Movie */3 :
-          return RescriptReactRouter.push("/movie?" + new URLSearchParams(Converter_id_param.stringfy(params._0)).toString());
+          return RescriptReactRouter.push("/movie?" + new URLSearchParams(Converter_movie_tv_param.stringfy(params._0)).toString());
       case /* Person */4 :
       case /* Invalid */5 :
           return ;
@@ -195,6 +214,7 @@ export {
   Converter_category_param ,
   Converter_genre_param ,
   Converter_search_param ,
+  Converter_movie_tv_param ,
   Converter_id_param ,
   useQueryParams ,
 }

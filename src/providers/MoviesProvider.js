@@ -129,6 +129,7 @@ function reducer(state, action) {
               };
     case /* SuccessMovies */2 :
         var movies = action._1;
+        debugger;
         return {
                 apiParams: action._0,
                 movies: {
@@ -164,9 +165,10 @@ function getApiPath(apiParams) {
         return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/discover/movie?with_genres=" + String(match$1.id) + "&page=" + match$1.page.toString() + "&sort_by=" + match$1.sort_by + "";
     case /* Search */2 :
         var match$2 = apiParams._0;
-        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/search/movie?query=" + match$2.query + "&page=" + match$2.page.toString() + "";
+        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/search/multi?query=" + match$2.query + "&page=" + match$2.page.toString() + "";
     case /* Movie */3 :
-        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + apiParams._0.id + "?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en";
+        var match$3 = apiParams._0;
+        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/" + match$3.media_type + "/" + match$3.id + "?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en";
     case /* Person */4 :
     case /* Invalid */5 :
         return "";
@@ -177,34 +179,39 @@ function getApiPath(apiParams) {
 function loadDataInternal(dispatch, apiParams, signal) {
   var apiPath = getApiPath(apiParams);
   var callback = function (result) {
+    debugger;
     if (result.TAG === /* Ok */0) {
       var ml = MovieModel.MovieListDecoder.decode(result._0);
       if (ml.TAG === /* Ok */0) {
+        debugger;
         return Curry._1(dispatch, {
                     TAG: /* SuccessMovies */2,
                     _0: apiParams,
                     _1: ml._0
                   });
-      } else {
-        return Curry._1(dispatch, {
-                    TAG: /* Error */1,
-                    _0: ml._0
-                  });
       }
-    }
-    var e = MovieModel.MovieErrorDecoder.decode(result._0);
-    if (e.TAG !== /* Ok */0) {
+      debugger;
       return Curry._1(dispatch, {
                   TAG: /* Error */1,
-                  _0: "Unexpected error occured while reteriving movie data."
+                  _0: ml._0
                 });
     }
-    var errors = Belt_Array.reduce(Js_option.getWithDefault([], e._0.errors), ". ", (function (a, b) {
-            return b + a;
-          }));
+    debugger;
+    var e = MovieModel.MovieErrorDecoder.decode(result._0);
+    if (e.TAG === /* Ok */0) {
+      debugger;
+      var errors = Belt_Array.reduce(Js_option.getWithDefault([], e._0.errors), ". ", (function (a, b) {
+              return b + a;
+            }));
+      return Curry._1(dispatch, {
+                  TAG: /* Error */1,
+                  _0: errors
+                });
+    }
+    debugger;
     Curry._1(dispatch, {
           TAG: /* Error */1,
-          _0: errors
+          _0: "Unexpected error occured while reteriving movie data."
         });
   };
   Curry._1(dispatch, {

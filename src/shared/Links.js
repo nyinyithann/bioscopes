@@ -9,6 +9,14 @@ function getPosterImageW342Link(seg) {
   return "" + imageBaseUrl + "/w342/" + seg + "";
 }
 
+function getPosterImageW533H300Bestv2Link(seg) {
+  return "" + imageBaseUrl + "/w533_and_h300_bestv2/" + seg + "";
+}
+
+function getPosterImage_W370_H556_bestv2Link(seg) {
+  return "" + imageBaseUrl + "/w370_and_h556_bestv2\n/" + seg + "";
+}
+
 function getOriginalBigImage(seg) {
   return "" + originalImageBaseUrl + "/" + seg + "";
 }
@@ -49,6 +57,8 @@ export {
   imageBaseUrl ,
   originalImageBaseUrl ,
   getPosterImageW342Link ,
+  getPosterImageW533H300Bestv2Link ,
+  getPosterImage_W370_H556_bestv2Link ,
   getOriginalBigImage ,
   getHeroImage ,
   getImdbLink ,

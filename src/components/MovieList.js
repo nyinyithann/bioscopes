@@ -25,6 +25,7 @@ function array(prim) {
 
 function MovieList$Poster(Props) {
   var id = Props.id;
+  var media_type = Props.media_type;
   var title = Props.title;
   var poster_path = Props.poster_path;
   var vote_average = Props.vote_average;
@@ -36,12 +37,23 @@ function MovieList$Poster(Props) {
   var releaseYear = release_date !== undefined ? release_date.substring(0, 4) : "";
   var handleClick = function (e) {
     e.preventDefault();
-    Curry._1(setQueryParam, {
-          TAG: /* Movie */3,
-          _0: {
-            id: id
-          }
-        });
+    if (media_type !== undefined) {
+      return Curry._1(setQueryParam, {
+                  TAG: /* Movie */3,
+                  _0: {
+                    id: id,
+                    media_type: media_type
+                  }
+                });
+    } else {
+      return Curry._1(setQueryParam, {
+                  TAG: /* Movie */3,
+                  _0: {
+                    id: id,
+                    media_type: "movie"
+                  }
+                });
+    }
   };
   return React.createElement("button", {
               className: "relative flex flex-col flex-shrink-0 gap-2 transition ease-linear w-[10rem] h-[22rem] sm:w-[15rem] sm:h-[28rem] items-center justify-start hover:border-[1px] hover:border-slate-200 transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group hover:bg-gradient-to-r hover:from-teal-400 hover:to-blue-400 hover:rounded-md",
@@ -232,6 +244,7 @@ function MovieList(Props) {
                         }, "Movies Not Found.") : Belt_Array.map(movieList, (function (m) {
                             return React.createElement(MovieList$Poster, {
                                         id: m.id.toString(),
+                                        media_type: m.media_type,
                                         title: m.title,
                                         poster_path: m.poster_path,
                                         vote_average: m.vote_average,
