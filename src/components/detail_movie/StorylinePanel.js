@@ -8,9 +8,10 @@ import * as Twitter from "../social_media/Twitter.js";
 import * as Facebook from "../social_media/Facebook.js";
 import * as Instagram from "../social_media/Instagram.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
-import * as DomBinding from "../../bindings/DomBinding.js";
+import * as MovieModel from "../../models/MovieModel.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as WebsiteLink from "../social_media/WebsiteLink.js";
+import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 
 function string(prim) {
   return prim;
@@ -73,19 +74,14 @@ function getDirectorIdAndName(movie) {
 
 function StorylinePanel$DirectorLink(Props) {
   var movie = Props.movie;
-  var onClick = Props.onClick;
   var match = getDirectorIdAndName(movie);
-  var id = match[0];
-  if (id !== 0) {
+  if (match[0] !== 0) {
     return React.createElement("div", {
                 className: "flex w-full"
               }, React.createElement("span", {
                     className: "w-1/3 overflow-ellipsis"
                   }, Util.toStringElement("Director")), React.createElement("span", {
-                    className: "w-2/3 overflow-ellipsis",
-                    onClick: (function (param) {
-                        Curry._1(onClick, id);
-                      })
+                    className: "w-2/3 overflow-ellipsis"
                   }, Util.toStringElement(match[1])));
   } else {
     return null;
@@ -142,8 +138,9 @@ function getGenres(movie) {
 
 function StorylinePanel$GenreLinks(Props) {
   var movie = Props.movie;
-  var onClick = Props.onClick;
   var links = getGenres(movie);
+  var match = UrlQueryParam.useQueryParams(undefined);
+  var setQueryParam = match[1];
   if (Util.isEmptyArray(links)) {
     return null;
   } else {
@@ -154,14 +151,25 @@ function StorylinePanel$GenreLinks(Props) {
                   }, Util.toStringElement("Genres")), React.createElement("div", {
                     className: "w-2/3 overflow-ellipsis flex flex-wrap items-center gap-2"
                   }, Belt_Array.map(links, (function (param) {
+                          var name = param[1];
                           var id = param[0];
                           return React.createElement("span", {
                                       key: Util.itos(id),
                                       className: "span-link",
-                                      onClick: (function (param) {
-                                          Curry._1(onClick, id);
+                                      onClick: (function (e) {
+                                          e.preventDefault();
+                                          Curry._1(setQueryParam, {
+                                                TAG: /* Genre */1,
+                                                _0: {
+                                                  id: id,
+                                                  name: name,
+                                                  display: name,
+                                                  page: 1,
+                                                  sort_by: MovieModel.popularity.id
+                                                }
+                                              });
                                         })
-                                    }, Util.toStringElement(param[1]));
+                                    }, Util.toStringElement(name));
                         }))));
   }
 }
@@ -230,10 +238,7 @@ function StorylinePanel(Props) {
                       title: "Runtime",
                       value: runtime
                     }), React.createElement(StorylinePanel$DirectorLink, {
-                      movie: movie,
-                      onClick: (function (id) {
-                          DomBinding.pop(Util.itos(id));
-                        })
+                      movie: movie
                     }), Util.getOrFloatZero(movie.budget) === 0 ? null : React.createElement(StorylinePanel$Pair, {
                         title: "Budget",
                         value: "$" + budget + ""
@@ -241,10 +246,7 @@ function StorylinePanel(Props) {
                         title: "Revenue",
                         value: "$" + revenue + ""
                       }), React.createElement(StorylinePanel$GenreLinks, {
-                      movie: movie,
-                      onClick: (function (id) {
-                          DomBinding.pop(Util.itos(id));
-                        })
+                      movie: movie
                     }), React.createElement(StorylinePanel$Pair, {
                       title: "Status",
                       value: status

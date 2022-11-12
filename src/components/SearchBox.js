@@ -43,7 +43,7 @@ function SearchBox(Props) {
   var handleChange = function (e) {
     e.preventDefault();
     var v = e.target.value;
-    if (v === "") {
+    if (v === "" && queryParam.TAG === /* Search */2) {
       return Curry._1(setQueryParam, {
                   TAG: /* Category */0,
                   _0: {
@@ -64,7 +64,7 @@ function SearchBox(Props) {
                       className: "h-5 w-5 fill-klor-400"
                     })), React.createElement("input", {
                   ref: inputRef,
-                  className: "block w-full rounded-md pl-[2rem] placeholder-klor-400 outline-none ring-0 border-0 bg-200 hover:bg-300 focus:bg-300 focus:border-[1px] focus:border-slate-100 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm text-900",
+                  className: "block w-full pl-[2rem] placeholder-klor-400 outline-none ring-0 border-t-0 border-r-0 border-l-0 border-b-[1px] border-b-400 hover:border-b-500 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm text-900 active:ring-0 active:outline-none",
                   id: "search-field",
                   maxLength: 128,
                   name: "search",

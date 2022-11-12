@@ -171,7 +171,7 @@ let make = () => {
   })
 
   <div
-    className="flex w-[10rem] items-center justify-center text-[0.9rem] text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300">
+    className="flex w-[10rem] items-center justify-center text-base text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300">
     {switch state {
     | Loading =>
       <Loading
@@ -210,7 +210,7 @@ let make = () => {
             }}
           </Listbox.Button>
           <Listbox.Options
-            className="absolute top-[2rem] -left-2 w-[12rem] rounded bg-200 py-2 outline-none ring-0">
+            className="absolute top-[2rem] -left-2 w-[14rem] rounded bg-200 py-2 outline-none ring-0">
             {genres
             ->Belt.Array.map(genre =>
               <Listbox.Option key={genre.id->string_of_int} value={genre} className="flex w-full">

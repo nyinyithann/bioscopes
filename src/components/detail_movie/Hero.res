@@ -69,9 +69,9 @@ module WatchTrailerSmallButton = {
             ReactEvent.Mouse.preventDefault(e)
             play(Links.getYoutubeVideoLink(vkey))
           }}
-          className="absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center">
+          className="absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center group">
           <Heroicons.Outline.PlayIcon
-            className="h-14 w-14 transition-all sm:h-16 sm:w-16 stroke-[1px] stroke-slate-100 hover:stroke-klor-400 hover:cursor-pointer"
+            className="h-14 w-14 transition-all sm:h-16 sm:w-16 stroke-[1px] stroke-slate-100 group-hover:stroke-klor-400 group-hover:cursor-pointer"
           />
         </button>
       }
@@ -163,9 +163,21 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
 
   let sotryline = Util.getOrEmptyString(movie.overview)->Util.toStringElement
 
+  let goBack = e => {
+    ReactEvent.Mouse.preventDefault(e)
+    Webapi.Dom.History.back(Webapi.Dom.history)
+  }
+
   <div className="flex w-full">
     <div className="flex flex-col w-full">
       <div className="relative flex flex-col w-full">
+        <button
+          type_="button"
+          onClick={goBack}
+          className="flex w-auto gap-1 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-80">
+          <Heroicons.Solid.ArrowLeftIcon className="w-5 h-6 fill-klor-900" />
+          <span className="block text-900"> {"Back"->React.string} </span>
+        </button>
         {Util.isEmptyString(tagline)
           ? React.null
           : <span

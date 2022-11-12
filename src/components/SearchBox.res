@@ -34,7 +34,11 @@ let make = () => {
     ReactEvent.Form.preventDefault(e)
     let v = ReactEvent.Form.target(e)["value"]
     if v == "" {
-      setQueryParam(UrlQueryParam.Category({name: "popular", display: "Popular", page: 1}))
+      switch queryParam {
+      | Search(_) =>
+        setQueryParam(UrlQueryParam.Category({name: "popular", display: "Popular", page: 1}))
+      | _ => ()
+      }
     }
   }
 
@@ -46,7 +50,7 @@ let make = () => {
     </div>
     <input
       id="search-field"
-      className="block w-full rounded-md pl-[2rem] placeholder-klor-400 outline-none ring-0 border-0 bg-200 hover:bg-300 focus:bg-300 focus:border-[1px] focus:border-slate-100 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm text-900"
+      className="block w-full pl-[2rem] placeholder-klor-400 outline-none ring-0 border-t-0 border-r-0 border-l-0 border-b-[1px] border-b-400 hover:border-b-500 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm text-900 active:ring-0 active:outline-none"
       ref={ReactDOM.Ref.domRef(inputRef)}
       placeholder="Search"
       type_="search"

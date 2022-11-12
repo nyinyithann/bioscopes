@@ -31,21 +31,20 @@ let lazyPerson = React.createElement(
   (),
 )
 
-module Bioscopes = {
+module NavLink = {
   @react.component
-  let make = () => {
+  let make = (~title: string) => {
     let onClick = e => {
       ReactEvent.Mouse.preventDefault(e)
-      RescriptReactRouter.push("/about")
+      RescriptReactRouter.push("/")
     }
-    <div
-      role="button"
-      className="text-base sm:text-lg md:text-xl w-full font-extrabold bg-gradient-to-r from-klor-400 via-klor-500 to-klor-400 text-yellow-200 flex items-center justify-start gap-2 py-[0.2rem] px-[0.6rem] rounded-full shadow-md shadow-klor-300"
+    <button
+      type_="button"
+      className="flex gap-1 justify-center p-1 group rounded ring-0 outline-none hover:bg-300"
       onClick>
-      <Heroicons.Solid.CameraIcon className="h-3 w-3 pl-1" />
-      {"BIOSCOPES"->React.string}
-      <Heroicons.Solid.CameraIcon className="h-3 w-3 pr-1" />
-    </div>
+      <Heroicons.Solid.HomeIcon className="w-5 h-6 fill-klor-900" />
+      <span className="hidden sm:block text-900"> {title->React.string} </span>
+    </button>
   }
 }
 
@@ -57,18 +56,18 @@ let make = () => {
   | list{"genre"}
   | list{"search"} =>
     <SuspensionLoader> lazyMovieList </SuspensionLoader>
-
   | list{"movie"} => <SuspensionLoader> lazyMovie </SuspensionLoader>
-
   | list{"person"} => <SuspensionLoader> lazyPerson </SuspensionLoader>
   | _ => <div> {"Todo: To create a proper component to display message"->string} </div>
   }
 
   <div className="flex flex-col w-full h-full">
-    <div className="h-auto flex flex-col z-50">
-      <div id="navbar" className="flex w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0">
-        <div className="hidden sm:flex pl-4 m-auto pr-4">
-          <Bioscopes />
+    <div className="h-auto flex flex-col z-50 relative">
+      <div
+        id="navbar"
+        className="flex items-center w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0">
+        <div className="pl-1 mr-auto">
+          <NavLink title={"Home"} />
         </div>
         <div
           id="search-colorswatch-container"
@@ -76,7 +75,7 @@ let make = () => {
           <SearchBox />
           <div
             id="colorswatch-container"
-            className="pr-4 place-items-start flex items-center gap-2 z-[50]">
+            className="pr-2 place-items-start flex items-center gap-2 z-[50]">
             <ThemeMenu />
             <GithubButton />
           </div>

@@ -89,14 +89,14 @@ function Hero$WatchTrailerSmallButton(Props) {
   var vkey = video.key;
   if (vkey !== undefined) {
     return React.createElement("button", {
-                className: "absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center",
+                className: "absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center group",
                 type: "button",
                 onClick: (function (e) {
                     e.preventDefault();
                     Curry._1(play, Links.getYoutubeVideoLink(vkey));
                   })
               }, React.createElement(Outline.PlayIcon, {
-                    className: "h-14 w-14 transition-all sm:h-16 sm:w-16 stroke-[1px] stroke-slate-100 hover:stroke-klor-400 hover:cursor-pointer"
+                    className: "h-14 w-14 transition-all sm:h-16 sm:w-16 stroke-[1px] stroke-slate-100 group-hover:stroke-klor-400 group-hover:cursor-pointer"
                   }));
   } else {
     return null;
@@ -220,13 +220,25 @@ function Hero(Props) {
     width: "" + size.width.toString() + "vw"
   };
   var sotryline = Util.toStringElement(Util.getOrEmptyString(movie.overview));
+  var goBack = function (e) {
+    e.preventDefault();
+    window.history.back();
+  };
   return React.createElement("div", {
               className: "flex w-full"
             }, React.createElement("div", {
                   className: "flex flex-col w-full"
                 }, React.createElement("div", {
                       className: "relative flex flex-col w-full"
-                    }, Util.isEmptyString(tagline) ? null : React.createElement("span", {
+                    }, React.createElement("button", {
+                          className: "flex w-auto gap-1 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-80",
+                          type: "button",
+                          onClick: goBack
+                        }, React.createElement(Solid.ArrowLeftIcon, {
+                              className: "w-5 h-6 fill-klor-900"
+                            }), React.createElement("span", {
+                              className: "block text-900"
+                            }, "Back")), Util.isEmptyString(tagline) ? null : React.createElement("span", {
                             className: "" + (
                               size.width === 100 ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full pr-4" : "top-0 left-0 text-[1.4rem] rounded-br-full pr-8"
                             ) + " absolute z-50 p-1 w-auto font-nav font-extrabold text-500 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-20"

@@ -32,16 +32,14 @@ let getDirectorIdAndName = (movie: DetailMovieModel.detail_movie) => {
 
 module DirectorLink = {
   @react.component
-  let make = (~movie: DetailMovieModel.detail_movie, ~onClick) => {
+  let make = (~movie: DetailMovieModel.detail_movie) => {
     let (id, name) = getDirectorIdAndName(movie)
 
     {
       id != 0
         ? <div className="flex w-full">
             <span className="w-1/3 overflow-ellipsis"> {Util.toStringElement("Director")} </span>
-            <span className="w-2/3 overflow-ellipsis" onClick={_ => onClick(id)}>
-              {Util.toStringElement(name)}
-            </span>
+            <span className="w-2/3 overflow-ellipsis"> {Util.toStringElement(name)} </span>
           </div>
         : React.null
     }
@@ -78,8 +76,9 @@ let getGenres = (movie: DetailMovieModel.detail_movie) => {
 
 module GenreLinks = {
   @react.component
-  let make = (~movie: DetailMovieModel.detail_movie, ~onClick) => {
+  let make = (~movie: DetailMovieModel.detail_movie ) => {
     let links = getGenres(movie)
+    let (_, setQueryParam) = UrlQueryParam.useQueryParams()
 
     {
       Util.isEmptyArray(links)
@@ -89,7 +88,15 @@ module GenreLinks = {
             <div className="w-2/3 overflow-ellipsis flex flex-wrap items-center gap-2">
               {links
               ->Belt.Array.map(((id, name)) =>
-                <span key={Util.itos(id)} onClick={_ => onClick(id)} className="span-link">
+                <span
+                  key={Util.itos(id)}
+                  onClick={ e => {
+                    ReactEvent.Mouse.preventDefault(e)
+                    setQueryParam(
+                      Genre({id, name, display: name, page: 1, sort_by: MovieModel.popularity.id}),
+                    )
+                  }}
+                  className="span-link">
                   {Util.toStringElement(name)}
                 </span>
               )
@@ -154,14 +161,14 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     <div className="flex flex-col w-full pt-4">
       <Pair title={"Released"} value={releasedDate} />
       <Pair title={"Runtime"} value={runtime} />
-      <DirectorLink movie onClick={id => DomBinding.pop(Util.itos(id))} />
+      <DirectorLink movie />
       {Util.getOrFloatZero(movie.budget) == 0.
         ? React.null
         : <Pair title={"Budget"} value={`$${budget}`} />}
       {Util.getOrFloatZero(movie.revenue) == 0.
         ? React.null
         : <Pair title={"Revenue"} value={`$${revenue}`} />}
-      <GenreLinks movie onClick={id => DomBinding.pop(Util.itos(id))} />
+      <GenreLinks movie />
       <Pair title={"Status"} value={status} />
       <Pair title={"Language"} value={getSpokenLanguages(movie)} />
       <Pair title={"Production"} value={getProductionCompanies(movie)} />

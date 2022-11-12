@@ -30,7 +30,7 @@ let make = () => {
   }
 
   <div
-    className="w-[10rem] flex items-center justify-center text-[0.9rem] rounded-md text-700 py-1 px-2 outline-none ring-0 hover:bg-300">
+    className="w-[10rem] flex items-center justify-center text-base rounded-md text-700 py-1 px-2 outline-none ring-0 hover:bg-300">
     <Listbox value={selectedRef.contents} onChange>
       <div className="w-full relative flex">
         <Listbox.Button

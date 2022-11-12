@@ -42,24 +42,25 @@ var lazyPerson = React.createElement(React.lazy(function (param) {
                       }), __x);
         }), undefined);
 
-function Home$Bioscopes(Props) {
+function Home$NavLink(Props) {
+  var title = Props.title;
   var onClick = function (e) {
     e.preventDefault();
-    RescriptReactRouter.push("/about");
+    RescriptReactRouter.push("/");
   };
-  return React.createElement("div", {
-              className: "text-base sm:text-lg md:text-xl w-full font-extrabold bg-gradient-to-r from-klor-400 via-klor-500 to-klor-400 text-yellow-200 flex items-center justify-start gap-2 py-[0.2rem] px-[0.6rem] rounded-full shadow-md shadow-klor-300",
-              role: "button",
+  return React.createElement("button", {
+              className: "flex gap-1 justify-center p-1 group rounded ring-0 outline-none hover:bg-300",
+              type: "button",
               onClick: onClick
-            }, React.createElement(Solid.CameraIcon, {
-                  className: "h-3 w-3 pl-1"
-                }), "BIOSCOPES", React.createElement(Solid.CameraIcon, {
-                  className: "h-3 w-3 pr-1"
-                }));
+            }, React.createElement(Solid.HomeIcon, {
+                  className: "w-5 h-6 fill-klor-900"
+                }), React.createElement("span", {
+                  className: "hidden sm:block text-900"
+                }, title));
 }
 
-var Bioscopes = {
-  make: Home$Bioscopes
+var NavLink = {
+  make: Home$NavLink
 };
 
 function Home(Props) {
@@ -116,17 +117,19 @@ function Home(Props) {
   return React.createElement("div", {
               className: "flex flex-col w-full h-full"
             }, React.createElement("div", {
-                  className: "h-auto flex flex-col z-50"
+                  className: "h-auto flex flex-col z-50 relative"
                 }, React.createElement("div", {
-                      className: "flex w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0",
+                      className: "flex items-center w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0",
                       id: "navbar"
                     }, React.createElement("div", {
-                          className: "hidden sm:flex pl-4 m-auto pr-4"
-                        }, React.createElement(Home$Bioscopes, {})), React.createElement("div", {
+                          className: "pl-1 mr-auto"
+                        }, React.createElement(Home$NavLink, {
+                              title: "Home"
+                            })), React.createElement("div", {
                           className: "flex flex-1 pl-4 items-center justify-between sm:justify-end gap-2",
                           id: "search-colorswatch-container"
                         }, React.createElement(SearchBox.make, {}), React.createElement("div", {
-                              className: "pr-4 place-items-start flex items-center gap-2 z-[50]",
+                              className: "pr-2 place-items-start flex items-center gap-2 z-[50]",
                               id: "colorswatch-container"
                             }, React.createElement(ThemeMenu.make, {}), React.createElement(GithubButton.make, {})))), React.createElement("div", {
                       className: "z-30 bg-white"
@@ -146,7 +149,7 @@ export {
   lazyMovieList ,
   lazyMovie ,
   lazyPerson ,
-  Bioscopes ,
+  NavLink ,
   make ,
 }
 /* lazyMovieList Not a pure module */

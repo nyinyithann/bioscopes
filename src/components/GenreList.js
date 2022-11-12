@@ -302,7 +302,7 @@ function GenreList(Props) {
                     className: "flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none",
                     children: tmp$1
                   }), React.createElement(React$1.Listbox.Options, {
-                    className: "absolute top-[2rem] -left-2 w-[12rem] rounded bg-200 py-2 outline-none ring-0",
+                    className: "absolute top-[2rem] -left-2 w-[14rem] rounded bg-200 py-2 outline-none ring-0",
                     children: Belt_Array.map(state._0, (function (genre) {
                             return React.createElement(React$1.Listbox.Option, {
                                         value: genre,
@@ -322,7 +322,7 @@ function GenreList(Props) {
         });
   }
   return React.createElement("div", {
-              className: "flex w-[10rem] items-center justify-center text-[0.9rem] text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300"
+              className: "flex w-[10rem] items-center justify-center text-base text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300"
             }, tmp);
 }
 
