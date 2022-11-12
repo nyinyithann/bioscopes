@@ -73,7 +73,8 @@ module GenreLink = {
     }
     let name = getDisplayName(genre)
     let icon = getIcon(genre)
-    <button type_="button" className="flex items-center gap-4 w-full" onClick={handleClick}>
+    <button
+      type_="button" className="flex items-center gap-4 w-full hover:bg-300" onClick={handleClick}>
       <div
         className={`${active || selected
             ? "bg-300"
@@ -95,6 +96,12 @@ let make = () => {
   open HeadlessUI
   let (state, setState) = React.useState(_ => Loading)
   let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
+  let isInSearchMode = {
+    switch queryParam {
+    | Search(_) => true
+    | _ => false
+    }
+  }
 
   React.useMemo1(() => {
     switch queryParam {
@@ -208,7 +215,12 @@ let make = () => {
             ->Belt.Array.map(genre =>
               <Listbox.Option key={genre.id->string_of_int} value={genre} className="flex w-full">
                 {({active, selected}) => {
-                  <GenreLink genre onClick active selected />
+                  <GenreLink
+                    genre
+                    onClick
+                    active={active && !isInSearchMode}
+                    selected={selected && !isInSearchMode}
+                  />
                 }}
               </Listbox.Option>
             )

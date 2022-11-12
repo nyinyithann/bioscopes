@@ -3,14 +3,19 @@
 import * as Hero from "./Hero.js";
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
+import * as $$Window from "../../hooks/Window.js";
 import * as Loading from "../Loading.js";
 import * as VideoPanel from "./VideoPanel.js";
+import * as ModalDialog from "../ModalDialog.js";
 import * as PhotosPanel from "./PhotosPanel.js";
 import * as ErrorDisplay from "../ErrorDisplay.js";
 import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../../providers/MoviesProvider.js";
 import * as StorylinePanel from "./StorylinePanel.js";
 import * as React$1 from "@headlessui/react";
+import Youtube from "react-player/youtube";
+import * as YoutubePlayerProvider from "../../providers/YoutubePlayerProvider.js";
+import * as Outline from "@heroicons/react/outline";
 
 function string(prim) {
   return prim;
@@ -21,8 +26,12 @@ function Movie(Props) {
   var loadDetailMovie = match.loadDetailMovie;
   var error = match.error;
   var detail_movie = match.detail_movie;
-  var match$1 = UrlQueryParam.useQueryParams(undefined);
-  var queryParam = match$1[0];
+  var match$1 = YoutubePlayerProvider.useVideoPlayerContext(undefined);
+  var stop = match$1.stop;
+  var videoPlayState = match$1.videoPlayState;
+  var windowSize = $$Window.useWindowSize(undefined);
+  var match$2 = UrlQueryParam.useQueryParams(undefined);
+  var queryParam = match$2[0];
   React.useMemo((function () {
           var t = detail_movie.title;
           if (t !== undefined) {
@@ -141,7 +150,27 @@ function Movie(Props) {
                                                   })
                                               }));
                               })
-                          }))));
+                          }))), React.createElement(ModalDialog.make, {
+                    isOpen: videoPlayState.playing,
+                    onClose: (function (param) {
+                        Curry._1(stop, undefined);
+                      }),
+                    className: "relative z-50",
+                    panelClassName: "w-full h-full transform overflow-hidden transition-all",
+                    children: null
+                  }, React.createElement("div", {
+                        onClick: (function (param) {
+                            Curry._1(stop, undefined);
+                          })
+                      }, React.createElement(Outline.XIcon, {
+                            className: "absolute z-50 top-0 right-4 w-12 h-12 p-2 border-2 border-slate-400 fill-white stroke-white hover:bg-slate-500 rounded-full bg-slate-900"
+                          })), React.createElement(Youtube, {
+                        url: videoPlayState.url,
+                        playing: videoPlayState.playing,
+                        controls: true,
+                        width: "" + (windowSize.width - 32 | 0).toString() + "px",
+                        height: "" + (windowSize.height - 32 | 0).toString() + "px"
+                      })));
   }
 }
 

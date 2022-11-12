@@ -100,7 +100,6 @@ let reducer = (state: state, action) => {
       error: "",
     }
   | SuccessMovies(apiParams, movies) => {
-      %debugger
       {
         apiParams,
         movies: {
@@ -156,25 +155,20 @@ let loadDataInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signal
   let apiPath = getApiPath(apiParams)
 
   let callback = result => {
-    %debugger
     switch result {
     | Ok(json) =>
       switch MovieModel.MovieListDecoder.decode(. ~json) {
       | Ok(ml) => {
-          %debugger
           dispatch(SuccessMovies(apiParams, ml))
         }
 
       | Error(msg) => {
-          %debugger
           dispatch(Error(msg))
         }
       }
     | Error(json) => {
-        %debugger
         switch MovieModel.MovieErrorDecoder.decode(. ~json) {
         | Ok(e) => {
-            %debugger
             let errors = Belt.Array.reduce(Js.Option.getWithDefault([], e.errors), ". ", (a, b) =>
               b ++ a
             )
@@ -182,7 +176,6 @@ let loadDataInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signal
           }
 
         | _ => {
-            %debugger
             dispatch(Error("Unexpected error occured while reteriving movie data."))
           }
         }

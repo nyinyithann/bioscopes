@@ -8,6 +8,7 @@ import * as Loading from "../Loading.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as NotAvailable from "./NotAvailable.js";
+import * as YoutubePlayerProvider from "../../providers/YoutubePlayerProvider.js";
 import * as Solid from "@heroicons/react/solid";
 
 function string(prim) {
@@ -39,17 +40,25 @@ function VideoPanel$VideoImage(Props) {
         return false;
       });
   var setLoaded = match[1];
-  var key = Util.getOrEmptyString(video.key);
-  return React.createElement(React.Fragment, undefined, Util.isEmptyString(key) ? null : React.createElement(React.Fragment, undefined, match[0] ? null : React.createElement("div", {
+  var match$1 = YoutubePlayerProvider.useVideoPlayerContext(undefined);
+  var play = match$1.play;
+  var vkey = Util.getOrEmptyString(video.key);
+  var onClick = function (e) {
+    e.preventDefault();
+    Curry._1(play, Links.getYoutubeVideoLink(vkey));
+  };
+  return React.createElement(React.Fragment, undefined, Util.isEmptyString(vkey) ? null : React.createElement(React.Fragment, undefined, match[0] ? null : React.createElement("div", {
                           className: "absolute top-2 w-full h-full flex flex-col items-center justify-center"
                         }, React.createElement(Loading.make, {
                               className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
                             })), React.createElement("div", {
-                        className: "relative flex-inline"
+                        className: "relative flex-inline",
+                        role: "button",
+                        onClick: onClick
                       }, React.createElement("img", {
                             className: className,
                             alt: "Poster",
-                            src: Links.getYoutubeImageLink(key),
+                            src: Links.getYoutubeImageLink(vkey),
                             onError: (function (e) {
                                 if (e.target.src !== Links.placeholderImage) {
                                   e.target.src = Links.placeholderImage;
@@ -65,7 +74,7 @@ function VideoPanel$VideoImage(Props) {
                           }), React.createElement("div", {
                             className: "absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-50 bg-opacity-0 sm:bg-opacity-10 hover:bg-opacity-0 hover:cursor-pointer group"
                           }, React.createElement(Solid.PlayIcon, {
-                                className: "h-12 w-12 fill-klor-100 stroke-white group-hover:fill-klor-300"
+                                className: "h-8 w-8 fill-klor-transparent stroke-white group-hover:fill-klor-400"
                               })))));
 }
 
@@ -81,15 +90,15 @@ function VideoPanel(Props) {
                 thing: "videos"
               });
   } else {
-    return React.createElement("div", {
-                className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full"
-              }, Belt_Array.map(videos, (function (video) {
-                      return React.createElement(VideoPanel$VideoImage, {
-                                  video: video,
-                                  className: "w-full border-[2px] border-slate-200 rounded-md\n",
-                                  key: Util.getOrEmptyString(video.key)
-                                });
-                    })));
+    return React.createElement(React.Fragment, undefined, React.createElement("div", {
+                    className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full"
+                  }, Belt_Array.map(videos, (function (video) {
+                          return React.createElement(VideoPanel$VideoImage, {
+                                      video: video,
+                                      className: "w-full border-[2px] border-slate-200 rounded-md",
+                                      key: Util.getOrEmptyString(video.key)
+                                    });
+                        }))));
   }
 }
 

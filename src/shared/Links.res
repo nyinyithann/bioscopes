@@ -5,8 +5,10 @@ let imageBaseUrl = "https://image.tmdb.org/t/p"
 let originalImageBaseUrl = `${imageBaseUrl}/original`
 
 let getPosterImageW342Link = (seg: string) => `${imageBaseUrl}/w342/${seg}`
-let getPosterImageW533H300Bestv2Link = (seg: string) => `${imageBaseUrl}/w533_and_h300_bestv2/${seg}`
-let getPosterImage_W370_H556_bestv2Link = (seg: string) => `${imageBaseUrl}/w370_and_h556_bestv2
+let getPosterImageW533H300Bestv2Link = (seg: string) =>
+  `${imageBaseUrl}/w533_and_h300_bestv2/${seg}`
+let getPosterImage_W370_H556_bestv2Link = (seg: string) =>
+  `${imageBaseUrl}/w370_and_h556_bestv2
 /${seg}`
 
 let getOriginalBigImage = (seg: string) => `${originalImageBaseUrl}/${seg}`
@@ -21,6 +23,10 @@ let getYoutubeImageLink = (id: string) => `https://img.youtube.com/vi/${id}/mqde
 
 let placeholderImage = "/assets/nothing.svg"
 
+let getYoutubeVideoLink = key => `https://youtu.be/${key}`
+//https://youtu.be/mkomfZHG5q4
+// https://youtu.be/0RnGge4t_ZU
+// https://youtu.be/wajuHqcA_Rg
 /* https://api.themoviedb.org/3/search/multi?api_key=8235fd73c07d8e61320d0df784562bb2&language=en-US&query=breaking+bad&page=1 */
 /*
  "backdrop_sizes": [

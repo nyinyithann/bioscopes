@@ -2,6 +2,8 @@ type video = {
   id?: string,
   key?: string,
   site?: string,
+  name?: string,
+  type_?: string,
 }
 
 type image = {
@@ -138,6 +140,8 @@ module Decoder = {
     id: ?Marshal.to_opt(. fields, "id", string),
     key: ?Marshal.to_opt(. fields, "key", string),
     site: ?Marshal.to_opt(. fields, "site", string),
+    name: ?Marshal.to_opt(. fields, "name", string),
+    type_: ?Marshal.to_opt(. fields, "type", string),
   })
 
   let image = object(fields => {

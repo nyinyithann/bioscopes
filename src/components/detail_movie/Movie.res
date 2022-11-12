@@ -2,6 +2,9 @@ let {string} = module(React)
 @react.component
 let make = () => {
   let {detail_movie, loading, error, loadDetailMovie} = MoviesProvider.useMoviesContext()
+  let {videoPlayState, play, stop} = YoutubePlayerProvider.useVideoPlayerContext()
+  let windowSize : Window.window_size = Window.useWindowSize()
+  
   let (queryParam, _) = UrlQueryParam.useQueryParams()
 
   React.useMemo1(() => {
@@ -113,6 +116,24 @@ let make = () => {
           </Tab.Group>
         </div>
       </div>
+      <ModalDialog
+        isOpen={videoPlayState.playing}
+        onClose={_ => stop() }
+        className="relative z-50"
+        panelClassName="w-full h-full transform overflow-hidden transition-all">
+          <div onClick={_ => stop() }>
+            <Heroicons.Outline.XIcon
+              className="absolute z-50 top-0 right-4 w-12 h-12 p-2 border-2 border-slate-400 fill-white stroke-white hover:bg-slate-500 rounded-full bg-slate-900"
+            />
+          </div>
+          <YoutubePlayer
+            url={videoPlayState.url}
+            playing={videoPlayState.playing}
+            controls={true}
+            width={`${(windowSize.width - 32)->Js.Int.toString}px`}
+            height={`${(windowSize.height - 32)->Js.Int.toString}px`}
+          />
+      </ModalDialog>
     </main>
   }
 }

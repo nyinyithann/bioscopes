@@ -109,7 +109,7 @@ function GenreList$GenreLink(Props) {
   var name = getDisplayName(genre);
   var icon = getIcon(genre);
   return React.createElement("button", {
-              className: "flex items-center gap-4 w-full",
+              className: "flex items-center gap-4 w-full hover:bg-300",
               type: "button",
               onClick: handleClick
             }, React.createElement("div", {
@@ -140,6 +140,8 @@ function GenreList(Props) {
   var match$1 = UrlQueryParam.useQueryParams(undefined);
   var setQueryParam = match$1[1];
   var queryParam = match$1[0];
+  var isInSearchMode;
+  isInSearchMode = queryParam.TAG === /* Search */2 ? true : false;
   React.useMemo((function () {
           switch (queryParam.TAG | 0) {
             case /* Category */0 :
@@ -308,8 +310,8 @@ function GenreList(Props) {
                                         children: (function (param) {
                                             return React.createElement(GenreList$GenreLink, {
                                                         genre: genre,
-                                                        active: param.active,
-                                                        selected: param.selected,
+                                                        active: param.active && !isInSearchMode,
+                                                        selected: param.selected && !isInSearchMode,
                                                         onClick: onClick
                                                       });
                                           }),

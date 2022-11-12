@@ -21,7 +21,9 @@ module PhotoTitle = {
   let make = (~title, ~count) => {
     <div className="flex w-full gap-2 items-center font-sans text-900 pb-1">
       <span className="text-[0.9rem]"> {title->string} </span>
-      <span className="text-[0.8rem]"> {`${count->Js.Int.toString} ${count == 1 ? "image" : "images"}`->string} </span>
+      <span className="text-[0.8rem]">
+        {`${count->Js.Int.toString} ${count == 1 ? "image" : "images"}`->string}
+      </span>
     </div>
   }
 }
@@ -39,7 +41,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
         : <div className="flex flex-col w-full">
             <PhotoTitle title="Backdrops" count={Belt.Array.length(backdrops)} />
             <div
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 justify-center items-center w-full">
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full">
               {backdrops
               ->Belt.Array.map(bd =>
                 <LazyImageLite

@@ -4,7 +4,7 @@ import * as App from "./App.js";
 import * as React from "react";
 import * as ReactDom from "react-dom";
 
-import '../style/main.css'
+import '../style/main.css';
 ;
 
 var root = document.querySelector("#root");

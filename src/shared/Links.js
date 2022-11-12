@@ -45,6 +45,10 @@ function getYoutubeImageLink(id) {
   return "https://img.youtube.com/vi/" + id + "/mqdefault.jpg";
 }
 
+function getYoutubeVideoLink(key) {
+  return "https://youtu.be/" + key + "";
+}
+
 var apiBaseUrl = "https://api.themoviedb.org";
 
 var apiVersion = "3";
@@ -67,5 +71,6 @@ export {
   getInstagramLink ,
   getYoutubeImageLink ,
   placeholderImage ,
+  getYoutubeVideoLink ,
 }
 /* No side effect */

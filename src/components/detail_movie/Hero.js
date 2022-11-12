@@ -6,7 +6,12 @@ import * as Links from "../../shared/Links.js";
 import * as React from "react";
 import * as Rating from "../Rating.js";
 import * as Loading from "../Loading.js";
+import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as MediaQuery from "../../hooks/MediaQuery.js";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
+import * as YoutubePlayerProvider from "../../providers/YoutubePlayerProvider.js";
+import * as Solid from "@heroicons/react/solid";
+import * as Outline from "@heroicons/react/outline";
 
 function string(prim) {
   return prim;
@@ -56,6 +61,79 @@ function Hero$HeroText(Props) {
 
 var HeroText = {
   make: Hero$HeroText
+};
+
+function getTrailerVideo(movie) {
+  try {
+    return Belt_Option.getExn(Belt_Option.getExn(Belt_Option.map(movie.videos, (function (videos) {
+                          return Belt_Option.map(videos.results, (function (results) {
+                                        return Belt_Array.getBy(results, (function (x) {
+                                                      return Util.getOrEmptyString(x.type_).toLowerCase().includes("trailer");
+                                                    }));
+                                      }));
+                        }))));
+  }
+  catch (exn){
+    return ;
+  }
+}
+
+function Hero$WatchTrailerSmallButton(Props) {
+  var movie = Props.movie;
+  var video = getTrailerVideo(movie);
+  var match = YoutubePlayerProvider.useVideoPlayerContext(undefined);
+  if (video === undefined) {
+    return null;
+  }
+  var play = match.play;
+  var vkey = video.key;
+  if (vkey !== undefined) {
+    return React.createElement("button", {
+                className: "absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center",
+                type: "button",
+                onClick: (function (e) {
+                    e.preventDefault();
+                    Curry._1(play, Links.getYoutubeVideoLink(vkey));
+                  })
+              }, React.createElement(Outline.PlayIcon, {
+                    className: "h-14 w-14 transition-all sm:h-16 sm:w-16 stroke-[1px] stroke-slate-100 hover:stroke-klor-400 hover:cursor-pointer"
+                  }));
+  } else {
+    return null;
+  }
+}
+
+var WatchTrailerSmallButton = {
+  make: Hero$WatchTrailerSmallButton
+};
+
+function Hero$WatchTrailerButton(Props) {
+  var movie = Props.movie;
+  var video = getTrailerVideo(movie);
+  var match = YoutubePlayerProvider.useVideoPlayerContext(undefined);
+  if (video === undefined) {
+    return null;
+  }
+  var play = match.play;
+  var vkey = video.key;
+  if (vkey !== undefined) {
+    return React.createElement("button", {
+                className: "flex gap-2 px-2 py-2 border-[1px] border-slate-400 backdrop-filter backdrop-blur-xl  text-white rounded-sm group mr-auto hover:bg-klor-400 hover:text-black transition-all",
+                type: "button",
+                onClick: (function (e) {
+                    e.preventDefault();
+                    Curry._1(play, Links.getYoutubeVideoLink(vkey));
+                  })
+              }, React.createElement(Solid.PlayIcon, {
+                    className: "h-6 w-6 fill-white group-hover:fill-black"
+                  }), React.createElement("span", undefined, "Watch Trailer"));
+  } else {
+    return null;
+  }
+}
+
+var WatchTrailerButton = {
+  make: Hero$WatchTrailerButton
 };
 
 function Hero(Props) {
@@ -152,24 +230,28 @@ function Hero(Props) {
                             className: "" + (
                               size.width === 100 ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full pr-4" : "top-0 left-0 text-[1.4rem] rounded-br-full pr-8"
                             ) + " absolute z-50 p-1 w-auto font-nav font-extrabold text-500 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-20"
-                          }, Util.toStringElement(tagline)), size.width === 100 ? React.createElement("img", {
-                            className: "w-full transition transform ease-in-out duration-100 ml-auto z-0",
-                            style: imageStyle,
-                            alt: "Poster",
-                            src: imgPathRef.current,
-                            onError: (function (e) {
-                                if (e.target.src !== Links.placeholderImage) {
-                                  e.target.src = Links.placeholderImage;
-                                  return ;
-                                }
-                                
-                              }),
-                            onLoad: (function (param) {
-                                Curry._1(setLoaded, (function (param) {
-                                        return true;
-                                      }));
-                              })
-                          }) : null, size.width !== 100 ? React.createElement("div", {
+                          }, Util.toStringElement(tagline)), size.width === 100 ? React.createElement("div", {
+                            className: "relative flex-inline"
+                          }, React.createElement("img", {
+                                className: "w-full transition transform ease-in-out duration-100 ml-auto z-0",
+                                style: imageStyle,
+                                alt: "Poster",
+                                src: imgPathRef.current,
+                                onError: (function (e) {
+                                    if (e.target.src !== Links.placeholderImage) {
+                                      e.target.src = Links.placeholderImage;
+                                      return ;
+                                    }
+                                    
+                                  }),
+                                onLoad: (function (param) {
+                                    Curry._1(setLoaded, (function (param) {
+                                            return true;
+                                          }));
+                                  })
+                              }), React.createElement(Hero$WatchTrailerSmallButton, {
+                                movie: movie
+                              })) : null, size.width !== 100 ? React.createElement("div", {
                             className: "z-0 relative flex w-full h-full bg-black",
                             id: "top-overlayed-image-container"
                           }, React.createElement("div", {
@@ -200,7 +282,11 @@ function Hero(Props) {
                                     textColor: "text-white"
                                   }), React.createElement("span", {
                                     className: "break-words w-full flex text-white prose pl-2 pt-2"
-                                  }, sotryline))) : null, match[0] ? null : React.createElement("div", {
+                                  }, sotryline), React.createElement("div", {
+                                    className: "flex pl-2 pt-[2rem]"
+                                  }, React.createElement(Hero$WatchTrailerButton, {
+                                        movie: movie
+                                      })))) : null, match[0] ? null : React.createElement("div", {
                             className: "absolute top-[" + (size.height / 2 | 0).toString() + "rem)] w-full h-full flex flex-col items-center justify-center"
                           }, React.createElement(Loading.make, {
                                 className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
@@ -218,6 +304,9 @@ export {
   $$float ,
   array ,
   HeroText ,
+  getTrailerVideo ,
+  WatchTrailerSmallButton ,
+  WatchTrailerButton ,
   make ,
 }
 /* react Not a pure module */

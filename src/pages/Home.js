@@ -5,8 +5,10 @@ import * as SearchBox from "../components/SearchBox.js";
 import * as ThemeMenu from "../components/ThemeMenu.js";
 import * as Js_promise from "rescript/lib/es6/js_promise.js";
 import * as GithubButton from "../components/GithubButton.js";
+import * as MoviesProvider from "../providers/MoviesProvider.js";
 import * as SuspensionLoader from "../components/SuspensionLoader.js";
 import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js";
+import * as YoutubePlayerProvider from "../providers/YoutubePlayerProvider.js";
 import * as Solid from "@heroicons/react/solid";
 
 function string(prim) {
@@ -46,7 +48,7 @@ function Home$Bioscopes(Props) {
     RescriptReactRouter.push("/about");
   };
   return React.createElement("div", {
-              className: "text-base sm:text-lg md:text-xl w-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-start gap-2 py-[0.2rem] px-[0.6rem] rounded-full shadow-md shadow-klor-300",
+              className: "text-base sm:text-lg md:text-xl w-full font-extrabold bg-gradient-to-r from-klor-400 via-klor-500 to-klor-400 text-yellow-200 flex items-center justify-start gap-2 py-[0.2rem] px-[0.6rem] rounded-full shadow-md shadow-klor-300",
               role: "button",
               onClick: onClick
             }, React.createElement(Solid.CameraIcon, {
@@ -128,7 +130,11 @@ function Home(Props) {
                               id: "colorswatch-container"
                             }, React.createElement(ThemeMenu.make, {}), React.createElement(GithubButton.make, {})))), React.createElement("div", {
                       className: "z-30 bg-white"
-                    }, component), React.createElement("footer", {
+                    }, React.createElement(MoviesProvider.make, {
+                          children: React.createElement(YoutubePlayerProvider.make, {
+                                children: component
+                              })
+                        })), React.createElement("footer", {
                       className: "h-8"
                     })));
 }

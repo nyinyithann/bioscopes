@@ -71,7 +71,7 @@ function PhotosPanel(Props) {
                           title: "Backdrops",
                           count: backdrops.length
                         }), React.createElement("div", {
-                          className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 justify-center items-center w-full"
+                          className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full"
                         }, Belt_Array.map(backdrops, (function (bd) {
                                 return React.createElement(LazyImageLite.make, {
                                             className: "w-full h-[9.75rem] border-[2px] border-slate-200 rounded-md",

@@ -129,7 +129,6 @@ function reducer(state, action) {
               };
     case /* SuccessMovies */2 :
         var movies = action._1;
-        debugger;
         return {
                 apiParams: action._0,
                 movies: {
@@ -179,39 +178,34 @@ function getApiPath(apiParams) {
 function loadDataInternal(dispatch, apiParams, signal) {
   var apiPath = getApiPath(apiParams);
   var callback = function (result) {
-    debugger;
     if (result.TAG === /* Ok */0) {
       var ml = MovieModel.MovieListDecoder.decode(result._0);
       if (ml.TAG === /* Ok */0) {
-        debugger;
         return Curry._1(dispatch, {
                     TAG: /* SuccessMovies */2,
                     _0: apiParams,
                     _1: ml._0
                   });
+      } else {
+        return Curry._1(dispatch, {
+                    TAG: /* Error */1,
+                    _0: ml._0
+                  });
       }
-      debugger;
-      return Curry._1(dispatch, {
-                  TAG: /* Error */1,
-                  _0: ml._0
-                });
     }
-    debugger;
     var e = MovieModel.MovieErrorDecoder.decode(result._0);
-    if (e.TAG === /* Ok */0) {
-      debugger;
-      var errors = Belt_Array.reduce(Js_option.getWithDefault([], e._0.errors), ". ", (function (a, b) {
-              return b + a;
-            }));
+    if (e.TAG !== /* Ok */0) {
       return Curry._1(dispatch, {
                   TAG: /* Error */1,
-                  _0: errors
+                  _0: "Unexpected error occured while reteriving movie data."
                 });
     }
-    debugger;
+    var errors = Belt_Array.reduce(Js_option.getWithDefault([], e._0.errors), ". ", (function (a, b) {
+            return b + a;
+          }));
     Curry._1(dispatch, {
           TAG: /* Error */1,
-          _0: "Unexpected error occured while reteriving movie data."
+          _0: errors
         });
   };
   Curry._1(dispatch, {

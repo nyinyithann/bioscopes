@@ -30,6 +30,14 @@ let make = () => {
     }
   }
 
+  let handleChange = e => {
+    ReactEvent.Form.preventDefault(e)
+    let v = ReactEvent.Form.target(e)["value"]
+    if v == "" {
+      setQueryParam(UrlQueryParam.Category({name: "popular", display: "Popular", page: 1}))
+    }
+  }
+
   <div
     id="search-container"
     className="relative w-[16rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center">
@@ -44,6 +52,7 @@ let make = () => {
       type_="search"
       name="search"
       maxLength={128}
+      onChange={handleChange}
       onKeyDown={handleKeyDown}
     />
   </div>

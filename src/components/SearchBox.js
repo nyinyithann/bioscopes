@@ -40,6 +40,21 @@ function SearchBox(Props) {
     }
     
   };
+  var handleChange = function (e) {
+    e.preventDefault();
+    var v = e.target.value;
+    if (v === "") {
+      return Curry._1(setQueryParam, {
+                  TAG: /* Category */0,
+                  _0: {
+                    name: "popular",
+                    display: "Popular",
+                    page: 1
+                  }
+                });
+    }
+    
+  };
   return React.createElement("div", {
               className: "relative w-[16rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center",
               id: "search-container"
@@ -55,7 +70,8 @@ function SearchBox(Props) {
                   name: "search",
                   placeholder: "Search",
                   type: "search",
-                  onKeyDown: handleKeyDown
+                  onKeyDown: handleKeyDown,
+                  onChange: handleChange
                 }));
 }
 

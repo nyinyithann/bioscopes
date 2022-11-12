@@ -9,7 +9,9 @@ var video = Json_Decode$JsonCombinators.object(function (fields) {
       return {
               id: Marshal.to_opt(fields, "id", Json_Decode$JsonCombinators.string),
               key: Marshal.to_opt(fields, "key", Json_Decode$JsonCombinators.string),
-              site: Marshal.to_opt(fields, "site", Json_Decode$JsonCombinators.string)
+              site: Marshal.to_opt(fields, "site", Json_Decode$JsonCombinators.string),
+              name: Marshal.to_opt(fields, "name", Json_Decode$JsonCombinators.string),
+              type_: Marshal.to_opt(fields, "type", Json_Decode$JsonCombinators.string)
             };
     });
 

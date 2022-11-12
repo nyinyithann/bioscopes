@@ -40,7 +40,7 @@ module Bioscopes = {
     }
     <div
       role="button"
-      className="text-base sm:text-lg md:text-xl w-full font-extrabold bg-gradient-to-r from-teal-400 via-indigo-400 to-blue-400 text-yellow-200 flex items-center justify-start gap-2 py-[0.2rem] px-[0.6rem] rounded-full shadow-md shadow-klor-300"
+      className="text-base sm:text-lg md:text-xl w-full font-extrabold bg-gradient-to-r from-klor-400 via-klor-500 to-klor-400 text-yellow-200 flex items-center justify-start gap-2 py-[0.2rem] px-[0.6rem] rounded-full shadow-md shadow-klor-300"
       onClick>
       <Heroicons.Solid.CameraIcon className="h-3 w-3 pl-1" />
       {"BIOSCOPES"->React.string}
@@ -82,7 +82,11 @@ let make = () => {
           </div>
         </div>
       </div>
-      <div className="z-30 bg-white"> {component} </div>
+      <div className="z-30 bg-white">
+        <MoviesProvider>
+          <YoutubePlayerProvider> {component} </YoutubePlayerProvider>
+        </MoviesProvider>
+      </div>
       <footer className="h-8" />
     </div>
   </div>

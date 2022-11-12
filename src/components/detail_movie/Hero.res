@@ -32,6 +32,80 @@ module HeroText = {
   }
 }
 
+let getTrailerVideo = (movie: DetailMovieModel.detail_movie) => {
+  open Belt
+  try {
+    movie.videos
+    ->Option.map(videos =>
+      videos.results->Option.map(results =>
+        results->Array.getBy(
+          x =>
+            Util.getOrEmptyString(x.type_)->Js.String2.toLowerCase->Js.String2.includes("trailer"),
+        )
+      )
+    )
+    ->Option.getExn
+    ->Option.getExn
+  } catch {
+  | _ => None
+  }
+}
+
+module WatchTrailerSmallButton = {
+  @react.component
+  let make = (~movie: DetailMovieModel.detail_movie) => {
+    let video = getTrailerVideo(movie)
+    let {play} = YoutubePlayerProvider.useVideoPlayerContext()
+
+    switch video {
+    | None => React.null
+    | Some(v) =>
+      switch v.key {
+      | None => React.null
+      | Some(vkey) =>
+        <button
+          type_="button"
+          onClick={e => {
+            ReactEvent.Mouse.preventDefault(e)
+            play(Links.getYoutubeVideoLink(vkey))
+          }}
+          className="absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center">
+          <Heroicons.Outline.PlayIcon
+            className="h-14 w-14 transition-all sm:h-16 sm:w-16 stroke-[1px] stroke-slate-100 hover:stroke-klor-400 hover:cursor-pointer"
+          />
+        </button>
+      }
+    }
+  }
+}
+
+module WatchTrailerButton = {
+  @react.component
+  let make = (~movie: DetailMovieModel.detail_movie) => {
+    let video = getTrailerVideo(movie)
+    let {play} = YoutubePlayerProvider.useVideoPlayerContext()
+
+    switch video {
+    | None => React.null
+    | Some(v) =>
+      switch v.key {
+      | None => React.null
+      | Some(vkey) =>
+        <button
+          type_="button"
+          onClick={e => {
+            ReactEvent.Mouse.preventDefault(e)
+            play(Links.getYoutubeVideoLink(vkey))
+          }}
+          className="flex gap-2 px-2 py-2 border-[1px] border-slate-400 backdrop-filter backdrop-blur-xl  text-white rounded-sm group mr-auto hover:bg-klor-400 hover:text-black transition-all">
+          <Heroicons.Solid.PlayIcon className="h-6 w-6 fill-white group-hover:fill-black" />
+          <span> {"Watch Trailer"->string} </span>
+        </button>
+      }
+    }
+  }
+}
+
 type size = {
   width: int,
   height: int,
@@ -101,19 +175,22 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
               {Util.toStringElement(tagline)}
             </span>}
         {size.width == 100
-          ? <img
-              alt="Poster"
-              className="w-full transition transform ease-in-out duration-100 ml-auto z-0"
-              src={imgPathRef.current}
-              style={imageStyle}
-              onLoad={_ => setLoaded(_ => true)}
-              onError={e => {
-                open ReactEvent.Media
-                if target(e)["src"] !== Links.placeholderImage {
-                  target(e)["src"] = Links.placeholderImage
-                }
-              }}
-            />
+          ? <div className="relative flex-inline">
+              <img
+                alt="Poster"
+                className="w-full transition transform ease-in-out duration-100 ml-auto z-0"
+                src={imgPathRef.current}
+                style={imageStyle}
+                onLoad={_ => setLoaded(_ => true)}
+                onError={e => {
+                  open ReactEvent.Media
+                  if target(e)["src"] !== Links.placeholderImage {
+                    target(e)["src"] = Links.placeholderImage
+                  }
+                }}
+              />
+              <WatchTrailerSmallButton movie />
+            </div>
           : React.null}
         {size.width != 100
           ? <div
@@ -142,6 +219,9 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                 <span className="break-words w-full flex text-white prose pl-2 pt-2">
                   sotryline
                 </span>
+                <div className="flex pl-2 pt-[2rem]">
+                  <WatchTrailerButton movie />
+                </div>
               </div>
             </div>
           : React.null}

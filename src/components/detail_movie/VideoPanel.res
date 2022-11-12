@@ -1,5 +1,10 @@
 let {string, int, float, array} = module(React)
 
+type video_config = {
+  url: string,
+  playing: bool,
+}
+
 let getVideos = (~movie: DetailMovieModel.detail_movie) => {
   open Belt
   movie.videos
@@ -12,9 +17,16 @@ module VideoImage = {
   @react.component
   let make = (~video: DetailMovieModel.video, ~className) => {
     let (loaded, setLoaded) = React.useState(_ => false)
-    let key = Util.getOrEmptyString(video.key)
+  let {play} = YoutubePlayerProvider.useVideoPlayerContext()
+    let vkey = Util.getOrEmptyString(video.key)
+
+    let onClick = e => {
+      ReactEvent.Mouse.preventDefault(e)
+      play(Links.getYoutubeVideoLink(vkey))
+    }
+
     <>
-      {!Util.isEmptyString(key)
+      {!Util.isEmptyString(vkey)
         ? <>
             {!loaded
               ? <div
@@ -24,11 +36,11 @@ module VideoImage = {
                   />
                 </div>
               : React.null}
-            <div className="relative flex-inline">
+            <div className="relative flex-inline" role="button" onClick>
               <img
                 alt="Poster"
                 className
-                src={Links.getYoutubeImageLink(key)}
+                src={Links.getYoutubeImageLink(vkey)}
                 onLoad={_ => setLoaded(_ => true)}
                 onError={e => {
                   open ReactEvent.Media
@@ -40,7 +52,7 @@ module VideoImage = {
               <div
                 className="absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-50 bg-opacity-0 sm:bg-opacity-10 hover:bg-opacity-0 hover:cursor-pointer group">
                 <Heroicons.Solid.PlayIcon
-                  className="h-12 w-12 fill-klor-100 stroke-white group-hover:fill-klor-300"
+                  className="h-8 w-8 fill-klor-transparent stroke-white group-hover:fill-klor-400"
                 />
               </div>
             </div>
@@ -53,21 +65,23 @@ module VideoImage = {
 @react.component
 let make = (~movie: DetailMovieModel.detail_movie) => {
   let videos = getVideos(~movie)
+
   if Util.isEmptyArray(videos) {
     <NotAvailable thing={"videos"} />
   } else {
-    <div
-      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full">
-      {videos
-      ->Belt.Array.map(video =>
-        <VideoImage
-          key={Util.getOrEmptyString(video.key)}
-          video
-          className="w-full border-[2px] border-slate-200 rounded-md
-"
-        />
-      )
-      ->array}
-    </div>
+    <>
+      <div
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full">
+        {videos
+        ->Belt.Array.map(video =>
+          <VideoImage
+            key={Util.getOrEmptyString(video.key)}
+            video
+            className="w-full border-[2px] border-slate-200 rounded-md"
+          />
+        )
+        ->array}
+      </div>
+    </>
   }
 }
