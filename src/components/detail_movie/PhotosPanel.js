@@ -105,8 +105,12 @@ function PhotosPanel(Props) {
                                                         return {
                                                                 isOpen: true,
                                                                 currentIndex: i,
-                                                                imageUrls: Belt_Array.map(backdrops, (function (x) {
-                                                                        return Util.getOrEmptyString(x.file_path);
+                                                                imageUrls: Belt_Array.keepMap(backdrops, (function (x) {
+                                                                        var path = x.file_path;
+                                                                        if (path !== undefined) {
+                                                                          return Links.getOriginalBigImage(path);
+                                                                        }
+                                                                        
                                                                       }))
                                                               };
                                                       }));
@@ -125,23 +129,41 @@ function PhotosPanel(Props) {
                     }, React.createElement(PhotosPanel$PhotoTitle, {
                           title: "Posters",
                           count: posters.length
-                        }), React.createElement("div", {
+                        }), React.createElement("ul", {
                           className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full"
-                        }, Belt_Array.map(posters, (function (bd) {
-                                return React.createElement(LazyImageLite.make, {
-                                            className: "w-full h-[22rem] border-[2px] border-slate-200 rounded-md",
-                                            placeholderPath: Links.placeholderImage,
-                                            alt: "poster image",
-                                            src: Links.getPosterImage_W370_H556_bestv2Link(Util.getOrEmptyString(bd.file_path)),
-                                            lazyHeight: 356,
-                                            lazyOffset: 50,
-                                            key: Util.getOrEmptyString(bd.file_path)
-                                          });
+                        }, Belt_Array.mapWithIndex(posters, (function (i, bd) {
+                                return React.createElement("li", {
+                                            key: Util.getOrEmptyString(bd.file_path),
+                                            className: "cursor-pointer",
+                                            onClick: (function (param) {
+                                                Curry._1(setPhotosliderState, (function (param) {
+                                                        return {
+                                                                isOpen: true,
+                                                                currentIndex: i,
+                                                                imageUrls: Belt_Array.keepMap(posters, (function (x) {
+                                                                        var path = x.file_path;
+                                                                        if (path !== undefined) {
+                                                                          return Links.getOriginalBigImage(path);
+                                                                        }
+                                                                        
+                                                                      }))
+                                                              };
+                                                      }));
+                                              })
+                                          }, React.createElement(LazyImageLite.make, {
+                                                className: "w-full h-[22rem] border-[2px] border-slate-200 rounded-md",
+                                                placeholderPath: Links.placeholderImage,
+                                                alt: "poster image",
+                                                src: Links.getPosterImage_W370_H556_bestv2Link(Util.getOrEmptyString(bd.file_path)),
+                                                lazyHeight: 356,
+                                                lazyOffset: 50,
+                                                key: Util.getOrEmptyString(bd.file_path)
+                                              }));
                               })))), React.createElement(ModalDialog.make, {
                     isOpen: photoSliderState.isOpen,
                     onClose: closePhotoslider,
                     className: "relative z-50",
-                    panelClassName: "w-full h-full transform overflow-hidden transition-all rounded-md bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg",
+                    panelClassName: "w-full h-full transform overflow-hidden transition-all rounded-md bg-white bg-opacity-5 backdrop-blur-lg drop-shadow-lg",
                     children: null
                   }, React.createElement("div", {
                         onClick: closePhotoslider

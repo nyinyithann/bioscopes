@@ -13,7 +13,6 @@ function useWindowSize(param) {
       });
   var setWindowSize = match[1];
   var handleSize = React.useCallback((function (param) {
-          console.log(DomBinding.getWindowInnerWidth(undefined));
           Curry._1(setWindowSize, (function (param) {
                   return {
                           width: DomBinding.getWindowInnerWidth(undefined),

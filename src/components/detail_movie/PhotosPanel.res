@@ -50,10 +50,28 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     setPhotosliderState(_ => {
       isOpen: true,
       currentIndex: currentImageIndex,
-      imageUrls: backdrops->Belt.Array.map(x => Util.getOrEmptyString(x.file_path)),
+      imageUrls: backdrops->Belt.Array.keepMap(x =>
+        switch x.file_path {
+        | None => None
+        | Some(path) => Some(Links.getOriginalBigImage(path))
+        }
+      ),
     })
   }
 
+  let slidePosterImages = (currentImageIndex: int) => {
+    setPhotosliderState(_ => {
+      isOpen: true,
+      currentIndex: currentImageIndex,
+      imageUrls: posters->Belt.Array.keepMap(x =>
+        switch x.file_path {
+        | None => None
+        | Some(path) => Some(Links.getOriginalBigImage(path))
+        }
+      ),
+    })
+  }
+  
   let closePhotoslider = _ =>
     setPhotosliderState(_ => {
       isOpen: false,
@@ -97,30 +115,35 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
         ? React.null
         : <div className="flex flex-col w-full">
             <PhotoTitle title="Posters" count={Belt.Array.length(posters)} />
-            <div
+            <ul
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full">
               {posters
-              ->Belt.Array.map(bd =>
-                <LazyImageLite
-                  alt="poster image"
+              ->Belt.Array.mapWithIndex((i,bd) =>
+                <li
                   key={bd.file_path->Util.getOrEmptyString}
-                  placeholderPath={Links.placeholderImage}
-                  src={Links.getPosterImage_W370_H556_bestv2Link(
-                    bd.file_path->Util.getOrEmptyString,
-                  )}
-                  className="w-full h-[22rem] border-[2px] border-slate-200 rounded-md"
-                  lazyHeight={356.}
-                  lazyOffset={50.}
-                />
+                  className="cursor-pointer"
+                  onClick={_ => slidePosterImages(i)}>
+                  <LazyImageLite
+                    alt="poster image"
+                    key={bd.file_path->Util.getOrEmptyString}
+                    placeholderPath={Links.placeholderImage}
+                    src={Links.getPosterImage_W370_H556_bestv2Link(
+                      bd.file_path->Util.getOrEmptyString,
+                    )}
+                    className="w-full h-[22rem] border-[2px] border-slate-200 rounded-md"
+                    lazyHeight={356.}
+                    lazyOffset={50.}
+                  />
+                </li>
               )
               ->array}
-            </div>
+            </ul>
           </div>}
       <ModalDialog
         isOpen={photoSliderState.isOpen}
         onClose={closePhotoslider}
         className="relative z-50"
-        panelClassName="w-full h-full transform overflow-hidden transition-all rounded-md bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg">
+        panelClassName="w-full h-full transform overflow-hidden transition-all rounded-md bg-white bg-opacity-5 backdrop-blur-lg drop-shadow-lg">
         <div onClick={closePhotoslider}>
           <Heroicons.Outline.XIcon
             className="absolute z-50 top-2 right-2 w-8 h-8 p-2 border-2 border-slate-400 fill-white stroke-white hover:bg-slate-500 rounded-full bg-slate-900"

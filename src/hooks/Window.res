@@ -6,8 +6,7 @@ type window_size = {
 let useWindowSize = () => {
   let (windowSize, setWindowSize) = React.useState(_ => {width: 0, height: 0})
 
-  let handleSize = React.useCallback1( _ => {
-      Js.log(DomBinding.getWindowInnerWidth())
+  let handleSize = React.useCallback1(_ => {
     setWindowSize(_ => {
       width: DomBinding.getWindowInnerWidth(),
       height: DomBinding.getWindowInnerHeight(),
@@ -17,7 +16,7 @@ let useWindowSize = () => {
   React.useEffect1(() => {
     Webapi.Dom.Window.addEventListener(Webapi__Dom.window, "resize", handleSize)
     Some(() => Webapi.Dom.Window.removeEventListener(Webapi__Dom.window, "resize", handleSize))
-  },[handleSize])
+  }, [handleSize])
 
   React.useLayoutEffect1(() => {
     setWindowSize(_ => {
