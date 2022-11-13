@@ -4,7 +4,7 @@ let make = () => {
   let {detail_movie, loading, error, loadDetailMovie} = MoviesProvider.useMoviesContext()
   let {videoPlayState, stop} = YoutubePlayerProvider.useVideoPlayerContext()
   let windowSize : Window.window_size = Window.useWindowSize()
-
+  
   let (queryParam, _) = UrlQueryParam.useQueryParams()
 
   React.useMemo1(() => {

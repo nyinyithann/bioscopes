@@ -28,10 +28,39 @@ module PhotoTitle = {
   }
 }
 
+type photoslider_state = {
+  isOpen: bool,
+  currentIndex: int,
+  imageUrls: array<string>,
+}
+
 @react.component
 let make = (~movie: DetailMovieModel.detail_movie) => {
   let backdrops = getBackdropImages(~movie)
   let posters = getPosterImages(~movie)
+
+  let windowSize: Window.window_size = Window.useWindowSize()
+  let (photoSliderState, setPhotosliderState) = React.useState(_ => {
+    isOpen: false,
+    currentIndex: 0,
+    imageUrls: [],
+  })
+
+  let slideBackdropImages = (currentImageIndex: int) => {
+    setPhotosliderState(_ => {
+      isOpen: true,
+      currentIndex: currentImageIndex,
+      imageUrls: backdrops->Belt.Array.map(x => Util.getOrEmptyString(x.file_path)),
+    })
+  }
+
+  let closePhotoslider = _ =>
+    setPhotosliderState(_ => {
+      isOpen: false,
+      imageUrls: photoSliderState.imageUrls,
+      currentIndex: 0,
+    })
+
   if Util.isEmptyArray(backdrops) && Util.isEmptyArray(posters) {
     <NotAvailable thing={"photos"} />
   } else {
@@ -40,22 +69,29 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
         ? React.null
         : <div className="flex flex-col w-full">
             <PhotoTitle title="Backdrops" count={Belt.Array.length(backdrops)} />
-            <div
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full">
+            <ul
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full list-none">
               {backdrops
-              ->Belt.Array.map(bd =>
-                <LazyImageLite
-                  alt="backdrop image"
+              ->Belt.Array.mapWithIndex((i, bd) =>
+                <li
                   key={bd.file_path->Util.getOrEmptyString}
-                  placeholderPath={Links.placeholderImage}
-                  src={Links.getPosterImageW533H300Bestv2Link(bd.file_path->Util.getOrEmptyString)}
-                  className="w-full h-[9.75rem] border-[2px] border-slate-200 rounded-md"
-                  lazyHeight={156.}
-                  lazyOffset={50.}
-                />
+                  className="cursor-pointer"
+                  onClick={_ => slideBackdropImages(i)}>
+                  <LazyImageLite
+                    alt="backdrop image"
+                    key={bd.file_path->Util.getOrEmptyString}
+                    placeholderPath={Links.placeholderImage}
+                    src={Links.getPosterImageW533H300Bestv2Link(
+                      bd.file_path->Util.getOrEmptyString,
+                    )}
+                    className="w-full h-[9.75rem] border-[2px] border-slate-200 rounded-md"
+                    lazyHeight={156.}
+                    lazyOffset={50.}
+                  />
+                </li>
               )
               ->array}
-            </div>
+            </ul>
           </div>}
       {Util.isEmptyArray(posters)
         ? React.null
@@ -80,6 +116,23 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
               ->array}
             </div>
           </div>}
+      <ModalDialog
+        isOpen={photoSliderState.isOpen}
+        onClose={closePhotoslider}
+        className="relative z-50"
+        panelClassName="w-full h-full transform overflow-hidden transition-all rounded-md bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg">
+        <div onClick={closePhotoslider}>
+          <Heroicons.Outline.XIcon
+            className="absolute z-50 top-2 right-2 w-8 h-8 p-2 border-2 border-slate-400 fill-white stroke-white hover:bg-slate-500 rounded-full bg-slate-900"
+          />
+        </div>
+        <PhotosSlider
+          currentImageIndex={photoSliderState.currentIndex}
+          imageUrls={photoSliderState.imageUrls}
+          width={windowSize.width - 48}
+          height={windowSize.height - 48}
+        />
+      </ModalDialog>
     </div>
   }
 }

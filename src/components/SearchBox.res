@@ -50,7 +50,7 @@ let make = () => {
     </div>
     <input
       id="search-field"
-      className="block w-full pl-[2rem] placeholder-klor-400 outline-none ring-0 border-t-0 border-r-0 border-l-0 border-b-[1px] border-b-400 hover:border-b-500 focus:placeholder-slate-500 focus:outline-none focus:ring-0 sm:text-sm text-900 active:ring-0 active:outline-none"
+      className="block w-full pl-[2rem] placeholder-klor-400 outline-none ring-0 border-t-0 border-r-0 border-l-0 border-b-[1px] border-b-400 hover:border-b-500 focus:placeholder-slate-500 focus:outline-none focus:ring-0 text-900 active:ring-0 active:outline-none"
       ref={ReactDOM.Ref.domRef(inputRef)}
       placeholder="Search"
       type_="search"

@@ -174,9 +174,9 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
         <button
           type_="button"
           onClick={goBack}
-          className="flex w-auto gap-1 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-80">
-          <Heroicons.Solid.ArrowLeftIcon className="w-5 h-6 fill-klor-900" />
-          <span className="block text-900"> {"Back"->React.string} </span>
+          className="flex w-auto gap-1 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30">
+          <Heroicons.Solid.ArrowLeftIcon className="w-5 h-6 fill-slate-400 bg-opacity-5" />
+          <span className="block  text-slate-100 text-opacity-40"> {"Back"->React.string} </span>
         </button>
         {Util.isEmptyString(tagline)
           ? React.null
@@ -228,7 +228,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
               </div>
               <div className="absolute top-[20%] left-[6%] z-50">
                 <HeroText movie textColor="text-white" />
-                <span className="break-words w-full flex text-white prose pl-2 pt-2">
+                <span className="break-words w-full flex text-white prose pl-2 pt-2 line-clamp-6">
                   sotryline
                 </span>
                 <div className="flex pl-2 pt-[2rem]">

@@ -14,6 +14,7 @@ import * as ErrorDisplay from "./ErrorDisplay.js";
 import * as UrlQueryParam from "../routes/UrlQueryParam.js";
 import * as React$1 from "@headlessui/react";
 import * as Solid from "@heroicons/react/solid";
+import * as Outline from "@heroicons/react/outline";
 
 function string(prim) {
   return prim;
@@ -279,9 +280,13 @@ function GenreList(Props) {
     var tmp$1;
     tmp$1 = queryParam.TAG === /* Search */2 ? React.createElement("div", {
             className: "flex w-full items-center gap-4"
-          }, React.createElement("span", {
-                className: "w-[12rem] truncate"
-              }, "Search: '" + queryParam._0.query + "'"), React.createElement("div", {
+          }, React.createElement("div", {
+                className: "flex gap-2 w-[12rem] items-center"
+              }, React.createElement(Outline.SearchCircleIcon, {
+                    className: "w-4 h-4"
+                  }), React.createElement("span", {
+                    className: "truncate"
+                  }, "Searching")), React.createElement("div", {
                 className: "ml-auto"
               }, React.createElement(Solid.ChevronDownIcon, {
                     className: "w-4 h-4"

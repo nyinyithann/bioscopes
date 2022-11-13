@@ -231,13 +231,13 @@ function Hero(Props) {
                 }, React.createElement("div", {
                       className: "relative flex flex-col w-full"
                     }, React.createElement("button", {
-                          className: "flex w-auto gap-1 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-80",
+                          className: "flex w-auto gap-1 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30",
                           type: "button",
                           onClick: goBack
                         }, React.createElement(Solid.ArrowLeftIcon, {
-                              className: "w-5 h-6 fill-klor-900"
+                              className: "w-5 h-6 fill-slate-400 bg-opacity-5"
                             }), React.createElement("span", {
-                              className: "block text-900"
+                              className: "block  text-slate-100 text-opacity-40"
                             }, "Back")), Util.isEmptyString(tagline) ? null : React.createElement("span", {
                             className: "" + (
                               size.width === 100 ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full pr-4" : "top-0 left-0 text-[1.4rem] rounded-br-full pr-8"
@@ -293,7 +293,7 @@ function Hero(Props) {
                                     movie: movie,
                                     textColor: "text-white"
                                   }), React.createElement("span", {
-                                    className: "break-words w-full flex text-white prose pl-2 pt-2"
+                                    className: "break-words w-full flex text-white prose pl-2 pt-2 line-clamp-6"
                                   }, sotryline), React.createElement("div", {
                                     className: "flex pl-2 pt-[2rem]"
                                   }, React.createElement(Hero$WatchTrailerButton, {

@@ -187,9 +187,12 @@ let make = () => {
           <Listbox.Button
             className="flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none">
             {switch queryParam {
-            | Search({query}) =>
+            | Search(_) =>
               <div className="flex w-full items-center gap-4">
-                <span className="w-[12rem] truncate"> {`Search: '${query}'`->string} </span>
+                <div className="flex gap-2 w-[12rem] items-center">
+                  <Heroicons.Outline.SearchCircleIcon className="w-4 h-4" />
+                  <span className="truncate"> {"Searching"->string} </span>
+                </div>
                 <div className="ml-auto">
                   <Heroicons.Solid.ChevronDownIcon className="w-4 h-4" />
                 </div>
