@@ -3,7 +3,7 @@ let {string, int, float, array} = module(React)
 let getBackdropImages = (~movie: DetailMovieModel.detail_movie) => {
   open Belt
   movie.images
-  ->Option.map(videos => videos.backdrops)
+  ->Option.map(imgs => imgs.backdrops)
   ->Option.getWithDefault(Some([]))
   ->Option.getWithDefault([])
 }
@@ -11,7 +11,7 @@ let getBackdropImages = (~movie: DetailMovieModel.detail_movie) => {
 let getPosterImages = (~movie: DetailMovieModel.detail_movie) => {
   open Belt
   movie.images
-  ->Option.map(videos => videos.posters)
+  ->Option.map(imgs => imgs.posters)
   ->Option.getWithDefault(Some([]))
   ->Option.getWithDefault([])
 }
@@ -36,6 +36,7 @@ type photoslider_state = {
 
 @react.component
 let make = (~movie: DetailMovieModel.detail_movie) => {
+  let isMobile = MediaQuery.useMediaQuery("(max-width: 600px)")
   let backdrops = getBackdropImages(~movie)
   let posters = getPosterImages(~movie)
 
@@ -71,7 +72,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
       ),
     })
   }
-  
+
   let closePhotoslider = _ =>
     setPhotosliderState(_ => {
       isOpen: false,
@@ -97,13 +98,12 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                   onClick={_ => slideBackdropImages(i)}>
                   <LazyImageLite
                     alt="backdrop image"
-                    key={bd.file_path->Util.getOrEmptyString}
                     placeholderPath={Links.placeholderImage}
                     src={Links.getPosterImageW533H300Bestv2Link(
                       bd.file_path->Util.getOrEmptyString,
                     )}
-                    className="w-full h-[9.75rem] border-[2px] border-slate-200 rounded-md"
-                    lazyHeight={156.}
+                    className="w-full h-full border-[2px] border-slate-200 rounded-md"
+                    lazyHeight={isMobile ? 126. : 146.}
                     lazyOffset={50.}
                   />
                 </li>
@@ -118,7 +118,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
             <ul
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full">
               {posters
-              ->Belt.Array.mapWithIndex((i,bd) =>
+              ->Belt.Array.mapWithIndex((i, bd) =>
                 <li
                   key={bd.file_path->Util.getOrEmptyString}
                   className="cursor-pointer"
@@ -130,8 +130,8 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                     src={Links.getPosterImage_W370_H556_bestv2Link(
                       bd.file_path->Util.getOrEmptyString,
                     )}
-                    className="w-full h-[22rem] border-[2px] border-slate-200 rounded-md"
-                    lazyHeight={356.}
+                    className="w-full h-full border-[2px] border-slate-200 rounded-md"
+                    lazyHeight={isMobile ? 280. : 356.}
                     lazyOffset={50.}
                   />
                 </li>
@@ -143,7 +143,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
         isOpen={photoSliderState.isOpen}
         onClose={closePhotoslider}
         className="relative z-50"
-        panelClassName="w-full h-full transform overflow-hidden transition-all rounded-md bg-white bg-opacity-5 backdrop-blur-lg drop-shadow-lg">
+        panelClassName="w-full h-full transform overflow-hidden transition-all rounded-md bg-black">
         <div onClick={closePhotoslider}>
           <Heroicons.Outline.XIcon
             className="absolute z-50 top-2 right-2 w-8 h-8 p-2 border-2 border-slate-400 fill-white stroke-white hover:bg-slate-500 rounded-full bg-slate-900"

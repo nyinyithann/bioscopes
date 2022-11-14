@@ -117,17 +117,13 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
   let imgPathRef = React.useRef("")
 
   let (size, setSize) = React.useState(_ => {width: 100, height: 18})
+  let isMobile = MediaQuery.useMediaQuery("(max-width: 600px)")
+  let isSmallScreen = MediaQuery.useMediaQuery("(max-width: 700px)")
+  let isMediumScreen = MediaQuery.useMediaQuery("(max-width: 1000px)")
+  let isLargeScreen = MediaQuery.useMediaQuery("(max-width: 1300px)")
+  let isVeryLargeScreen = MediaQuery.useMediaQuery("(min-width: 1500px)")
 
-  React.useMemo1(() => {
-    imgPathRef.current = Links.getOriginalBigImage(Util.getOrEmptyString(movie.backdrop_path))
-  }, [movie])
-
-  let updateLayout = () => {
-    let isMobile = MediaQuery.matchMedia("(max-width: 600px)")
-    let isSmallScreen = MediaQuery.matchMedia("(max-width: 700px)")
-    let isMediumScreen = MediaQuery.matchMedia("(max-width: 1000px)")
-    let isLargeScreen = MediaQuery.matchMedia("(max-width: 1300px)")
-    let isVeryLargeScreen = MediaQuery.matchMedia("(min-width: 1500px)")
+  React.useLayoutEffect5(() => {
     if isMobile {
       setSize(_ => {width: 100, height: 16})
     } else if isSmallScreen {
@@ -141,17 +137,12 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     } else {
       setSize(_ => {width: 70, height: 34})
     }
-  }
-  let handleWindowSizeChange = _ => updateLayout()
+    None
+  }, (isMobile, isSmallScreen, isMediumScreen, isLargeScreen, isVeryLargeScreen))
 
-  React.useEffect0(() => {
-    updateLayout()
-    Webapi.Dom.Window.addEventListener(Webapi__Dom.window, "resize", handleWindowSizeChange)
-    Some(
-      () =>
-        Webapi.Dom.Window.removeEventListener(Webapi__Dom.window, "resize", handleWindowSizeChange),
-    )
-  })
+  React.useMemo1(() => {
+    imgPathRef.current = Links.getOriginalBigImage(Util.getOrEmptyString(movie.backdrop_path))
+  }, [movie])
 
   let tagline = Util.getOrEmptyString(movie.tagline)
 
@@ -227,13 +218,23 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                 />
               </div>
               <div className="absolute top-[20%] left-[6%] z-50">
-                <HeroText movie textColor="text-white" />
-                <span className="break-words w-full flex text-white prose pl-2 pt-2 line-clamp-6">
-                  sotryline
-                </span>
-                <div className="flex pl-2 pt-[2rem]">
-                  <WatchTrailerButton movie />
-                </div>
+                <HeadlessUI.Transition
+                  as_="div"
+                  show={loaded}
+                  enter="transition ease duration-700 transform"
+                  enterFrom="opacity-0 -translate-y-full"
+                  enterTo="opacity-100 translate-y-0"
+                  leave="transition ease duration-1000 transform"
+                  leaveFrom="opacity-100 translate-y-0"
+                  leaveTo="opacity-0 -translate-y-full">
+                  <HeroText movie textColor="text-white" />
+                  <span className="break-words w-full flex text-white prose pl-2 pt-2 line-clamp-6">
+                    sotryline
+                  </span>
+                  <div className="flex pl-2 pt-[2rem]">
+                    <WatchTrailerButton movie />
+                  </div>
+                </HeadlessUI.Transition>
               </div>
             </div>
           : React.null}

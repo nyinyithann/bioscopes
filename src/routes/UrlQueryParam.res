@@ -10,7 +10,7 @@ type query_param =
   | Search(search_param)
   | Movie(movie_tv_param)
   | Person(id_param)
-  | Invalid(string)
+  | Void(string)
 
 module Converter_category_param = Marshal.Make({
   open! JsonCombinators
@@ -118,24 +118,24 @@ let useQueryParams = (): (query_param, query_param => unit) => {
   | (list{}, q) =>
     switch Converter_category_param.parse(. q) {
     | Ok(p) => Category(p)
-    | Error(msg) => Invalid(msg)
+    | Error(msg) => Void(msg)
     }
   | (list{"genre"}, q) =>
     switch Converter_genre_param.parse(. q) {
     | Ok(p) => Genre(p)
-    | Error(msg) => Invalid(msg)
+    | Error(msg) => Void(msg)
     }
   | (list{"search"}, q) =>
     switch Converter_search_param.parse(. q) {
     | Ok(p) => Search(p)
-    | Error(msg) => Invalid(msg)
+    | Error(msg) => Void(msg)
     }
   | (list{"movie"}, q) =>
     switch Converter_movie_tv_param.parse(. q) {
     | Ok(p) => Movie(p)
-    | Error(msg) => Invalid(msg)
+    | Error(msg) => Void(msg)
     }
-  | _ => Invalid("Invalid Route")
+  | _ => Void("Invalid Route")
   }
 
   open Webapi.Url

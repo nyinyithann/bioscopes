@@ -6,6 +6,7 @@ import * as Links from "../../shared/Links.js";
 import * as React from "react";
 import * as $$Window from "../../hooks/Window.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
+import * as MediaQuery from "../../hooks/MediaQuery.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as ModalDialog from "../ModalDialog.js";
 import * as NotAvailable from "./NotAvailable.js";
@@ -30,14 +31,14 @@ function array(prim) {
 }
 
 function getBackdropImages(movie) {
-  return Belt_Option.getWithDefault(Belt_Option.getWithDefault(Belt_Option.map(movie.images, (function (videos) {
-                        return videos.backdrops;
+  return Belt_Option.getWithDefault(Belt_Option.getWithDefault(Belt_Option.map(movie.images, (function (imgs) {
+                        return imgs.backdrops;
                       })), []), []);
 }
 
 function getPosterImages(movie) {
-  return Belt_Option.getWithDefault(Belt_Option.getWithDefault(Belt_Option.map(movie.images, (function (videos) {
-                        return videos.posters;
+  return Belt_Option.getWithDefault(Belt_Option.getWithDefault(Belt_Option.map(movie.images, (function (imgs) {
+                        return imgs.posters;
                       })), []), []);
 }
 
@@ -61,6 +62,7 @@ var PhotoTitle = {
 
 function PhotosPanel(Props) {
   var movie = Props.movie;
+  var isMobile = MediaQuery.useMediaQuery("(max-width: 600px)");
   var backdrops = getBackdropImages(movie);
   var posters = getPosterImages(movie);
   var windowSize = $$Window.useWindowSize(undefined);
@@ -116,13 +118,12 @@ function PhotosPanel(Props) {
                                                       }));
                                               })
                                           }, React.createElement(LazyImageLite.make, {
-                                                className: "w-full h-[9.75rem] border-[2px] border-slate-200 rounded-md",
+                                                className: "w-full h-full border-[2px] border-slate-200 rounded-md",
                                                 placeholderPath: Links.placeholderImage,
                                                 alt: "backdrop image",
                                                 src: Links.getPosterImageW533H300Bestv2Link(Util.getOrEmptyString(bd.file_path)),
-                                                lazyHeight: 156,
-                                                lazyOffset: 50,
-                                                key: Util.getOrEmptyString(bd.file_path)
+                                                lazyHeight: isMobile ? 126 : 146,
+                                                lazyOffset: 50
                                               }));
                               })))), Util.isEmptyArray(posters) ? null : React.createElement("div", {
                       className: "flex flex-col w-full"
@@ -151,11 +152,11 @@ function PhotosPanel(Props) {
                                                       }));
                                               })
                                           }, React.createElement(LazyImageLite.make, {
-                                                className: "w-full h-[22rem] border-[2px] border-slate-200 rounded-md",
+                                                className: "w-full h-full border-[2px] border-slate-200 rounded-md",
                                                 placeholderPath: Links.placeholderImage,
                                                 alt: "poster image",
                                                 src: Links.getPosterImage_W370_H556_bestv2Link(Util.getOrEmptyString(bd.file_path)),
-                                                lazyHeight: 356,
+                                                lazyHeight: isMobile ? 280 : 356,
                                                 lazyOffset: 50,
                                                 key: Util.getOrEmptyString(bd.file_path)
                                               }));
@@ -163,7 +164,7 @@ function PhotosPanel(Props) {
                     isOpen: photoSliderState.isOpen,
                     onClose: closePhotoslider,
                     className: "relative z-50",
-                    panelClassName: "w-full h-full transform overflow-hidden transition-all rounded-md bg-white bg-opacity-5 backdrop-blur-lg drop-shadow-lg",
+                    panelClassName: "w-full h-full transform overflow-hidden transition-all rounded-md bg-black",
                     children: null
                   }, React.createElement("div", {
                         onClick: closePhotoslider

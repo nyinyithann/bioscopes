@@ -21,7 +21,7 @@ function ModalDialog(Props) {
   return React.createElement(React$1.Transition, {
               show: isOpen,
               children: React.createElement(React$1.Dialog, tmp, React.createElement(React$1.Transition.Child, {
-                        enter: "ease-out duration-300",
+                        enter: "ease-out duration-200",
                         enterFrom: "opacity-0",
                         enterTo: "opacity-100",
                         leave: "ease-in duration-200",
@@ -35,7 +35,7 @@ function ModalDialog(Props) {
                       }, React.createElement("div", {
                             className: "flex min-h-full items-center justify-center p-4 text-center"
                           }, React.createElement(React$1.Transition.Child, {
-                                enter: "ease-out duration-300",
+                                enter: "ease-out duration-200",
                                 enterFrom: "opacity-0 scale-95",
                                 enterTo: "opacity-100 scale-100",
                                 leave: "ease-in duration-200",

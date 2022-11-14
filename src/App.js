@@ -42,6 +42,7 @@ function App(Props) {
   var component;
   var exit = 0;
   if (match) {
+    var exit$1 = 0;
     switch (match.hd) {
       case "about" :
           if (match.tl) {
@@ -52,30 +53,32 @@ function App(Props) {
                 });
           }
           break;
+      case "genre" :
       case "movie" :
       case "person" :
-          exit = 2;
-          break;
-      case "genre" :
       case "search" :
-          exit = match.tl ? 1 : 2;
+          exit$1 = 2;
           break;
       default:
         exit = 1;
     }
-  } else {
-    exit = 2;
-  }
-  switch (exit) {
-    case 1 :
-        component = React.createElement(NotFound.make, {});
-        break;
-    case 2 :
+    if (exit$1 === 2) {
+      if (match.tl) {
+        exit = 1;
+      } else {
         component = React.createElement(SuspensionLoader.make, {
               children: lazyHome
             });
-        break;
+      }
+    }
     
+  } else {
+    component = React.createElement(SuspensionLoader.make, {
+          children: lazyHome
+        });
+  }
+  if (exit === 1) {
+    component = React.createElement(NotFound.make, {});
   }
   var match$1 = ThemeHook.useTheme("theme-emerald");
   return React.createElement(ThemeSwitchProvider.make, {

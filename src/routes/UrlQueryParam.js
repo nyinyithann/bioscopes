@@ -115,7 +115,7 @@ function useQueryParams(param) {
       case "genre" :
           if (match.tl) {
             queryParam = {
-              TAG: /* Invalid */5,
+              TAG: /* Void */5,
               _0: "Invalid Route"
             };
           } else {
@@ -124,7 +124,7 @@ function useQueryParams(param) {
                   TAG: /* Genre */1,
                   _0: p._0
                 }) : ({
-                  TAG: /* Invalid */5,
+                  TAG: /* Void */5,
                   _0: p._0
                 });
           }
@@ -132,7 +132,7 @@ function useQueryParams(param) {
       case "movie" :
           if (match.tl) {
             queryParam = {
-              TAG: /* Invalid */5,
+              TAG: /* Void */5,
               _0: "Invalid Route"
             };
           } else {
@@ -141,7 +141,7 @@ function useQueryParams(param) {
                   TAG: /* Movie */3,
                   _0: p$1._0
                 }) : ({
-                  TAG: /* Invalid */5,
+                  TAG: /* Void */5,
                   _0: p$1._0
                 });
           }
@@ -149,7 +149,7 @@ function useQueryParams(param) {
       case "search" :
           if (match.tl) {
             queryParam = {
-              TAG: /* Invalid */5,
+              TAG: /* Void */5,
               _0: "Invalid Route"
             };
           } else {
@@ -158,14 +158,14 @@ function useQueryParams(param) {
                   TAG: /* Search */2,
                   _0: p$2._0
                 }) : ({
-                  TAG: /* Invalid */5,
+                  TAG: /* Void */5,
                   _0: p$2._0
                 });
           }
           break;
       default:
         queryParam = {
-          TAG: /* Invalid */5,
+          TAG: /* Void */5,
           _0: "Invalid Route"
         };
     }
@@ -184,7 +184,7 @@ function useQueryParams(param) {
           TAG: /* Category */0,
           _0: p$3._0
         }) : ({
-          TAG: /* Invalid */5,
+          TAG: /* Void */5,
           _0: p$3._0
         });
   }
@@ -199,7 +199,7 @@ function useQueryParams(param) {
       case /* Movie */3 :
           return RescriptReactRouter.push("/movie?" + new URLSearchParams(Converter_movie_tv_param.stringfy(params._0)).toString());
       case /* Person */4 :
-      case /* Invalid */5 :
+      case /* Void */5 :
           return ;
       
     }

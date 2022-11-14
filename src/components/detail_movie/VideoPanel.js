@@ -47,8 +47,10 @@ function VideoPanel$VideoImage(Props) {
     e.preventDefault();
     Curry._1(play, Links.getYoutubeVideoLink(vkey));
   };
-  return React.createElement(React.Fragment, undefined, Util.isEmptyString(vkey) ? null : React.createElement(React.Fragment, undefined, match[0] ? null : React.createElement("div", {
-                          className: "absolute top-2 w-full h-full flex flex-col items-center justify-center"
+  return React.createElement(React.Fragment, undefined, Util.isEmptyString(vkey) ? null : React.createElement("div", {
+                    className: "flex relative items-center justify-center"
+                  }, match[0] ? null : React.createElement("div", {
+                          className: "absolute top-[50px] w-full h-full flex flex-col items-center justify-center"
                         }, React.createElement(Loading.make, {
                               className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
                             })), React.createElement("div", {
@@ -90,15 +92,16 @@ function VideoPanel(Props) {
                 thing: "videos"
               });
   } else {
-    return React.createElement(React.Fragment, undefined, React.createElement("div", {
-                    className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full"
-                  }, Belt_Array.map(videos, (function (video) {
-                          return React.createElement(VideoPanel$VideoImage, {
+    return React.createElement("ul", {
+                className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none"
+              }, Belt_Array.map(videos, (function (video) {
+                      return React.createElement("li", {
+                                  key: Util.getOrEmptyString(video.key)
+                                }, React.createElement(VideoPanel$VideoImage, {
                                       video: video,
-                                      className: "w-full border-[2px] border-slate-200 rounded-md",
-                                      key: Util.getOrEmptyString(video.key)
-                                    });
-                        }))));
+                                      className: "w-full border-[2px] border-slate-200 rounded-md"
+                                    }));
+                    })));
   }
 }
 

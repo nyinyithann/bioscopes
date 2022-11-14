@@ -28,8 +28,8 @@ let make = () => {
   | list{}
   | list{"genre"}
   | list{"search"}
-  | list{"movie", ..._}
-  | list{"person", ..._} =>
+  | list{"movie"}
+  | list{"person"} =>
     <SuspensionLoader> lazyHome </SuspensionLoader>
   | list{"about"} => <SuspensionLoader> lazyAbout </SuspensionLoader>
   | _ => <NotFound />

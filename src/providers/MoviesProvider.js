@@ -39,16 +39,21 @@ var initialState_apiParams = {
 var initialState = {
   apiParams: initialState_apiParams,
   movies: emptyMovieList,
+  recommendedMovies: emptyMovieList,
   detail_movie: emptyDetailMovie,
   loading: false,
   error: ""
 };
 
-function initialContextValue_loadData(param, param$1) {
+function initialContextValue_loadMovies(param, param$1) {
   
 }
 
 function initialContextValue_loadDetailMovie(param, param$1) {
+  
+}
+
+function initialContextValue_loadRecommendedMovies(param, param$1, param$2) {
   
 }
 
@@ -67,11 +72,13 @@ function initialContextValue_clearMovies(param) {
 
 var initialContextValue = {
   movies: emptyMovieList,
+  recommendedMovies: emptyMovieList,
   detail_movie: emptyDetailMovie,
   loading: false,
   error: "",
-  loadData: initialContextValue_loadData,
+  loadMovies: initialContextValue_loadMovies,
   loadDetailMovie: initialContextValue_loadDetailMovie,
+  loadRecommendedMovies: initialContextValue_loadRecommendedMovies,
   apiParams: initialContextValue_apiParams,
   clearMovies: initialContextValue_clearMovies
 };
@@ -105,6 +112,7 @@ function reducer(state, action) {
     return {
             apiParams: state.apiParams,
             movies: emptyMovieList,
+            recommendedMovies: emptyMovieList,
             detail_movie: emptyDetailMovie,
             loading: false,
             error: ""
@@ -115,6 +123,7 @@ function reducer(state, action) {
         return {
                 apiParams: action._0,
                 movies: state.movies,
+                recommendedMovies: state.recommendedMovies,
                 detail_movie: state.detail_movie,
                 loading: true,
                 error: ""
@@ -123,6 +132,7 @@ function reducer(state, action) {
         return {
                 apiParams: state.apiParams,
                 movies: state.movies,
+                recommendedMovies: state.recommendedMovies,
                 detail_movie: state.detail_movie,
                 loading: false,
                 error: action._0
@@ -138,6 +148,7 @@ function reducer(state, action) {
                   total_pages: movies.total_pages,
                   total_results: movies.total_results
                 },
+                recommendedMovies: emptyMovieList,
                 detail_movie: emptyDetailMovie,
                 loading: false,
                 error: ""
@@ -146,7 +157,26 @@ function reducer(state, action) {
         return {
                 apiParams: action._0,
                 movies: emptyMovieList,
+                recommendedMovies: emptyMovieList,
                 detail_movie: action._1,
+                loading: false,
+                error: ""
+              };
+    case /* SuccessRecommendedMovies */4 :
+        var movies$1 = action._0;
+        return {
+                apiParams: {
+                  TAG: /* Void */5,
+                  _0: "recommended_movies"
+                },
+                movies: emptyMovieList,
+                recommendedMovies: {
+                  page: movies$1.page,
+                  results: movies$1.results,
+                  total_pages: movies$1.total_pages,
+                  total_results: movies$1.total_results
+                },
+                detail_movie: state.detail_movie,
                 loading: false,
                 error: ""
               };
@@ -169,13 +199,13 @@ function getApiPath(apiParams) {
         var match$3 = apiParams._0;
         return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/" + match$3.media_type + "/" + match$3.id + "?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en";
     case /* Person */4 :
-    case /* Invalid */5 :
+    case /* Void */5 :
         return "";
     
   }
 }
 
-function loadDataInternal(dispatch, apiParams, signal) {
+function loadMovieInternal(dispatch, apiParams, signal) {
   var apiPath = getApiPath(apiParams);
   var callback = function (result) {
     if (result.TAG === /* Ok */0) {
@@ -255,14 +285,59 @@ function loadDetailMovieInternal(dispatch, apiParams, signal) {
   MovieAPI.getData(apiPath, callback, Caml_option.some(signal), undefined);
 }
 
+function loadRecommendedMoviesInternal(dispatch, movieId, page, signal) {
+  debugger;
+  var apiPath = "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + movieId.toString() + "/recommendations?api_key=" + process.env.NEXT_PUBLIC_TMDB_API_KEY + "&page=" + page.toString() + "";
+  var callback = function (result) {
+    debugger;
+    if (result.TAG === /* Ok */0) {
+      var ml = MovieModel.MovieListDecoder.decode(result._0);
+      if (ml.TAG === /* Ok */0) {
+        return Curry._1(dispatch, {
+                    TAG: /* SuccessRecommendedMovies */4,
+                    _0: ml._0
+                  });
+      } else {
+        return Curry._1(dispatch, {
+                    TAG: /* Error */1,
+                    _0: ml._0
+                  });
+      }
+    }
+    var e = MovieModel.MovieErrorDecoder.decode(result._0);
+    if (e.TAG !== /* Ok */0) {
+      return Curry._1(dispatch, {
+                  TAG: /* Error */1,
+                  _0: "Unexpected error occured while reteriving recommended movie data."
+                });
+    }
+    var errors = Belt_Array.reduce(Js_option.getWithDefault([], e._0.errors), ". ", (function (a, b) {
+            return b + a;
+          }));
+    Curry._1(dispatch, {
+          TAG: /* Error */1,
+          _0: errors
+        });
+  };
+  Curry._1(dispatch, {
+        TAG: /* Loading */0,
+        _0: {
+          TAG: /* Void */5,
+          _0: "recommended_movies"
+        }
+      });
+  debugger;
+  MovieAPI.getData(apiPath, callback, Caml_option.some(signal), undefined);
+}
+
 function MoviesProvider(Props) {
   var children = Props.children;
   var match = React.useReducer(reducer, initialState);
   var dispatch = match[1];
   var state = match[0];
-  var loadData = React.useMemo((function () {
+  var loadMovies = React.useMemo((function () {
           return function (param, param$1) {
-            return loadDataInternal(dispatch, param, param$1);
+            return loadMovieInternal(dispatch, param, param$1);
           };
         }), [dispatch]);
   var loadDetailMovie = React.useMemo((function () {
@@ -270,7 +345,13 @@ function MoviesProvider(Props) {
             return loadDetailMovieInternal(dispatch, param, param$1);
           };
         }), [dispatch]);
+  var loadRecommendedMovies = React.useMemo((function () {
+          return function (param, param$1, param$2) {
+            return loadRecommendedMoviesInternal(dispatch, param, param$1, param$2);
+          };
+        }), [dispatch]);
   var value_movies = state.movies;
+  var value_recommendedMovies = state.recommendedMovies;
   var value_detail_movie = state.detail_movie;
   var value_loading = state.loading;
   var value_error = state.error;
@@ -280,11 +361,13 @@ function MoviesProvider(Props) {
   };
   var value = {
     movies: value_movies,
+    recommendedMovies: value_recommendedMovies,
     detail_movie: value_detail_movie,
     loading: value_loading,
     error: value_error,
-    loadData: loadData,
+    loadMovies: loadMovies,
     loadDetailMovie: loadDetailMovie,
+    loadRecommendedMovies: loadRecommendedMovies,
     apiParams: value_apiParams,
     clearMovies: value_clearMovies
   };
@@ -307,8 +390,9 @@ export {
   MoviesContext ,
   reducer ,
   getApiPath ,
-  loadDataInternal ,
+  loadMovieInternal ,
   loadDetailMovieInternal ,
+  loadRecommendedMoviesInternal ,
   make ,
   useMoviesContext ,
 }

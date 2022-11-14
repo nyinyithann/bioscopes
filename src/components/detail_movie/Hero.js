@@ -9,6 +9,7 @@ import * as Loading from "../Loading.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as MediaQuery from "../../hooks/MediaQuery.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
+import * as React$1 from "@headlessui/react";
 import * as YoutubePlayerProvider from "../../providers/YoutubePlayerProvider.js";
 import * as Solid from "@heroicons/react/solid";
 import * as Outline from "@heroicons/react/outline";
@@ -142,6 +143,7 @@ function Hero(Props) {
         return false;
       });
   var setLoaded = match[1];
+  var loaded = match[0];
   var imgPathRef = React.useRef("");
   var match$1 = React.useState(function () {
         return {
@@ -151,69 +153,65 @@ function Hero(Props) {
       });
   var setSize = match$1[1];
   var size = match$1[0];
-  React.useMemo((function () {
-          imgPathRef.current = Links.getOriginalBigImage(Util.getOrEmptyString(movie.backdrop_path));
-        }), [movie]);
-  var updateLayout = function (param) {
-    var isMobile = MediaQuery.matchMedia("(max-width: 600px)");
-    var isSmallScreen = MediaQuery.matchMedia("(max-width: 700px)");
-    var isMediumScreen = MediaQuery.matchMedia("(max-width: 1000px)");
-    var isLargeScreen = MediaQuery.matchMedia("(max-width: 1300px)");
-    var isVeryLargeScreen = MediaQuery.matchMedia("(min-width: 1500px)");
-    if (isMobile) {
-      return Curry._1(setSize, (function (param) {
+  var isMobile = MediaQuery.useMediaQuery("(max-width: 600px)");
+  var isSmallScreen = MediaQuery.useMediaQuery("(max-width: 700px)");
+  var isMediumScreen = MediaQuery.useMediaQuery("(max-width: 1000px)");
+  var isLargeScreen = MediaQuery.useMediaQuery("(max-width: 1300px)");
+  var isVeryLargeScreen = MediaQuery.useMediaQuery("(min-width: 1500px)");
+  React.useLayoutEffect((function () {
+          if (isMobile) {
+            Curry._1(setSize, (function (param) {
                     return {
                             width: 100,
                             height: 16
                           };
                   }));
-    } else if (isSmallScreen) {
-      return Curry._1(setSize, (function (param) {
+          } else if (isSmallScreen) {
+            Curry._1(setSize, (function (param) {
                     return {
                             width: 100,
                             height: 26
                           };
                   }));
-    } else if (isMediumScreen) {
-      return Curry._1(setSize, (function (param) {
+          } else if (isMediumScreen) {
+            Curry._1(setSize, (function (param) {
                     return {
                             width: 100,
                             height: 30
                           };
                   }));
-    } else if (isLargeScreen) {
-      return Curry._1(setSize, (function (param) {
+          } else if (isLargeScreen) {
+            Curry._1(setSize, (function (param) {
                     return {
                             width: 70,
                             height: 32
                           };
                   }));
-    } else if (isVeryLargeScreen) {
-      return Curry._1(setSize, (function (param) {
+          } else if (isVeryLargeScreen) {
+            Curry._1(setSize, (function (param) {
                     return {
                             width: 70,
                             height: 46
                           };
                   }));
-    } else {
-      return Curry._1(setSize, (function (param) {
+          } else {
+            Curry._1(setSize, (function (param) {
                     return {
                             width: 70,
                             height: 34
                           };
                   }));
-    }
-  };
-  var handleWindowSizeChange = function (param) {
-    updateLayout(undefined);
-  };
-  React.useEffect((function () {
-          updateLayout(undefined);
-          window.addEventListener("resize", handleWindowSizeChange);
-          return (function (param) {
-                    window.removeEventListener("resize", handleWindowSizeChange);
-                  });
-        }), []);
+          }
+        }), [
+        isMobile,
+        isSmallScreen,
+        isMediumScreen,
+        isLargeScreen,
+        isVeryLargeScreen
+      ]);
+  React.useMemo((function () {
+          imgPathRef.current = Links.getOriginalBigImage(Util.getOrEmptyString(movie.backdrop_path));
+        }), [movie]);
   var tagline = Util.getOrEmptyString(movie.tagline);
   var imageStyle = {
     height: "" + size.height.toString() + "rem",
@@ -289,16 +287,26 @@ function Hero(Props) {
                                       })
                                   })), React.createElement("div", {
                                 className: "absolute top-[20%] left-[6%] z-50"
-                              }, React.createElement(Hero$HeroText, {
-                                    movie: movie,
-                                    textColor: "text-white"
-                                  }), React.createElement("span", {
-                                    className: "break-words w-full flex text-white prose pl-2 pt-2 line-clamp-6"
-                                  }, sotryline), React.createElement("div", {
-                                    className: "flex pl-2 pt-[2rem]"
-                                  }, React.createElement(Hero$WatchTrailerButton, {
-                                        movie: movie
-                                      })))) : null, match[0] ? null : React.createElement("div", {
+                              }, React.createElement(React$1.Transition, {
+                                    show: loaded,
+                                    as_: "div",
+                                    enter: "transition ease duration-700 transform",
+                                    enterFrom: "opacity-0 -translate-y-full",
+                                    enterTo: "opacity-100 translate-y-0",
+                                    leave: "transition ease duration-1000 transform",
+                                    leaveFrom: "opacity-100 translate-y-0",
+                                    leaveTo: "opacity-0 -translate-y-full",
+                                    children: null
+                                  }, React.createElement(Hero$HeroText, {
+                                        movie: movie,
+                                        textColor: "text-white"
+                                      }), React.createElement("span", {
+                                        className: "break-words w-full flex text-white prose pl-2 pt-2 line-clamp-6"
+                                      }, sotryline), React.createElement("div", {
+                                        className: "flex pl-2 pt-[2rem]"
+                                      }, React.createElement(Hero$WatchTrailerButton, {
+                                            movie: movie
+                                          }))))) : null, loaded ? null : React.createElement("div", {
                             className: "absolute top-[" + (size.height / 2 | 0).toString() + "rem)] w-full h-full flex flex-col items-center justify-center"
                           }, React.createElement(Loading.make, {
                                 className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"

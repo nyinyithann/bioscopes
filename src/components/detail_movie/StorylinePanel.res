@@ -76,7 +76,7 @@ let getGenres = (movie: DetailMovieModel.detail_movie) => {
 
 module GenreLinks = {
   @react.component
-  let make = (~movie: DetailMovieModel.detail_movie ) => {
+  let make = (~movie: DetailMovieModel.detail_movie) => {
     let links = getGenres(movie)
     let (_, setQueryParam) = UrlQueryParam.useQueryParams()
 
@@ -90,7 +90,7 @@ module GenreLinks = {
               ->Belt.Array.map(((id, name)) =>
                 <span
                   key={Util.itos(id)}
-                  onClick={ e => {
+                  onClick={e => {
                     ReactEvent.Mouse.preventDefault(e)
                     setQueryParam(
                       Genre({id, name, display: name, page: 1, sort_by: MovieModel.popularity.id}),
@@ -153,34 +153,60 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     ->Util.getOrEmptyString
   let website = movie.homepage->Util.getOrEmptyString
 
-  <div className="flex flex-col w-full prose pl-2 sm:pl-10">
-    <div className="flex flex-col w-full gap-1">
-      <span className="text-[1.2rem] font-semibold"> {"Storyline"->string} </span>
-      <span className="break-words w-full flex"> sotryline </span>
+  let getFirstPosterImage = (~movie: DetailMovieModel.detail_movie) => {
+    open Belt
+    movie.images
+    ->Option.map(imgs => imgs.posters)
+    ->Option.getWithDefault(Some([]))
+    ->Option.getWithDefault([])
+    ->Array.get(0)
+  }
+
+  <div className="flex w-full pl-2">
+    <div
+      className="hidden md:flex pr-8 items-start md:items-center md:justify-center justify-start">
+      {switch getFirstPosterImage(~movie) {
+      | Some(img) =>
+        <LazyImageLite
+          alt="poster image"
+          placeholderPath={Links.placeholderImage}
+          src={Links.getPosterImage_W370_H556_bestv2Link(Util.getOrEmptyString(img.file_path))}
+          className="h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto"
+          lazyHeight={456.}
+          lazyOffset={50.}
+        />
+      | None => React.null
+      }}
     </div>
-    <div className="flex flex-col w-full pt-4">
-      <Pair title={"Released"} value={releasedDate} />
-      <Pair title={"Runtime"} value={runtime} />
-      <DirectorLink movie />
-      {Util.getOrFloatZero(movie.budget) == 0.
-        ? React.null
-        : <Pair title={"Budget"} value={`$${budget}`} />}
-      {Util.getOrFloatZero(movie.revenue) == 0.
-        ? React.null
-        : <Pair title={"Revenue"} value={`$${revenue}`} />}
-      <GenreLinks movie />
-      <Pair title={"Status"} value={status} />
-      <Pair title={"Language"} value={getSpokenLanguages(movie)} />
-      <Pair title={"Production"} value={getProductionCompanies(movie)} />
-    </div>
-    <div className="flex w-full justify-start gap-[1.4rem] pt-4">
-      <Twitter id={twitterId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-      <Facebook id={facebookId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-      <Instagram id={insgagramId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-      <Imdb id={imdbId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-      <WebsiteLink
-        link={website} className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
-      />
+    <div className="flex flex-col w-full prose">
+      <div className="flex flex-col w-full gap-1">
+        <span className="text-[1.2rem] font-semibold"> {"Storyline"->string} </span>
+        <span className="break-words w-full flex"> sotryline </span>
+      </div>
+      <div className="flex flex-col w-full pt-4">
+        <Pair title={"Released"} value={releasedDate} />
+        <Pair title={"Runtime"} value={runtime} />
+        <DirectorLink movie />
+        {Util.getOrFloatZero(movie.budget) == 0.
+          ? React.null
+          : <Pair title={"Budget"} value={`$${budget}`} />}
+        {Util.getOrFloatZero(movie.revenue) == 0.
+          ? React.null
+          : <Pair title={"Revenue"} value={`$${revenue}`} />}
+        <GenreLinks movie />
+        <Pair title={"Status"} value={status} />
+        <Pair title={"Language"} value={getSpokenLanguages(movie)} />
+        <Pair title={"Production"} value={getProductionCompanies(movie)} />
+      </div>
+      <div className="flex w-full justify-start gap-[1.4rem] pt-4">
+        <Twitter id={twitterId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+        <Facebook id={facebookId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+        <Instagram id={insgagramId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+        <Imdb id={imdbId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+        <WebsiteLink
+          link={website} className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
+        />
+      </div>
     </div>
   </div>
 }

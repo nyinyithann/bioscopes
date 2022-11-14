@@ -91,7 +91,7 @@ function MovieList(Props) {
   var setQueryParam = match[1];
   var queryParam = match[0];
   var match$1 = MoviesProvider.useMoviesContext(undefined);
-  var loadData = match$1.loadData;
+  var loadMovies = match$1.loadMovies;
   var error = match$1.error;
   var movies = match$1.movies;
   var movieList = Js_option.getWithDefault([], movies.results);
@@ -143,7 +143,7 @@ function MovieList(Props) {
           switch (queryParam.TAG | 0) {
             case /* Category */0 :
                 var match = queryParam._0;
-                Curry._2(loadData, {
+                Curry._2(loadMovies, {
                       TAG: /* Category */0,
                       _0: {
                         name: match.name,
@@ -154,7 +154,7 @@ function MovieList(Props) {
                 break;
             case /* Genre */1 :
                 var match$1 = queryParam._0;
-                Curry._2(loadData, {
+                Curry._2(loadMovies, {
                       TAG: /* Genre */1,
                       _0: {
                         id: match$1.id,
@@ -167,7 +167,7 @@ function MovieList(Props) {
                 break;
             case /* Search */2 :
                 var match$2 = queryParam._0;
-                Curry._2(loadData, {
+                Curry._2(loadMovies, {
                       TAG: /* Search */2,
                       _0: {
                         query: match$2.query,

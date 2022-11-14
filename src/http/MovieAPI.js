@@ -20,6 +20,7 @@ var authorization = [
 
 function checkResponseStatus(promise) {
   return promise.then(function (response) {
+              debugger;
               if (response.ok) {
                 return Promise.resolve({
                             TAG: /* Ok */0,
@@ -36,29 +37,32 @@ function checkResponseStatus(promise) {
 
 function catchPromiseFault(promise) {
   return $$Promise.$$catch(promise, (function (e) {
-                if (e.RE_EXN_ID !== Js_exn.$$Error) {
+                debugger;
+                if (e.RE_EXN_ID === Js_exn.$$Error) {
+                  var msg = e._1.message;
+                  if (msg !== undefined) {
+                    var tmp;
+                    try {
+                      tmp = JSON.parse(msg);
+                    }
+                    catch (exn){
+                      tmp = "Unexpected Promise Fault!";
+                    }
+                    return Promise.resolve({
+                                TAG: /* Error */1,
+                                _0: Promise.resolve(tmp)
+                              });
+                  }
+                  console.log(msg);
                   return Promise.resolve({
                               TAG: /* Error */1,
                               _0: Promise.resolve("Unexpected Promise Fault!")
                             });
                 }
-                var msg = e._1.message;
-                if (msg === undefined) {
-                  return Promise.resolve({
-                              TAG: /* Error */1,
-                              _0: Promise.resolve("Unexpected Promise Fault!")
-                            });
-                }
-                var tmp;
-                try {
-                  tmp = JSON.parse(msg);
-                }
-                catch (exn){
-                  tmp = "Unexpected Promise Fault!";
-                }
+                console.log(e);
                 return Promise.resolve({
                             TAG: /* Error */1,
-                            _0: Promise.resolve(tmp)
+                            _0: Promise.resolve("Unexpected Promise Fault!")
                           });
               }));
 }

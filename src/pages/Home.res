@@ -56,9 +56,12 @@ let make = () => {
   | list{"genre"}
   | list{"search"} =>
     <SuspensionLoader> lazyMovieList </SuspensionLoader>
-  | list{"movie"} => <SuspensionLoader> lazyMovie </SuspensionLoader>
+  | list{"movie"} =>
+    <SuspensionLoader>
+      <YoutubePlayerProvider> lazyMovie </YoutubePlayerProvider>
+    </SuspensionLoader>
   | list{"person"} => <SuspensionLoader> lazyPerson </SuspensionLoader>
-  | _ => <div> {"Todo: To create a proper component to display message"->string} </div>
+  | _ => <NotFound />
   }
 
   <div className="flex flex-col w-full h-full">
@@ -82,9 +85,7 @@ let make = () => {
         </div>
       </div>
       <div className="z-30 bg-white">
-        <MoviesProvider>
-          <YoutubePlayerProvider> {component} </YoutubePlayerProvider>
-        </MoviesProvider>
+        <MoviesProvider> {component} </MoviesProvider>
       </div>
       <footer className="h-8" />
     </div>

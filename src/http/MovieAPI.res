@@ -6,6 +6,7 @@ let authorization = ("Authorization", `Bearer ${Env.apiReadAccess}`)
 
 let checkResponseStatus = promise => {
   promise->then(response => {
+    %debugger
     if Response.ok(response) {
       Ok(Response.json(response))->resolve
     } else {
@@ -19,6 +20,7 @@ let catchPromiseFault: Promise.t<result<Promise.t<Js.Json.t>, Promise.t<Js.Json.
 > = promise => {
   let defaultFaultMsg = () => Js.Json.string("Unexpected Promise Fault!")
   promise->catch(e => {
+    %debugger
     switch e {
     | Js.Exn.Error(obj) =>
       switch Js.Exn.message(obj) {
@@ -30,9 +32,15 @@ let catchPromiseFault: Promise.t<result<Promise.t<Js.Json.t>, Promise.t<Js.Json.
             },
           ),
         )->resolve
-      | _ => Error(Promise.resolve(defaultFaultMsg()))->resolve
+      | e => {
+          Js.log(e)
+          Error(Promise.resolve(defaultFaultMsg()))->resolve
+        }
       }
-    | _ => Error(Promise.resolve(defaultFaultMsg()))->resolve
+    | e => {
+        Js.log(e)
+        Error(Promise.resolve(defaultFaultMsg()))->resolve
+      }
     }
   })
 }

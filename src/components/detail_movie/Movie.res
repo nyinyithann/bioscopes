@@ -3,8 +3,8 @@ let {string} = module(React)
 let make = () => {
   let {detail_movie, loading, error, loadDetailMovie} = MoviesProvider.useMoviesContext()
   let {videoPlayState, stop} = YoutubePlayerProvider.useVideoPlayerContext()
-  let windowSize : Window.window_size = Window.useWindowSize()
-  
+  let windowSize: Window.window_size = Window.useWindowSize()
+
   let (queryParam, _) = UrlQueryParam.useQueryParams()
 
   React.useMemo1(() => {
@@ -24,7 +24,6 @@ let make = () => {
       )
     | _ => ()
     }
-
     Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
   })
 
@@ -41,7 +40,7 @@ let make = () => {
         <div id="hero_container" className="w-full">
           <Hero movie={detail_movie} />
         </div>
-        <div id="movie_info_tab_container" className="w-full flex pt-1">
+        <div id="movie_info_tab_container" className="w-full flex flex-col items-center justify-center pt-1">
           <Tab.Group>
             {selectedIndex => {
               <div className="flex flex-col w-full">
@@ -57,6 +56,17 @@ let make = () => {
                                 ? "bg-300 text-900"
                                 : ""} w-full h-full control-color flex items-center justify-center py-2`}>
                             {"OVERVIEW"->string}
+                          </div>}
+                      </Tab>
+                      <Tab
+                        key={"casts"}
+                        className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300">
+                        {props =>
+                          <div
+                            className={`${props.selected
+                                ? "bg-300 text-900"
+                                : ""} w-full h-full control-color flex items-center justify-center py-2`}>
+                            {"CASTS"->string}
                           </div>}
                       </Tab>
                       <Tab
@@ -94,6 +104,13 @@ let make = () => {
                           </div>
                         }}
                       </Tab.Panel>
+                      <Tab.Panel key="casts-panel">
+                        {props => {
+                          <div className="flex w-full p-2">
+                            <Casts movie={detail_movie} />
+                          </div>
+                        }}
+                      </Tab.Panel>
                       <Tab.Panel key="videos-panel">
                         {props => {
                           <div className="flex w-full p-2">
@@ -114,25 +131,28 @@ let make = () => {
               </div>
             }}
           </Tab.Group>
+          <div>
+            <MoreLikeThis movie={detail_movie} />
+          </div>
         </div>
       </div>
       <ModalDialog
         isOpen={videoPlayState.playing}
-        onClose={_ => stop() }
+        onClose={_ => stop()}
         className="relative z-50"
         panelClassName="w-full h-full transform overflow-hidden transition-all">
-          <div onClick={_ => stop() }>
-            <Heroicons.Outline.XIcon
-              className="absolute z-50 top-0 right-4 w-12 h-12 p-2 border-2 border-slate-400 fill-white stroke-white hover:bg-slate-500 rounded-full bg-slate-900"
-            />
-          </div>
-          <YoutubePlayer
-            url={videoPlayState.url}
-            playing={videoPlayState.playing}
-            controls={true}
-            width={`${(windowSize.width - 32)->Js.Int.toString}px`}
-            height={`${(windowSize.height - 32)->Js.Int.toString}px`}
+        <div onClick={_ => stop()}>
+          <Heroicons.Outline.XIcon
+            className="absolute z-50 top-0 right-4 w-8 h-8 p-2 border-2 border-slate-400 fill-white stroke-white hover:bg-slate-500 rounded-full bg-slate-900"
           />
+        </div>
+        <YoutubePlayer
+          url={videoPlayState.url}
+          playing={videoPlayState.playing}
+          controls={true}
+          width={`${(windowSize.width - 32)->Js.Int.toString}px`}
+          height={`${(windowSize.height - 32)->Js.Int.toString}px`}
+        />
       </ModalDialog>
     </main>
   }

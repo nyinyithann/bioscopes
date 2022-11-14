@@ -17,7 +17,7 @@ module VideoImage = {
   @react.component
   let make = (~video: DetailMovieModel.video, ~className) => {
     let (loaded, setLoaded) = React.useState(_ => false)
-  let {play} = YoutubePlayerProvider.useVideoPlayerContext()
+    let {play} = YoutubePlayerProvider.useVideoPlayerContext()
     let vkey = Util.getOrEmptyString(video.key)
 
     let onClick = e => {
@@ -27,10 +27,10 @@ module VideoImage = {
 
     <>
       {!Util.isEmptyString(vkey)
-        ? <>
+        ? <div className="flex relative items-center justify-center">
             {!loaded
               ? <div
-                  className={`absolute top-2 w-full h-full flex flex-col items-center justify-center`}>
+                  className={`absolute top-[50px] w-full h-full flex flex-col items-center justify-center`}>
                   <Loading
                     className="w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
                   />
@@ -56,7 +56,7 @@ module VideoImage = {
                 />
               </div>
             </div>
-          </>
+          </div>
         : React.null}
     </>
   }
@@ -69,19 +69,15 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
   if Util.isEmptyArray(videos) {
     <NotAvailable thing={"videos"} />
   } else {
-    <>
-      <div
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full">
-        {videos
-        ->Belt.Array.map(video =>
-          <VideoImage
-            key={Util.getOrEmptyString(video.key)}
-            video
-            className="w-full border-[2px] border-slate-200 rounded-md"
-          />
-        )
-        ->array}
-      </div>
-    </>
+    <ul
+      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none">
+      {videos
+      ->Belt.Array.map(video =>
+        <li key={Util.getOrEmptyString(video.key)}>
+          <VideoImage video className="w-full border-[2px] border-slate-200 rounded-md" />
+        </li>
+      )
+      ->array}
+    </ul>
   }
 }

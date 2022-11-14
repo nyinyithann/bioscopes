@@ -3,6 +3,7 @@
 import * as Imdb from "../social_media/Imdb.js";
 import * as Util from "../../shared/Util.js";
 import * as Curry from "rescript/lib/es6/curry.js";
+import * as Links from "../../shared/Links.js";
 import * as React from "react";
 import * as Twitter from "../social_media/Twitter.js";
 import * as Facebook from "../social_media/Facebook.js";
@@ -11,6 +12,7 @@ import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as MovieModel from "../../models/MovieModel.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as WebsiteLink from "../social_media/WebsiteLink.js";
+import * as LazyImageLite from "../LazyImageLite.js";
 import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 
 function string(prim) {
@@ -221,59 +223,76 @@ function StorylinePanel(Props) {
               return Util.getOrEmptyString(x.instagram_id);
             })));
   var website = Util.getOrEmptyString(movie.homepage);
+  var getFirstPosterImage = function (movie) {
+    return Belt_Array.get(Belt_Option.getWithDefault(Belt_Option.getWithDefault(Belt_Option.map(movie.images, (function (imgs) {
+                              return imgs.posters;
+                            })), []), []), 0);
+  };
+  var img = getFirstPosterImage(movie);
   return React.createElement("div", {
-              className: "flex flex-col w-full prose pl-2 sm:pl-10"
+              className: "flex w-full pl-2"
             }, React.createElement("div", {
-                  className: "flex flex-col w-full gap-1"
-                }, React.createElement("span", {
-                      className: "text-[1.2rem] font-semibold"
-                    }, "Storyline"), React.createElement("span", {
-                      className: "break-words w-full flex"
-                    }, sotryline)), React.createElement("div", {
-                  className: "flex flex-col w-full pt-4"
-                }, React.createElement(StorylinePanel$Pair, {
-                      title: "Released",
-                      value: releasedDate
-                    }), React.createElement(StorylinePanel$Pair, {
-                      title: "Runtime",
-                      value: runtime
-                    }), React.createElement(StorylinePanel$DirectorLink, {
-                      movie: movie
-                    }), Util.getOrFloatZero(movie.budget) === 0 ? null : React.createElement(StorylinePanel$Pair, {
-                        title: "Budget",
-                        value: "$" + budget + ""
-                      }), Util.getOrFloatZero(movie.revenue) === 0 ? null : React.createElement(StorylinePanel$Pair, {
-                        title: "Revenue",
-                        value: "$" + revenue + ""
-                      }), React.createElement(StorylinePanel$GenreLinks, {
-                      movie: movie
-                    }), React.createElement(StorylinePanel$Pair, {
-                      title: "Status",
-                      value: status
-                    }), React.createElement(StorylinePanel$Pair, {
-                      title: "Language",
-                      value: getSpokenLanguages(movie)
-                    }), React.createElement(StorylinePanel$Pair, {
-                      title: "Production",
-                      value: getProductionCompanies(movie)
-                    })), React.createElement("div", {
-                  className: "flex w-full justify-start gap-[1.4rem] pt-4"
-                }, React.createElement(Twitter.make, {
-                      id: twitterId,
-                      className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
-                    }), React.createElement(Facebook.make, {
-                      id: facebookId,
-                      className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
-                    }), React.createElement(Instagram.make, {
-                      id: insgagramId,
-                      className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
-                    }), React.createElement(Imdb.make, {
-                      id: imdbId,
-                      className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
-                    }), React.createElement(WebsiteLink.make, {
-                      link: website,
-                      className: "h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
-                    })));
+                  className: "hidden md:flex pr-8 items-start md:items-center md:justify-center justify-start"
+                }, img !== undefined ? React.createElement(LazyImageLite.make, {
+                        className: "h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto",
+                        placeholderPath: Links.placeholderImage,
+                        alt: "poster image",
+                        src: Links.getPosterImage_W370_H556_bestv2Link(Util.getOrEmptyString(img.file_path)),
+                        lazyHeight: 456,
+                        lazyOffset: 50
+                      }) : null), React.createElement("div", {
+                  className: "flex flex-col w-full prose"
+                }, React.createElement("div", {
+                      className: "flex flex-col w-full gap-1"
+                    }, React.createElement("span", {
+                          className: "text-[1.2rem] font-semibold"
+                        }, "Storyline"), React.createElement("span", {
+                          className: "break-words w-full flex"
+                        }, sotryline)), React.createElement("div", {
+                      className: "flex flex-col w-full pt-4"
+                    }, React.createElement(StorylinePanel$Pair, {
+                          title: "Released",
+                          value: releasedDate
+                        }), React.createElement(StorylinePanel$Pair, {
+                          title: "Runtime",
+                          value: runtime
+                        }), React.createElement(StorylinePanel$DirectorLink, {
+                          movie: movie
+                        }), Util.getOrFloatZero(movie.budget) === 0 ? null : React.createElement(StorylinePanel$Pair, {
+                            title: "Budget",
+                            value: "$" + budget + ""
+                          }), Util.getOrFloatZero(movie.revenue) === 0 ? null : React.createElement(StorylinePanel$Pair, {
+                            title: "Revenue",
+                            value: "$" + revenue + ""
+                          }), React.createElement(StorylinePanel$GenreLinks, {
+                          movie: movie
+                        }), React.createElement(StorylinePanel$Pair, {
+                          title: "Status",
+                          value: status
+                        }), React.createElement(StorylinePanel$Pair, {
+                          title: "Language",
+                          value: getSpokenLanguages(movie)
+                        }), React.createElement(StorylinePanel$Pair, {
+                          title: "Production",
+                          value: getProductionCompanies(movie)
+                        })), React.createElement("div", {
+                      className: "flex w-full justify-start gap-[1.4rem] pt-4"
+                    }, React.createElement(Twitter.make, {
+                          id: twitterId,
+                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                        }), React.createElement(Facebook.make, {
+                          id: facebookId,
+                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                        }), React.createElement(Instagram.make, {
+                          id: insgagramId,
+                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                        }), React.createElement(Imdb.make, {
+                          id: imdbId,
+                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                        }), React.createElement(WebsiteLink.make, {
+                          link: website,
+                          className: "h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
+                        }))));
 }
 
 var make = StorylinePanel;

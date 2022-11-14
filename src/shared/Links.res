@@ -24,6 +24,15 @@ let getYoutubeImageLink = (id: string) => `https://img.youtube.com/vi/${id}/mqde
 let placeholderImage = "/assets/nothing.svg"
 
 let getYoutubeVideoLink = key => `https://youtu.be/${key}`
+
+/* Rendered size:	198 × 297 px */
+/* Rendered aspect ratio:	2∶3 */
+/* Intrinsic size:	370 × 556 px */
+/* Intrinsic aspect ratio:	185∶278 */
+/* File size:	39.6 kB */
+/* Current source:	https://image.tmdb.org/t/p/w370_and_h556_bestv2/2miJH1JWJdVw4AMV6Q0IcTNrWmO.jpg */
+/*  */
+
 //https://youtu.be/mkomfZHG5q4
 // https://youtu.be/0RnGge4t_ZU
 // https://youtu.be/wajuHqcA_Rg

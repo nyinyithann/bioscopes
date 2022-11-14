@@ -70,7 +70,7 @@ module Poster = {
 let make = () => {
   let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
 
-  let {movies, loading, error, loadData} = MoviesProvider.useMoviesContext()
+  let {movies, loading, error, loadMovies} = MoviesProvider.useMoviesContext()
   let movieList = Js.Option.getWithDefault([], movies.results)
   let currentPage = Js.Option.getWithDefault(0, movies.page)
   let totalPages = Js.Option.getWithDefault(0, movies.total_pages)
@@ -118,17 +118,17 @@ let make = () => {
     let controller = Fetch.AbortController.make()
     switch queryParam {
     | Category({name, display, page}) =>
-      loadData(
+      loadMovies(
         ~apiParams=Category({name, display, page}),
         ~signal=Fetch.AbortController.signal(controller),
       )
     | Genre({id, name, display, page, sort_by}) =>
-      loadData(
+      loadMovies(
         ~apiParams=Genre({id, name, display, page, sort_by}),
         ~signal=Fetch.AbortController.signal(controller),
       )
     | Search({query, page}) =>
-      loadData(~apiParams=Search({query, page}), ~signal=Fetch.AbortController.signal(controller))
+      loadMovies(~apiParams=Search({query, page}), ~signal=Fetch.AbortController.signal(controller))
     | _ => ()
     }
     Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
