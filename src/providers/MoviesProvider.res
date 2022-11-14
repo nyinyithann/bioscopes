@@ -1,8 +1,8 @@
 type state = {
   apiParams: UrlQueryParam.query_param,
   movies: MovieModel.movielist,
-  recommendedMovies: MovieModel.movielist,
   detail_movie: DetailMovieModel.detail_movie,
+  recommendedMovies: MovieModel.movielist,
   loading: bool,
   error: string,
 }
@@ -11,7 +11,11 @@ type action =
   | Loading(UrlQueryParam.query_param)
   | Error(string)
   | SuccessMovies(UrlQueryParam.query_param, MovieModel.movielist)
-  | SuccessDetailMovie(UrlQueryParam.query_param, DetailMovieModel.detail_movie)
+  | SuccessDetailMovie(
+      UrlQueryParam.query_param,
+      DetailMovieModel.detail_movie,
+      MovieModel.movielist,
+    )
   | SuccessRecommendedMovies(MovieModel.movielist)
   | Clear
 
@@ -48,21 +52,21 @@ let emptyDetailMovie: DetailMovieModel.detail_movie = {
 let initialState = {
   apiParams: Category({name: "popular", display: "Popular", page: 1}),
   movies: emptyMovieList,
-  recommendedMovies: emptyMovieList,
   detail_movie: emptyDetailMovie,
+  recommendedMovies: emptyMovieList,
   loading: false,
   error: "",
 }
 
 type context_value = {
   movies: MovieModel.movielist,
-  recommendedMovies: MovieModel.movielist,
   detail_movie: DetailMovieModel.detail_movie,
+  recommendedMovies: MovieModel.movielist,
   loading: bool,
   error: string,
   loadMovies: (~apiParams: UrlQueryParam.query_param, ~signal: Fetch.AbortSignal.t) => unit,
   loadDetailMovie: (~apiParams: UrlQueryParam.query_param, ~signal: Fetch.AbortSignal.t) => unit,
-  loadRecommendedMovies : (~movieId : int, ~page : int, ~signal: Fetch.AbortSignal.t) => unit,
+  loadRecommendedMovies: (~movieId: int, ~page: int, ~signal: Fetch.AbortSignal.t) => unit,
   apiParams: UrlQueryParam.query_param,
   clearMovies: unit => unit,
 }
@@ -70,8 +74,8 @@ type context_value = {
 module MoviesContext = {
   let initialContextValue: context_value = {
     movies: emptyMovieList,
-    recommendedMovies: emptyMovieList,
     detail_movie: emptyDetailMovie,
+    recommendedMovies: emptyMovieList,
     loading: false,
     error: "",
     loadMovies: (~apiParams as _, ~signal as _) => (),
@@ -95,16 +99,16 @@ let reducer = (state: state, action) => {
   | Error(msg) => {
       apiParams: state.apiParams,
       movies: state.movies,
+      detail_movie: state.detail_movie,
       recommendedMovies: state.recommendedMovies,
-      detail_movie: ?state.detail_movie,
       loading: false,
       error: msg,
     }
   | Loading(apiParams) => {
       apiParams,
       movies: state.movies,
+      detail_movie: state.detail_movie,
       recommendedMovies: state.recommendedMovies,
-      detail_movie: ?state.detail_movie,
       loading: true,
       error: "",
     }
@@ -117,38 +121,39 @@ let reducer = (state: state, action) => {
         total_results: ?movies.total_results,
         results: ?movies.results,
       },
-      recommendedMovies: emptyMovieList,
       detail_movie: emptyDetailMovie,
+      recommendedMovies: emptyMovieList,
       loading: false,
       error: "",
     }
-  | SuccessDetailMovie(apiParams, detailMovie) => {
+  | SuccessRecommendedMovies(recommendedMovies) => {
+      apiParams : Void("recommendedMovies"),
+      movies: emptyMovieList,
+      detail_movie: state.detail_movie,
+      recommendedMovies: {
+        page: ?recommendedMovies.page,
+        total_pages: ?recommendedMovies.total_pages,
+        total_results: ?recommendedMovies.total_results,
+        results: Belt.Array.concat(
+            Js.Option.getWithDefault([],state.recommendedMovies.results), 
+            Js.Option.getWithDefault([],recommendedMovies.results)->Belt.Array.sliceToEnd(1))
+      },
+      loading: false,
+      error: "",
+    }
+  | SuccessDetailMovie(apiParams, detailMovie, recommendedMovies) => {
       apiParams,
       movies: emptyMovieList,
-      recommendedMovies: emptyMovieList,
       detail_movie: detailMovie,
-      loading: false,
-      error: "",
-    }
-  | SuccessRecommendedMovies(movies) => {
-      apiParams: UrlQueryParam.Void("recommended_movies"),
-      movies: emptyMovieList,
-      recommendedMovies: {
-        MovieModel.dates: ?None,
-        page: ?movies.page,
-        total_pages: ?movies.total_pages,
-        total_results: ?movies.total_results,
-        results: ?movies.results,
-      },
-      detail_movie: state.detail_movie,
+      recommendedMovies,
       loading: false,
       error: "",
     }
   | Clear => {
       apiParams: state.apiParams,
       movies: emptyMovieList,
-      recommendedMovies: emptyMovieList,
       detail_movie: emptyDetailMovie,
+      recommendedMovies: emptyMovieList,
       loading: false,
       error: "",
     }
@@ -200,44 +205,53 @@ let loadMovieInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signa
   }
 
   dispatch(Loading(apiParams))
-  MovieAPI.getData(~apiPath, ~callback, ~signal, ())->ignore
+  MovieAPI.getMovies(~apiPath, ~callback, ~signal, ())->ignore
 }
 
 let loadDetailMovieInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signal) => {
+  open Links
   let apiPath = getApiPath(apiParams)
+  let movieId = switch apiParams {
+  | Movie({id}) => id
+  | _ => ""
+  }
 
-  let callback = result => {
-    switch result {
-    | Ok(json) =>
-      switch DetailMovieModel.Decoder.decode(. ~json) {
-      | Ok(dm) => dispatch(SuccessDetailMovie(apiParams, dm))
-      | Error(msg) => dispatch(Error(msg))
-      }
-    | Error(json) =>
-      switch MovieModel.MovieErrorDecoder.decode(. ~json) {
-      | Ok(e) => {
-          let errors = Belt.Array.reduce(Js.Option.getWithDefault([], e.errors), ". ", (a, b) =>
-            b ++ a
-          )
-          dispatch(Error(errors))
+  let rmPath = `${apiBaseUrl}/${apiVersion}/movie/${movieId}/recommendations?api_key=${Env.apiKey}&page=1`
+
+  let callback = (r1, r2) => {
+    switch (r1, r2) {
+    | (Ok(j1), Ok(j2)) => {
+        let detailMovie = DetailMovieModel.Decoder.decode(. ~json=j1)
+        let recommendedMovies = MovieModel.MovieListDecoder.decode(. ~json=j2)
+        switch (detailMovie, recommendedMovies) {
+        | (Ok(dm), Ok(rm)) => dispatch(SuccessDetailMovie(apiParams, dm, rm))
+        | (Ok(dm), Error(err)) => {
+            dispatch(SuccessDetailMovie(apiParams, dm, emptyMovieList))
+            dispatch(Error(err))
+          }
+
+        | (Error(err), Ok(rm)) => {
+            dispatch(SuccessDetailMovie(apiParams, emptyDetailMovie, rm))
+            dispatch(Error(err))
+          }
+
+        | (Error(err1), Error(err2)) => dispatch(Error(err1 ++ err2))
         }
-
-      | _ => dispatch(Error("Unexpected error occured while reteriving movie data."))
       }
+
+    | _ => ()
     }
   }
 
   dispatch(Loading(apiParams))
-  MovieAPI.getData(~apiPath, ~callback, ~signal, ())->ignore
+  MovieAPI.getMultipleDataset2(~apiPaths=(apiPath, rmPath), ~callback, ~signal, ())->ignore
 }
 
-let loadRecommendedMoviesInternal = (dispatch, ~movieId : int, ~page : int, ~signal) => {
-    %debugger
+let loadRecommendedMoviesInternal = (dispatch, ~movieId: int, ~page: int, ~signal) => {
   open Links
   let apiPath = `${apiBaseUrl}/${apiVersion}/movie/${movieId->Js.Int.toString}/recommendations?api_key=${Env.apiKey}&page=${page->Js.Int.toString}`
 
   let callback = result => {
-      %debugger
     switch result {
     | Ok(json) =>
       switch MovieModel.MovieListDecoder.decode(. ~json) {
@@ -252,14 +266,13 @@ let loadRecommendedMoviesInternal = (dispatch, ~movieId : int, ~page : int, ~sig
           )
           dispatch(Error(errors))
         }
+
       | _ => dispatch(Error("Unexpected error occured while reteriving recommended movie data."))
       }
     }
   }
 
-  dispatch(Loading(Void("recommended_movies")))
-  %debugger
-  MovieAPI.getData(~apiPath, ~callback, ~signal, ())->ignore
+  MovieAPI.getMovies(~apiPath, ~callback, ~signal, ())->ignore
 }
 
 @react.component
@@ -267,12 +280,15 @@ let make = (~children) => {
   let (state, dispatch) = React.useReducer(reducer, initialState)
   let loadMovies = React.useMemo1(() => loadMovieInternal(dispatch), [dispatch])
   let loadDetailMovie = React.useMemo1(() => loadDetailMovieInternal(dispatch), [dispatch])
-  let loadRecommendedMovies = React.useMemo1(() => loadRecommendedMoviesInternal(dispatch), [dispatch])
+  let loadRecommendedMovies = React.useMemo1(
+    () => loadRecommendedMoviesInternal(dispatch),
+    [dispatch],
+  )
 
   let value = {
     movies: state.movies,
-    recommendedMovies: state.recommendedMovies,
     detail_movie: state.detail_movie,
+    recommendedMovies: state.recommendedMovies,
     loading: state.loading,
     error: state.error,
     loadMovies,

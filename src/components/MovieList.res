@@ -18,7 +18,8 @@ module Poster = {
     | None => ""
     }
     let title = Js.Option.getWithDefault("", title)
-    let releaseYear = switch release_date {
+    let releaseYear =
+        switch release_date {
     | Some(rd) => Js.String2.substring(rd, ~from=0, ~to_=4)
     | None => ""
     }

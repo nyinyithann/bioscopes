@@ -107,6 +107,10 @@ module.exports = {
           from: path.resolve(__dirname, '..', './public/assets/nothing.svg'),
           to: path.resolve(__dirname, '..', './dist/assets/nothing.svg'),
         },
+        {
+          from: path.resolve(__dirname, '..', './public/assets/hero_placeholder.svg'),
+          to: path.resolve(__dirname, '..', './dist/assets/hero_placeholder.svg'),
+        },
       ],
     }),
   ],

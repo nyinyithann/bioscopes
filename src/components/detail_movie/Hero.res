@@ -97,7 +97,7 @@ module WatchTrailerButton = {
             ReactEvent.Mouse.preventDefault(e)
             play(Links.getYoutubeVideoLink(vkey))
           }}
-          className="flex gap-2 px-2 py-2 border-[1px] border-slate-400 backdrop-filter backdrop-blur-xl  text-white rounded-sm group mr-auto hover:bg-klor-400 hover:text-black transition-all">
+          className="flex gap-2 px-6 py-2 border-[1px] border-slate-400 backdrop-filter backdrop-blur-xl  text-white rounded-sm group mr-auto hover:bg-klor-400 hover:text-black transition-all">
           <Heroicons.Solid.PlayIcon className="h-6 w-6 fill-white group-hover:fill-black" />
           <span> {"Watch Trailer"->string} </span>
         </button>
@@ -165,9 +165,9 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
         <button
           type_="button"
           onClick={goBack}
-          className="flex w-auto gap-1 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30">
+          className="flex w-auto gap-2 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30 px-6">
           <Heroicons.Solid.ArrowLeftIcon className="w-5 h-6 fill-slate-400 bg-opacity-5" />
-          <span className="block  text-slate-100 text-opacity-40"> {"Back"->React.string} </span>
+          <span className="block text-slate-100 text-opacity-40"> {"Back"->React.string} </span>
         </button>
         {Util.isEmptyString(tagline)
           ? React.null
@@ -187,8 +187,8 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                 onLoad={_ => setLoaded(_ => true)}
                 onError={e => {
                   open ReactEvent.Media
-                  if target(e)["src"] !== Links.placeholderImage {
-                    target(e)["src"] = Links.placeholderImage
+                  if target(e)["src"] !== Links.heroPlaceholderImage {
+                    target(e)["src"] = Links.heroPlaceholderImage
                   }
                 }}
               />
@@ -198,21 +198,21 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
         {size.width != 100
           ? <div
               id="top-overlayed-image-container"
-              className="z-0 relative flex w-full h-full bg-black">
+              className="z-0 relative flex w-full h-full bg-black transition-all duration-300">
               <div
                 id="overlayed-image-container"
                 style={imageStyle}
-                className="relative z-10 ml-auto after:absolute after:top-0 after:left-0 after:bg-gradient-title after:z-20 after:w-full after:h-full ">
+                className="relative z-10 ml-auto after:absolute after:top-0 after:left-0 after:bg-gradient-title after:z-20 after:w-full after:h-full">
                 <img
                   alt="Poster"
-                  className="w-full transition transform ease-in-out duration-100 ml-auto z-0"
+                  className="w-full ml-auto z-0"
                   src={imgPathRef.current}
                   style={imageStyle}
                   onLoad={_ => setLoaded(_ => true)}
                   onError={e => {
                     open ReactEvent.Media
-                    if target(e)["src"] !== Links.placeholderImage {
-                      target(e)["src"] = Links.placeholderImage
+                    if target(e)["src"] !== Links.heroPlaceholderImage {
+                      target(e)["src"] = Links.heroPlaceholderImage
                     }
                   }}
                 />

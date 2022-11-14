@@ -48,9 +48,9 @@ function PhotosPanel$PhotoTitle(Props) {
   return React.createElement("div", {
               className: "flex w-full gap-2 items-center font-sans text-900 pb-1"
             }, React.createElement("span", {
-                  className: "text-[0.9rem]"
+                  className: "text-[1rem]"
                 }, title), React.createElement("span", {
-                  className: "text-[0.8rem]"
+                  className: "text-[0.95rem]"
                 }, "" + count.toString() + " " + (
                   count === 1 ? "image" : "images"
                 ) + ""));

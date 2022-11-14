@@ -22,6 +22,7 @@ let getInstagramLink = (id: string) => `https://instagram.com/${id}`
 let getYoutubeImageLink = (id: string) => `https://img.youtube.com/vi/${id}/mqdefault.jpg`
 
 let placeholderImage = "/assets/nothing.svg"
+let heroPlaceholderImage = "/assets/hero_placeholder.svg"
 
 let getYoutubeVideoLink = key => `https://youtu.be/${key}`
 

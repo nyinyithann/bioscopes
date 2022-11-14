@@ -1,10 +1,17 @@
 let {string} = module(React)
+
 @react.component
 let make = () => {
-  let {detail_movie, loading, error, loadDetailMovie} = MoviesProvider.useMoviesContext()
+  let {
+    detail_movie,
+    recommendedMovies,
+    loading,
+    error,
+    loadDetailMovie,
+    loadRecommendedMovies,
+  } = MoviesProvider.useMoviesContext()
   let {videoPlayState, stop} = YoutubePlayerProvider.useVideoPlayerContext()
   let windowSize: Window.window_size = Window.useWindowSize()
-
   let (queryParam, _) = UrlQueryParam.useQueryParams()
 
   React.useMemo1(() => {
@@ -27,20 +34,29 @@ let make = () => {
     Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
   })
 
+
   if Js.String2.length(error) > 0 {
     <ErrorDisplay errorMessage={error} />
-  } else if loading {
-    <Loading
-      className="w-[6rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-green-500 fill-50 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
-    />
-  } else {
+  }
+  else if loading {
+    loading
+      ? <div className="absolute w-full top-100 flex justify-center z-50 bg-white">
+          <Loading
+            className="w-[6rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-green-500 fill-50 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
+          />
+        </div>
+      : React.null
+  } 
+  else {
     open HeadlessUI
-    <main className="flex border-t-[2px] border-slate-200">
+    <main className="flex border-t-[2px] border-slate-200 relative">
       <div className="flex flex-col w-full h-full">
         <div id="hero_container" className="w-full">
           <Hero movie={detail_movie} />
         </div>
-        <div id="movie_info_tab_container" className="w-full flex flex-col items-center justify-center pt-1">
+        <div
+          id="movie_info_tab_container"
+          className="w-full flex flex-col items-center justify-center">
           <Tab.Group>
             {selectedIndex => {
               <div className="flex flex-col w-full">
@@ -54,7 +70,7 @@ let make = () => {
                           <div
                             className={`${props.selected
                                 ? "bg-300 text-900"
-                                : ""} w-full h-full control-color flex items-center justify-center py-2`}>
+                                : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
                             {"OVERVIEW"->string}
                           </div>}
                       </Tab>
@@ -65,7 +81,7 @@ let make = () => {
                           <div
                             className={`${props.selected
                                 ? "bg-300 text-900"
-                                : ""} w-full h-full control-color flex items-center justify-center py-2`}>
+                                : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
                             {"CASTS"->string}
                           </div>}
                       </Tab>
@@ -76,7 +92,7 @@ let make = () => {
                           <div
                             className={`${props.selected
                                 ? "bg-300 text-900"
-                                : ""} w-full h-full control-color flex items-center justify-center py-2`}>
+                                : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
                             {"VIDEOS"->string}
                           </div>}
                       </Tab>
@@ -87,7 +103,7 @@ let make = () => {
                           <div
                             className={`${props.selected
                                 ? "bg-300 text-900"
-                                : ""} w-full h-full control-color flex items-center justify-center py-2`}>
+                                : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
                             {"PHOTOS"->string}
                           </div>}
                       </Tab>
@@ -131,8 +147,13 @@ let make = () => {
               </div>
             }}
           </Tab.Group>
-          <div>
-            <MoreLikeThis movie={detail_movie} />
+          <div className="w-full flex flex-col justify-center items-center p-2 pt-8 gap-2">
+            <span className="text-900 text-[1.2rem] font-semibold text-left w-full pb-2">
+              {"MORE LIKE THIS"->string}
+            </span>
+            <MoreLikeThis
+              movieId = {Util.getOrIntZero(detail_movie.id)} 
+            />
           </div>
         </div>
       </div>

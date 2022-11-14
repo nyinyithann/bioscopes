@@ -55,6 +55,8 @@ var apiVersion = "3";
 
 var placeholderImage = "/assets/nothing.svg";
 
+var heroPlaceholderImage = "/assets/hero_placeholder.svg";
+
 export {
   apiBaseUrl ,
   apiVersion ,
@@ -71,6 +73,7 @@ export {
   getInstagramLink ,
   getYoutubeImageLink ,
   placeholderImage ,
+  heroPlaceholderImage ,
   getYoutubeVideoLink ,
 }
 /* No side effect */

@@ -39,8 +39,8 @@ var initialState_apiParams = {
 var initialState = {
   apiParams: initialState_apiParams,
   movies: emptyMovieList,
-  recommendedMovies: emptyMovieList,
   detail_movie: emptyDetailMovie,
+  recommendedMovies: emptyMovieList,
   loading: false,
   error: ""
 };
@@ -72,8 +72,8 @@ function initialContextValue_clearMovies(param) {
 
 var initialContextValue = {
   movies: emptyMovieList,
-  recommendedMovies: emptyMovieList,
   detail_movie: emptyDetailMovie,
+  recommendedMovies: emptyMovieList,
   loading: false,
   error: "",
   loadMovies: initialContextValue_loadMovies,
@@ -112,8 +112,8 @@ function reducer(state, action) {
     return {
             apiParams: state.apiParams,
             movies: emptyMovieList,
-            recommendedMovies: emptyMovieList,
             detail_movie: emptyDetailMovie,
+            recommendedMovies: emptyMovieList,
             loading: false,
             error: ""
           };
@@ -123,8 +123,8 @@ function reducer(state, action) {
         return {
                 apiParams: action._0,
                 movies: state.movies,
-                recommendedMovies: state.recommendedMovies,
                 detail_movie: state.detail_movie,
+                recommendedMovies: state.recommendedMovies,
                 loading: true,
                 error: ""
               };
@@ -132,8 +132,8 @@ function reducer(state, action) {
         return {
                 apiParams: state.apiParams,
                 movies: state.movies,
-                recommendedMovies: state.recommendedMovies,
                 detail_movie: state.detail_movie,
+                recommendedMovies: state.recommendedMovies,
                 loading: false,
                 error: action._0
               };
@@ -148,8 +148,8 @@ function reducer(state, action) {
                   total_pages: movies.total_pages,
                   total_results: movies.total_results
                 },
-                recommendedMovies: emptyMovieList,
                 detail_movie: emptyDetailMovie,
+                recommendedMovies: emptyMovieList,
                 loading: false,
                 error: ""
               };
@@ -157,26 +157,26 @@ function reducer(state, action) {
         return {
                 apiParams: action._0,
                 movies: emptyMovieList,
-                recommendedMovies: emptyMovieList,
                 detail_movie: action._1,
+                recommendedMovies: action._2,
                 loading: false,
                 error: ""
               };
     case /* SuccessRecommendedMovies */4 :
-        var movies$1 = action._0;
+        var recommendedMovies = action._0;
         return {
                 apiParams: {
                   TAG: /* Void */5,
-                  _0: "recommended_movies"
+                  _0: "recommendedMovies"
                 },
                 movies: emptyMovieList,
-                recommendedMovies: {
-                  page: movies$1.page,
-                  results: movies$1.results,
-                  total_pages: movies$1.total_pages,
-                  total_results: movies$1.total_results
-                },
                 detail_movie: state.detail_movie,
+                recommendedMovies: {
+                  page: recommendedMovies.page,
+                  results: Belt_Array.concat(Js_option.getWithDefault([], state.recommendedMovies.results), Belt_Array.sliceToEnd(Js_option.getWithDefault([], recommendedMovies.results), 1)),
+                  total_pages: recommendedMovies.total_pages,
+                  total_results: recommendedMovies.total_results
+                },
                 loading: false,
                 error: ""
               };
@@ -242,54 +242,75 @@ function loadMovieInternal(dispatch, apiParams, signal) {
         TAG: /* Loading */0,
         _0: apiParams
       });
-  MovieAPI.getData(apiPath, callback, Caml_option.some(signal), undefined);
+  MovieAPI.getMovies(apiPath, callback, Caml_option.some(signal), undefined);
 }
 
 function loadDetailMovieInternal(dispatch, apiParams, signal) {
   var apiPath = getApiPath(apiParams);
-  var callback = function (result) {
-    if (result.TAG === /* Ok */0) {
-      var dm = DetailMovieModel.Decoder.decode(result._0);
-      if (dm.TAG === /* Ok */0) {
+  var movieId;
+  movieId = apiParams.TAG === /* Movie */3 ? apiParams._0.id : "";
+  var rmPath = "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + movieId + "/recommendations?api_key=" + process.env.NEXT_PUBLIC_TMDB_API_KEY + "&page=1";
+  var callback = function (r1, r2) {
+    if (r1.TAG !== /* Ok */0) {
+      return ;
+    }
+    if (r2.TAG !== /* Ok */0) {
+      return ;
+    }
+    var detailMovie = DetailMovieModel.Decoder.decode(r1._0);
+    var recommendedMovies = MovieModel.MovieListDecoder.decode(r2._0);
+    if (detailMovie.TAG === /* Ok */0) {
+      var dm = detailMovie._0;
+      if (recommendedMovies.TAG === /* Ok */0) {
         return Curry._1(dispatch, {
                     TAG: /* SuccessDetailMovie */3,
                     _0: apiParams,
-                    _1: dm._0
-                  });
-      } else {
-        return Curry._1(dispatch, {
-                    TAG: /* Error */1,
-                    _0: dm._0
+                    _1: dm,
+                    _2: recommendedMovies._0
                   });
       }
-    }
-    var e = MovieModel.MovieErrorDecoder.decode(result._0);
-    if (e.TAG !== /* Ok */0) {
+      Curry._1(dispatch, {
+            TAG: /* SuccessDetailMovie */3,
+            _0: apiParams,
+            _1: dm,
+            _2: emptyMovieList
+          });
       return Curry._1(dispatch, {
                   TAG: /* Error */1,
-                  _0: "Unexpected error occured while reteriving movie data."
+                  _0: recommendedMovies._0
                 });
     }
-    var errors = Belt_Array.reduce(Js_option.getWithDefault([], e._0.errors), ". ", (function (a, b) {
-            return b + a;
-          }));
+    var err = detailMovie._0;
+    if (recommendedMovies.TAG !== /* Ok */0) {
+      return Curry._1(dispatch, {
+                  TAG: /* Error */1,
+                  _0: err + recommendedMovies._0
+                });
+    }
+    Curry._1(dispatch, {
+          TAG: /* SuccessDetailMovie */3,
+          _0: apiParams,
+          _1: emptyDetailMovie,
+          _2: recommendedMovies._0
+        });
     Curry._1(dispatch, {
           TAG: /* Error */1,
-          _0: errors
+          _0: err
         });
   };
   Curry._1(dispatch, {
         TAG: /* Loading */0,
         _0: apiParams
       });
-  MovieAPI.getData(apiPath, callback, Caml_option.some(signal), undefined);
+  MovieAPI.getMultipleDataset2([
+        apiPath,
+        rmPath
+      ], callback, Caml_option.some(signal), undefined);
 }
 
 function loadRecommendedMoviesInternal(dispatch, movieId, page, signal) {
-  debugger;
   var apiPath = "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + movieId.toString() + "/recommendations?api_key=" + process.env.NEXT_PUBLIC_TMDB_API_KEY + "&page=" + page.toString() + "";
   var callback = function (result) {
-    debugger;
     if (result.TAG === /* Ok */0) {
       var ml = MovieModel.MovieListDecoder.decode(result._0);
       if (ml.TAG === /* Ok */0) {
@@ -319,15 +340,7 @@ function loadRecommendedMoviesInternal(dispatch, movieId, page, signal) {
           _0: errors
         });
   };
-  Curry._1(dispatch, {
-        TAG: /* Loading */0,
-        _0: {
-          TAG: /* Void */5,
-          _0: "recommended_movies"
-        }
-      });
-  debugger;
-  MovieAPI.getData(apiPath, callback, Caml_option.some(signal), undefined);
+  MovieAPI.getMovies(apiPath, callback, Caml_option.some(signal), undefined);
 }
 
 function MoviesProvider(Props) {
@@ -351,8 +364,8 @@ function MoviesProvider(Props) {
           };
         }), [dispatch]);
   var value_movies = state.movies;
-  var value_recommendedMovies = state.recommendedMovies;
   var value_detail_movie = state.detail_movie;
+  var value_recommendedMovies = state.recommendedMovies;
   var value_loading = state.loading;
   var value_error = state.error;
   var value_apiParams = state.apiParams;
@@ -361,8 +374,8 @@ function MoviesProvider(Props) {
   };
   var value = {
     movies: value_movies,
-    recommendedMovies: value_recommendedMovies,
     detail_movie: value_detail_movie,
+    recommendedMovies: value_recommendedMovies,
     loading: value_loading,
     error: value_error,
     loadMovies: loadMovies,

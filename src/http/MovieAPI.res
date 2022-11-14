@@ -6,7 +6,6 @@ let authorization = ("Authorization", `Bearer ${Env.apiReadAccess}`)
 
 let checkResponseStatus = promise => {
   promise->then(response => {
-    %debugger
     if Response.ok(response) {
       Ok(Response.json(response))->resolve
     } else {
@@ -20,7 +19,6 @@ let catchPromiseFault: Promise.t<result<Promise.t<Js.Json.t>, Promise.t<Js.Json.
 > = promise => {
   let defaultFaultMsg = () => Js.Json.string("Unexpected Promise Fault!")
   promise->catch(e => {
-    %debugger
     switch e {
     | Js.Exn.Error(obj) =>
       switch Js.Exn.message(obj) {
@@ -67,7 +65,128 @@ let handleResponse = (promise, ~callback, ()) => {
   })
 }
 
-let getData = (
+let getMultipleDataset2 = (
+  ~apiPaths: (string, string),
+  ~callback: (result<Js.Json.t, Js.Json.t>, result<Js.Json.t, Js.Json.t>) => unit,
+  ~signal=?,
+  (),
+) => {
+  let getFetch = apiPath =>
+    fetch(
+      apiPath,
+      {
+        method: #GET,
+        headers: Headers.fromArray([contentType, authorization]),
+        ?signal,
+      },
+    )
+    ->checkResponseStatus
+    ->catchPromiseFault
+
+  let (p1, p2) = apiPaths
+  Promise.all2((getFetch(p1), getFetch(p2)))->then(((r1, r2)) => {
+    switch (r1, r2) {
+    | (Ok(rp1), Ok(rp2)) =>
+      rp1
+      ->thenResolve(data1 =>
+        rp2->thenResolve(
+          data2 => {
+            callback(Ok(data1), Ok(data2))
+            resolve()
+          },
+        )
+      )
+      ->ignore
+    | (Ok(rp), Error(msg)) =>
+      rp
+      ->thenResolve(data =>
+        msg->thenResolve(
+          err => {
+            callback(Ok(data), Error(err))
+            resolve()
+          },
+        )
+      )
+      ->ignore
+    | (Error(msg), Ok(rp)) =>
+      msg
+      ->thenResolve(err =>
+        rp->thenResolve(
+          data => {
+            callback(Error(err), Ok(data))
+            resolve()
+          },
+        )
+      )
+      ->ignore
+    | (Error(msg1), Error(msg2)) =>
+      msg1
+      ->thenResolve(err1 =>
+        msg2->thenResolve(
+          err2 => {
+            callback(Error(err1), Error(err2))
+            resolve()
+          },
+        )
+      )
+      ->ignore
+    }
+    resolve()
+  })
+}
+
+/* careful to use this method. it' will throws error if callback array is out of bound. */
+/* let getMultipleDataset = ( */
+/* ~apiPaths: array<string>, */
+/* ~callbacks: array<result<Js.Json.t, Js.Json.t> => unit>, */
+/* ~signal=?, */
+/* (), */
+/* ) => { */
+/* open Belt */
+/* Promise.all( */
+/* apiPaths->Array.map(p => */
+/* fetch( */
+/* p, */
+/* { */
+/* method: #GET, */
+/* headers: Headers.fromArray([contentType, authorization]), */
+/* ?signal, */
+/* }, */
+/* ) */
+/* ->checkResponseStatus */
+/* ->catchPromiseFault */
+/* ), */
+/* )->then(results => { */
+/* results */
+/* ->Array.mapWithIndex((i, result) => { */
+/* switch result { */
+/* | Ok(p) => */
+/* p */
+/* ->thenResolve( */
+/* data => { */
+/* Array.getExn(callbacks, i)(Ok(data)) */
+/* resolve() */
+/* }, */
+/* ) */
+/* ->ignore */
+/* | Error(msg) => */
+/* msg */
+/* ->thenResolve( */
+/* err => { */
+/* Array.getExn(callbacks, i)(Error(err)) */
+/* resolve() */
+/* }, */
+/* ) */
+/* ->ignore */
+/* } */
+/* resolve() */
+/* }) */
+/* ->ignore */
+/* resolve() */
+/* }) */
+/* } */
+
+let getMovies = (
   ~apiPath: string,
   ~callback: result<Js.Json.t, Js.Json.t> => unit,
   ~signal=?,

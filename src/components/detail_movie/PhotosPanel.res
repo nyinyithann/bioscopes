@@ -20,8 +20,8 @@ module PhotoTitle = {
   @react.component
   let make = (~title, ~count) => {
     <div className="flex w-full gap-2 items-center font-sans text-900 pb-1">
-      <span className="text-[0.9rem]"> {title->string} </span>
-      <span className="text-[0.8rem]">
+      <span className="text-[1rem]"> {title->string} </span>
+      <span className="text-[0.95rem]">
         {`${count->Js.Int.toString} ${count == 1 ? "image" : "images"}`->string}
       </span>
     </div>

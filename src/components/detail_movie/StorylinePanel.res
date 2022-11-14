@@ -162,7 +162,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     ->Array.get(0)
   }
 
-  <div className="flex w-full pl-2">
+  <div className="flex w-full pl-2 pt-6">
     <div
       className="hidden md:flex pr-8 items-start md:items-center md:justify-center justify-start">
       {switch getFirstPosterImage(~movie) {
@@ -180,7 +180,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     </div>
     <div className="flex flex-col w-full prose">
       <div className="flex flex-col w-full gap-1">
-        <span className="text-[1.2rem] font-semibold"> {"Storyline"->string} </span>
+        <span className="text-[1.2rem] font-semibold text-900"> {"Storyline"->string} </span>
         <span className="break-words w-full flex"> sotryline </span>
       </div>
       <div className="flex flex-col w-full pt-4">

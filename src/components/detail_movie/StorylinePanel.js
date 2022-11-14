@@ -230,7 +230,7 @@ function StorylinePanel(Props) {
   };
   var img = getFirstPosterImage(movie);
   return React.createElement("div", {
-              className: "flex w-full pl-2"
+              className: "flex w-full pl-2 pt-6"
             }, React.createElement("div", {
                   className: "hidden md:flex pr-8 items-start md:items-center md:justify-center justify-start"
                 }, img !== undefined ? React.createElement(LazyImageLite.make, {
@@ -245,7 +245,7 @@ function StorylinePanel(Props) {
                 }, React.createElement("div", {
                       className: "flex flex-col w-full gap-1"
                     }, React.createElement("span", {
-                          className: "text-[1.2rem] font-semibold"
+                          className: "text-[1.2rem] font-semibold text-900"
                         }, "Storyline"), React.createElement("span", {
                           className: "break-words w-full flex"
                         }, sotryline)), React.createElement("div", {

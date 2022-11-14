@@ -119,7 +119,7 @@ function Hero$WatchTrailerButton(Props) {
   var vkey = video.key;
   if (vkey !== undefined) {
     return React.createElement("button", {
-                className: "flex gap-2 px-2 py-2 border-[1px] border-slate-400 backdrop-filter backdrop-blur-xl  text-white rounded-sm group mr-auto hover:bg-klor-400 hover:text-black transition-all",
+                className: "flex gap-2 px-6 py-2 border-[1px] border-slate-400 backdrop-filter backdrop-blur-xl  text-white rounded-sm group mr-auto hover:bg-klor-400 hover:text-black transition-all",
                 type: "button",
                 onClick: (function (e) {
                     e.preventDefault();
@@ -229,13 +229,13 @@ function Hero(Props) {
                 }, React.createElement("div", {
                       className: "relative flex flex-col w-full"
                     }, React.createElement("button", {
-                          className: "flex w-auto gap-1 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30",
+                          className: "flex w-auto gap-2 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30 px-6",
                           type: "button",
                           onClick: goBack
                         }, React.createElement(Solid.ArrowLeftIcon, {
                               className: "w-5 h-6 fill-slate-400 bg-opacity-5"
                             }), React.createElement("span", {
-                              className: "block  text-slate-100 text-opacity-40"
+                              className: "block text-slate-100 text-opacity-40"
                             }, "Back")), Util.isEmptyString(tagline) ? null : React.createElement("span", {
                             className: "" + (
                               size.width === 100 ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full pr-4" : "top-0 left-0 text-[1.4rem] rounded-br-full pr-8"
@@ -248,8 +248,8 @@ function Hero(Props) {
                                 alt: "Poster",
                                 src: imgPathRef.current,
                                 onError: (function (e) {
-                                    if (e.target.src !== Links.placeholderImage) {
-                                      e.target.src = Links.placeholderImage;
+                                    if (e.target.src !== Links.heroPlaceholderImage) {
+                                      e.target.src = Links.heroPlaceholderImage;
                                       return ;
                                     }
                                     
@@ -262,20 +262,20 @@ function Hero(Props) {
                               }), React.createElement(Hero$WatchTrailerSmallButton, {
                                 movie: movie
                               })) : null, size.width !== 100 ? React.createElement("div", {
-                            className: "z-0 relative flex w-full h-full bg-black",
+                            className: "z-0 relative flex w-full h-full bg-black transition-all duration-300",
                             id: "top-overlayed-image-container"
                           }, React.createElement("div", {
-                                className: "relative z-10 ml-auto after:absolute after:top-0 after:left-0 after:bg-gradient-title after:z-20 after:w-full after:h-full ",
+                                className: "relative z-10 ml-auto after:absolute after:top-0 after:left-0 after:bg-gradient-title after:z-20 after:w-full after:h-full",
                                 id: "overlayed-image-container",
                                 style: imageStyle
                               }, React.createElement("img", {
-                                    className: "w-full transition transform ease-in-out duration-100 ml-auto z-0",
+                                    className: "w-full ml-auto z-0",
                                     style: imageStyle,
                                     alt: "Poster",
                                     src: imgPathRef.current,
                                     onError: (function (e) {
-                                        if (e.target.src !== Links.placeholderImage) {
-                                          e.target.src = Links.placeholderImage;
+                                        if (e.target.src !== Links.heroPlaceholderImage) {
+                                          e.target.src = Links.heroPlaceholderImage;
                                           return ;
                                         }
                                         

@@ -20,7 +20,6 @@ var authorization = [
 
 function checkResponseStatus(promise) {
   return promise.then(function (response) {
-              debugger;
               if (response.ok) {
                 return Promise.resolve({
                             TAG: /* Ok */0,
@@ -37,7 +36,6 @@ function checkResponseStatus(promise) {
 
 function catchPromiseFault(promise) {
   return $$Promise.$$catch(promise, (function (e) {
-                debugger;
                 if (e.RE_EXN_ID === Js_exn.$$Error) {
                   var msg = e._1.message;
                   if (msg !== undefined) {
@@ -90,7 +88,91 @@ function handleResponse(promise, callback, param) {
             });
 }
 
-function getData(apiPath, callback, signal, param) {
+function getMultipleDataset2(apiPaths, callback, signal, param) {
+  var getFetch = function (apiPath) {
+    return catchPromiseFault(checkResponseStatus(fetch(apiPath, {
+                        method: "GET",
+                        headers: Caml_option.some(new Headers([
+                                  contentType,
+                                  authorization
+                                ])),
+                        signal: signal
+                      })));
+  };
+  return Promise.all([
+                getFetch(apiPaths[0]),
+                getFetch(apiPaths[1])
+              ]).then(function (param) {
+              var r2 = param[1];
+              var r1 = param[0];
+              if (r1.TAG === /* Ok */0) {
+                var rp1 = r1._0;
+                if (r2.TAG === /* Ok */0) {
+                  var rp2 = r2._0;
+                  rp1.then(function (data1) {
+                        return rp2.then(function (data2) {
+                                    Curry._2(callback, {
+                                          TAG: /* Ok */0,
+                                          _0: data1
+                                        }, {
+                                          TAG: /* Ok */0,
+                                          _0: data2
+                                        });
+                                    return Promise.resolve(undefined);
+                                  });
+                      });
+                } else {
+                  var msg = r2._0;
+                  rp1.then(function (data) {
+                        return msg.then(function (err) {
+                                    Curry._2(callback, {
+                                          TAG: /* Ok */0,
+                                          _0: data
+                                        }, {
+                                          TAG: /* Error */1,
+                                          _0: err
+                                        });
+                                    return Promise.resolve(undefined);
+                                  });
+                      });
+                }
+              } else {
+                var msg$1 = r1._0;
+                if (r2.TAG === /* Ok */0) {
+                  var rp = r2._0;
+                  msg$1.then(function (err) {
+                        return rp.then(function (data) {
+                                    Curry._2(callback, {
+                                          TAG: /* Error */1,
+                                          _0: err
+                                        }, {
+                                          TAG: /* Ok */0,
+                                          _0: data
+                                        });
+                                    return Promise.resolve(undefined);
+                                  });
+                      });
+                } else {
+                  var msg2 = r2._0;
+                  msg$1.then(function (err1) {
+                        return msg2.then(function (err2) {
+                                    Curry._2(callback, {
+                                          TAG: /* Error */1,
+                                          _0: err1
+                                        }, {
+                                          TAG: /* Error */1,
+                                          _0: err2
+                                        });
+                                    return Promise.resolve(undefined);
+                                  });
+                      });
+                }
+              }
+              return Promise.resolve(undefined);
+            });
+}
+
+function getMovies(apiPath, callback, signal, param) {
   return handleResponse(catchPromiseFault(checkResponseStatus(fetch(apiPath, {
                           method: "GET",
                           headers: Caml_option.some(new Headers([
@@ -119,7 +201,8 @@ export {
   checkResponseStatus ,
   catchPromiseFault ,
   handleResponse ,
-  getData ,
+  getMultipleDataset2 ,
+  getMovies ,
   getGenres ,
 }
 /* authorization Not a pure module */
