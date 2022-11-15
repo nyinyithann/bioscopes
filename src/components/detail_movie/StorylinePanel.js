@@ -229,18 +229,25 @@ function StorylinePanel(Props) {
                             })), []), []), 0);
   };
   var img = getFirstPosterImage(movie);
+  var tmp;
+  if (img !== undefined) {
+    var seg = Util.getOrEmptyString(img.file_path);
+    tmp = Util.isEmptyString(seg) ? null : React.createElement(LazyImageLite.make, {
+            className: "h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto",
+            placeholderPath: Links.placeholderImage,
+            alt: "poster image",
+            src: Links.getPosterImage_W370_H556_bestv2Link(seg),
+            lazyHeight: 456,
+            lazyOffset: 50
+          });
+  } else {
+    tmp = null;
+  }
   return React.createElement("div", {
               className: "flex w-full pl-2 pt-6"
             }, React.createElement("div", {
                   className: "hidden md:flex pr-8 items-start md:items-center md:justify-center justify-start"
-                }, img !== undefined ? React.createElement(LazyImageLite.make, {
-                        className: "h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto",
-                        placeholderPath: Links.placeholderImage,
-                        alt: "poster image",
-                        src: Links.getPosterImage_W370_H556_bestv2Link(Util.getOrEmptyString(img.file_path)),
-                        lazyHeight: 456,
-                        lazyOffset: 50
-                      }) : null), React.createElement("div", {
+                }, tmp), React.createElement("div", {
                   className: "flex flex-col w-full prose"
                 }, React.createElement("div", {
                       className: "flex flex-col w-full gap-1"

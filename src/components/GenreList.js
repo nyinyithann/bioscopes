@@ -10,7 +10,6 @@ import * as Caml_array from "rescript/lib/es6/caml_array.js";
 import * as GenreModel from "../models/GenreModel.js";
 import * as MovieModel from "../models/MovieModel.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
-import * as ErrorDisplay from "./ErrorDisplay.js";
 import * as UrlQueryParam from "../routes/UrlQueryParam.js";
 import * as React$1 from "@headlessui/react";
 import * as Solid from "@heroicons/react/solid";
@@ -273,9 +272,7 @@ function GenreList(Props) {
   } else if (state.TAG === /* Error */0) {
     tmp = React.createElement("div", {
           className: "flex flex-wrap w-full h-auto"
-        }, React.createElement(ErrorDisplay.make, {
-              errorMessage: state._0
-            }));
+        }, state._0);
   } else {
     var tmp$1;
     tmp$1 = queryParam.TAG === /* Search */2 ? React.createElement("div", {

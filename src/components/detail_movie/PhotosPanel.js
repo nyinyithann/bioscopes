@@ -99,32 +99,37 @@ function PhotosPanel(Props) {
                         }), React.createElement("ul", {
                           className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full list-none"
                         }, Belt_Array.mapWithIndex(backdrops, (function (i, bd) {
-                                return React.createElement("li", {
-                                            key: Util.getOrEmptyString(bd.file_path),
-                                            className: "cursor-pointer",
-                                            onClick: (function (param) {
-                                                Curry._1(setPhotosliderState, (function (param) {
-                                                        return {
-                                                                isOpen: true,
-                                                                currentIndex: i,
-                                                                imageUrls: Belt_Array.keepMap(backdrops, (function (x) {
-                                                                        var path = x.file_path;
-                                                                        if (path !== undefined) {
-                                                                          return Links.getOriginalBigImage(path);
-                                                                        }
-                                                                        
-                                                                      }))
-                                                              };
-                                                      }));
-                                              })
-                                          }, React.createElement(LazyImageLite.make, {
-                                                className: "w-full h-full border-[2px] border-slate-200 rounded-md",
-                                                placeholderPath: Links.placeholderImage,
-                                                alt: "backdrop image",
-                                                src: Links.getPosterImageW533H300Bestv2Link(Util.getOrEmptyString(bd.file_path)),
-                                                lazyHeight: isMobile ? 126 : 146,
-                                                lazyOffset: 50
-                                              }));
+                                var seg = Util.getOrEmptyString(bd.file_path);
+                                if (Util.isEmptyString(seg)) {
+                                  return null;
+                                } else {
+                                  return React.createElement("li", {
+                                              key: seg,
+                                              className: "cursor-pointer",
+                                              onClick: (function (param) {
+                                                  Curry._1(setPhotosliderState, (function (param) {
+                                                          return {
+                                                                  isOpen: true,
+                                                                  currentIndex: i,
+                                                                  imageUrls: Belt_Array.keepMap(backdrops, (function (x) {
+                                                                          var path = x.file_path;
+                                                                          if (path !== undefined) {
+                                                                            return Links.getOriginalBigImage(path);
+                                                                          }
+                                                                          
+                                                                        }))
+                                                                };
+                                                        }));
+                                                })
+                                            }, React.createElement(LazyImageLite.make, {
+                                                  className: "w-full h-full border-[2px] border-slate-200 rounded-md",
+                                                  placeholderPath: Links.placeholderImage,
+                                                  alt: "backdrop image",
+                                                  src: Links.getPosterImageW533H300Bestv2Link(seg),
+                                                  lazyHeight: isMobile ? 126 : 146,
+                                                  lazyOffset: 50
+                                                }));
+                                }
                               })))), Util.isEmptyArray(posters) ? null : React.createElement("div", {
                       className: "flex flex-col w-full"
                     }, React.createElement(PhotosPanel$PhotoTitle, {
@@ -133,33 +138,38 @@ function PhotosPanel(Props) {
                         }), React.createElement("ul", {
                           className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full"
                         }, Belt_Array.mapWithIndex(posters, (function (i, bd) {
-                                return React.createElement("li", {
-                                            key: Util.getOrEmptyString(bd.file_path),
-                                            className: "cursor-pointer",
-                                            onClick: (function (param) {
-                                                Curry._1(setPhotosliderState, (function (param) {
-                                                        return {
-                                                                isOpen: true,
-                                                                currentIndex: i,
-                                                                imageUrls: Belt_Array.keepMap(posters, (function (x) {
-                                                                        var path = x.file_path;
-                                                                        if (path !== undefined) {
-                                                                          return Links.getOriginalBigImage(path);
-                                                                        }
-                                                                        
-                                                                      }))
-                                                              };
-                                                      }));
-                                              })
-                                          }, React.createElement(LazyImageLite.make, {
-                                                className: "w-full h-full border-[2px] border-slate-200 rounded-md",
-                                                placeholderPath: Links.placeholderImage,
-                                                alt: "poster image",
-                                                src: Links.getPosterImage_W370_H556_bestv2Link(Util.getOrEmptyString(bd.file_path)),
-                                                lazyHeight: isMobile ? 280 : 356,
-                                                lazyOffset: 50,
-                                                key: Util.getOrEmptyString(bd.file_path)
-                                              }));
+                                var seg = Util.getOrEmptyString(bd.file_path);
+                                if (Util.isEmptyString(seg)) {
+                                  return null;
+                                } else {
+                                  return React.createElement("li", {
+                                              key: Util.getOrEmptyString(bd.file_path),
+                                              className: "cursor-pointer",
+                                              onClick: (function (param) {
+                                                  Curry._1(setPhotosliderState, (function (param) {
+                                                          return {
+                                                                  isOpen: true,
+                                                                  currentIndex: i,
+                                                                  imageUrls: Belt_Array.keepMap(posters, (function (x) {
+                                                                          var path = x.file_path;
+                                                                          if (path !== undefined) {
+                                                                            return Links.getOriginalBigImage(path);
+                                                                          }
+                                                                          
+                                                                        }))
+                                                                };
+                                                        }));
+                                                })
+                                            }, React.createElement(LazyImageLite.make, {
+                                                  className: "w-full h-full border-[2px] border-slate-200 rounded-md",
+                                                  placeholderPath: Links.placeholderImage,
+                                                  alt: "poster image",
+                                                  src: Links.getPosterImage_W370_H556_bestv2Link(seg),
+                                                  lazyHeight: isMobile ? 280 : 356,
+                                                  lazyOffset: 50,
+                                                  key: seg
+                                                }));
+                                }
                               })))), React.createElement(ModalDialog.make, {
                     isOpen: photoSliderState.isOpen,
                     onClose: closePhotoslider,

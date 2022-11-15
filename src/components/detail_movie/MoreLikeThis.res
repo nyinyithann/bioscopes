@@ -4,10 +4,15 @@ let nextPage = ref(0)
 
 @react.component
 let make = (~movieId: int) => {
-  let {recommendedMovies, loading, error, loadRecommendedMovies} = MoviesProvider.useMoviesContext()
+  let {
+    recommendedMovies,
+    loading,
+    error,
+    loadRecommendedMovies,
+    clearError,
+  } = MoviesProvider.useMoviesContext()
 
   let mlist = Js.Option.getWithDefault([], recommendedMovies.results)
-  let currentPage = Util.getOrIntZero(recommendedMovies.page)
   let totalPages = Util.getOrIntZero(recommendedMovies.total_pages)
 
   let isMobile = MediaQuery.useMediaQuery("(max-width: 600px)")
@@ -36,16 +41,18 @@ let make = (~movieId: int) => {
       if nextPage.contents <= totalPages {
         loadRecommendedMovies(
           ~movieId,
-          ~page= nextPage.contents,
+          ~page=nextPage.contents,
           ~signal=Fetch.AbortController.signal(controller),
         )
       }
     }
   }
-  
+
+  let onClose = arg => if arg { clearError() }
+
   React.useEffect1(() => {
-      nextPage.contents = 0
-      None
+    nextPage.contents = 0
+    None
   }, [movieId])
 
   React.useEffect0(() => {
@@ -72,7 +79,7 @@ let make = (~movieId: int) => {
             lazyOffset={50.}
           />
           <p
-            className={`${Js.String2.length(Util.getOrEmptyString(m.title)) > 50
+            className={`${Js.String2.length(Util.getOrEmptyString(m.title)) > 30
                 ? "text-[0.7rem]"
                 : "text-[0.95rem]"} break-words transform duration-300 pt-[0.3rem] flex text-left text-900 truncate overflow-hidden p-1`}>
             {Util.getOrEmptyString(m.title)->string}
@@ -99,29 +106,6 @@ let make = (~movieId: int) => {
       )
       ->array}
     </ul>
-    <div
-      className="flex gap-2 px-4 pt-[2rem]"
-    /* {currentPage > 1 */
-    /* ? <button */
-    /* type_="button" */
-    /* className="flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group" */
-    /* onClick={_ => ()}> */
-    /* <Heroicons.Solid.ArrowLeftIcon */
-    /* className="h-6 w-6 fill-klor-900 group-hover:fill-klor-50" */
-    /* /> */
-    /* <span> {`Page ${Js.Int.toString(currentPage - 1)} `->string} </span> */
-    /* </button> */
-    /* : React.null} */
-    /* {currentPage < totalPages */
-    /* ? <button */
-    /* type_="button" */
-    /* className="flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group ml-auto" */
-    /* onClick={_ => loadMore(~page=currentPage + 1)}> */
-    /* <span> {`Page ${Js.Int.toString(currentPage + 1)} `->string} </span> */
-    /* <Heroicons.Solid.ArrowRightIcon */
-    /* className="h-6 w-6 fill-klor-900 group-hover:fill-klor-50" */
-    /* /> */
-    /* </button> */
-    /* : React.null} *//>
+    <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
   </div>
 }

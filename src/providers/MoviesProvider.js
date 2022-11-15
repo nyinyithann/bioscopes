@@ -66,7 +66,11 @@ var initialContextValue_apiParams = {
   }
 };
 
-function initialContextValue_clearMovies(param) {
+function initialContextValue_clearError(param) {
+  
+}
+
+function initialContextValue_clearAll(param) {
   
 }
 
@@ -80,7 +84,8 @@ var initialContextValue = {
   loadDetailMovie: initialContextValue_loadDetailMovie,
   loadRecommendedMovies: initialContextValue_loadRecommendedMovies,
   apiParams: initialContextValue_apiParams,
-  clearMovies: initialContextValue_clearMovies
+  clearError: initialContextValue_clearError,
+  clearAll: initialContextValue_clearAll
 };
 
 var context = React.createContext(initialContextValue);
@@ -109,14 +114,25 @@ var MoviesContext = {
 
 function reducer(state, action) {
   if (typeof action === "number") {
-    return {
-            apiParams: state.apiParams,
-            movies: emptyMovieList,
-            detail_movie: emptyDetailMovie,
-            recommendedMovies: emptyMovieList,
-            loading: false,
-            error: ""
-          };
+    if (action === /* ClearError */0) {
+      return {
+              apiParams: state.apiParams,
+              movies: state.movies,
+              detail_movie: state.detail_movie,
+              recommendedMovies: state.recommendedMovies,
+              loading: false,
+              error: ""
+            };
+    } else {
+      return {
+              apiParams: state.apiParams,
+              movies: emptyMovieList,
+              detail_movie: emptyDetailMovie,
+              recommendedMovies: emptyMovieList,
+              loading: false,
+              error: ""
+            };
+    }
   }
   switch (action.TAG | 0) {
     case /* Loading */0 :
@@ -252,10 +268,16 @@ function loadDetailMovieInternal(dispatch, apiParams, signal) {
   var rmPath = "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + movieId + "/recommendations?api_key=" + process.env.NEXT_PUBLIC_TMDB_API_KEY + "&page=1";
   var callback = function (r1, r2) {
     if (r1.TAG !== /* Ok */0) {
-      return ;
+      return Curry._1(dispatch, {
+                  TAG: /* Error */1,
+                  _0: "Error occured while reteriving movie detail."
+                });
     }
     if (r2.TAG !== /* Ok */0) {
-      return ;
+      return Curry._1(dispatch, {
+                  TAG: /* Error */1,
+                  _0: "Error occured while reteriving movie detail."
+                });
     }
     var detailMovie = DetailMovieModel.Decoder.decode(r1._0);
     var recommendedMovies = MovieModel.MovieListDecoder.decode(r2._0);
@@ -369,8 +391,11 @@ function MoviesProvider(Props) {
   var value_loading = state.loading;
   var value_error = state.error;
   var value_apiParams = state.apiParams;
-  var value_clearMovies = function (param) {
-    Curry._1(dispatch, /* Clear */0);
+  var value_clearError = function (param) {
+    Curry._1(dispatch, /* ClearError */0);
+  };
+  var value_clearAll = function (param) {
+    Curry._1(dispatch, /* ClearAll */1);
   };
   var value = {
     movies: value_movies,
@@ -382,7 +407,8 @@ function MoviesProvider(Props) {
     loadDetailMovie: loadDetailMovie,
     loadRecommendedMovies: loadRecommendedMovies,
     apiParams: value_apiParams,
-    clearMovies: value_clearMovies
+    clearError: value_clearError,
+    clearAll: value_clearAll
   };
   return React.createElement(MoviesProvider$MoviesContext$Provider, {
               value: value,

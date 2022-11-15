@@ -20,7 +20,9 @@ let getCaptionElement = (cast: DetailMovieModel.cast) => {
         : <span className="text-900 text-base max-w-[20rem] text-left"> {name->string} </span>}
       {Util.isEmptyString(character)
         ? React.null
-        : <span className="text-800 text-[0.85rem] max-w-[20rem] text-left"> {character->string} </span>}
+        : <span className="text-800 text-[0.85rem] max-w-[20rem] text-left">
+            {character->string}
+          </span>}
     </div>
   }
 }
@@ -37,19 +39,22 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
       {casts
       ->Belt.Array.map(cast => {
         let id = Util.getOrIntZero(cast.id)->Js.Int.toString
-        <li key={id} className="cursor-pointer flex flex-col w-full gap-2">
-          <LazyImageLite
-            alt="backdrop image"
-            placeholderPath={Links.placeholderImage}
-            src={Links.getPosterImage_W370_H556_bestv2Link(
-              cast.profile_path->Util.getOrEmptyString,
-            )}
-            className="w-full border-2 border-slate-200 rounded-md h-full"
-            lazyHeight={ isMobile ? 280. : 356.}
-            lazyOffset={50.}
-          />
-          {getCaptionElement(cast)}
-        </li>
+        let seg = cast.profile_path->Util.getOrEmptyString
+        if !Util.isEmptyString(seg) {
+          <li key={id} className="cursor-pointer flex flex-col w-full gap-2">
+            <LazyImageLite
+              alt="backdrop image"
+              placeholderPath={Links.placeholderImage}
+              src={Links.getPosterImage_W370_H556_bestv2Link(seg)}
+              className="w-full border-2 border-slate-200 rounded-md h-full"
+              lazyHeight={isMobile ? 280. : 356.}
+              lazyOffset={50.}
+            />
+            {getCaptionElement(cast)}
+          </li>
+        } else {
+          React.null
+        }
       })
       ->array}
     </ul>

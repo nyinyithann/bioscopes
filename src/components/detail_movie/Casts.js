@@ -60,17 +60,22 @@ function Casts(Props) {
                 className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full list-none"
               }, Belt_Array.map(casts, (function (cast) {
                       var id = Util.getOrIntZero(cast.id).toString();
-                      return React.createElement("li", {
-                                  key: id,
-                                  className: "cursor-pointer flex flex-col w-full gap-2"
-                                }, React.createElement(LazyImageLite.make, {
-                                      className: "w-full border-2 border-slate-200 rounded-md h-full",
-                                      placeholderPath: Links.placeholderImage,
-                                      alt: "backdrop image",
-                                      src: Links.getPosterImage_W370_H556_bestv2Link(Util.getOrEmptyString(cast.profile_path)),
-                                      lazyHeight: isMobile ? 280 : 356,
-                                      lazyOffset: 50
-                                    }), getCaptionElement(cast));
+                      var seg = Util.getOrEmptyString(cast.profile_path);
+                      if (Util.isEmptyString(seg)) {
+                        return null;
+                      } else {
+                        return React.createElement("li", {
+                                    key: id,
+                                    className: "cursor-pointer flex flex-col w-full gap-2"
+                                  }, React.createElement(LazyImageLite.make, {
+                                        className: "w-full border-2 border-slate-200 rounded-md h-full",
+                                        placeholderPath: Links.placeholderImage,
+                                        alt: "backdrop image",
+                                        src: Links.getPosterImage_W370_H556_bestv2Link(seg),
+                                        lazyHeight: isMobile ? 280 : 356,
+                                        lazyOffset: 50
+                                      }), getCaptionElement(cast));
+                      }
                     })));
   }
 }

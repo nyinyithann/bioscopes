@@ -141,8 +141,11 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
   }, (isMobile, isSmallScreen, isMediumScreen, isLargeScreen, isVeryLargeScreen))
 
   React.useMemo1(() => {
-    imgPathRef.current = Links.getOriginalBigImage(Util.getOrEmptyString(movie.backdrop_path))
+    let seg = Util.getOrEmptyString(movie.backdrop_path)
+    imgPathRef.current = !Util.isEmptyString(seg) ? Links.getOriginalBigImage(seg) : seg
   }, [movie])
+
+  let (showHeroText, setShowHeroText) = React.useState(_ => false)
 
   let tagline = Util.getOrEmptyString(movie.tagline)
 
@@ -165,9 +168,11 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
         <button
           type_="button"
           onClick={goBack}
-          className="flex w-auto gap-2 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30 px-6">
-          <Heroicons.Solid.ArrowLeftIcon className="w-5 h-6 fill-slate-400 bg-opacity-5" />
-          <span className="block text-slate-100 text-opacity-40"> {"Back"->React.string} </span>
+          className="flex w-auto gap-2 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30 px-2 sm:px-4">
+          <Heroicons.Solid.ArrowLeftIcon className="w-5 h-6 fill-slate-400 sm:bg-opacity-5" />
+          <span className="hidden sm:block text-slate-100 text-opacity-40">
+            {"Back"->React.string}
+          </span>
         </button>
         {Util.isEmptyString(tagline)
           ? React.null
@@ -179,19 +184,24 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
             </span>}
         {size.width == 100
           ? <div className="relative flex-inline">
-              <img
-                alt="Poster"
-                className="w-full transition transform ease-in-out duration-100 ml-auto z-0"
-                src={imgPathRef.current}
-                style={imageStyle}
-                onLoad={_ => setLoaded(_ => true)}
-                onError={e => {
-                  open ReactEvent.Media
-                  if target(e)["src"] !== Links.heroPlaceholderImage {
-                    target(e)["src"] = Links.heroPlaceholderImage
-                  }
-                }}
-              />
+              {!Util.isEmptyString(imgPathRef.current)
+                ? <img
+                    alt="Poster"
+                    className="w-full transition transform ease-in-out duration-100 ml-auto z-0"
+                    src={imgPathRef.current}
+                    style={imageStyle}
+                    onLoad={e => {
+                      setLoaded(_ => true)
+                    }}
+                    onError={e => {
+                      setShowHeroText(_ => true)
+                      open ReactEvent.Media
+                      if target(e)["src"] !== Links.placeholderImage {
+                        target(e)["src"] = Links.placeholderImage
+                      }
+                    }}
+                  />
+                : React.null}
               <WatchTrailerSmallButton movie />
             </div>
           : React.null}
@@ -206,13 +216,16 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                 <img
                   alt="Poster"
                   className="w-full ml-auto z-0"
-                  src={imgPathRef.current}
+                  src={Util.isEmptyString(imgPathRef.current) ? "" : imgPathRef.current}
                   style={imageStyle}
-                  onLoad={_ => setLoaded(_ => true)}
+                  onLoad={e => {
+                    setLoaded(_ => true)
+                  }}
                   onError={e => {
+                    setShowHeroText(_ => true)
                     open ReactEvent.Media
-                    if target(e)["src"] !== Links.heroPlaceholderImage {
-                      target(e)["src"] = Links.heroPlaceholderImage
+                    if target(e)["src"] !== Links.placeholderImage {
+                      target(e)["src"] = Links.placeholderImage
                     }
                   }}
                 />
@@ -220,7 +233,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
               <div className="absolute top-[20%] left-[6%] z-50">
                 <HeadlessUI.Transition
                   as_="div"
-                  show={loaded}
+                  show={loaded || showHeroText}
                   enter="transition ease duration-700 transform"
                   enterFrom="opacity-0 -translate-y-full"
                   enterTo="opacity-100 translate-y-0"
@@ -236,15 +249,6 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                   </div>
                 </HeadlessUI.Transition>
               </div>
-            </div>
-          : React.null}
-        {!loaded
-          ? <div
-              className={`absolute top-[${(size.height / 2)
-                  ->Js.Int.toString}rem)] w-full h-full flex flex-col items-center justify-center`}>
-              <Loading
-                className="w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
-              />
             </div>
           : React.null}
       </div>

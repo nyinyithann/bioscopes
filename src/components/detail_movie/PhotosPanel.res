@@ -91,23 +91,23 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
             <ul
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full list-none">
               {backdrops
-              ->Belt.Array.mapWithIndex((i, bd) =>
-                <li
-                  key={bd.file_path->Util.getOrEmptyString}
-                  className="cursor-pointer"
-                  onClick={_ => slideBackdropImages(i)}>
-                  <LazyImageLite
-                    alt="backdrop image"
-                    placeholderPath={Links.placeholderImage}
-                    src={Links.getPosterImageW533H300Bestv2Link(
-                      bd.file_path->Util.getOrEmptyString,
-                    )}
-                    className="w-full h-full border-[2px] border-slate-200 rounded-md"
-                    lazyHeight={isMobile ? 126. : 146.}
-                    lazyOffset={50.}
-                  />
-                </li>
-              )
+              ->Belt.Array.mapWithIndex((i, bd) => {
+                let seg = bd.file_path->Util.getOrEmptyString
+                if !Util.isEmptyString(seg) {
+                  <li key={seg} className="cursor-pointer" onClick={_ => slideBackdropImages(i)}>
+                    <LazyImageLite
+                      alt="backdrop image"
+                      placeholderPath={Links.placeholderImage}
+                      src={Links.getPosterImageW533H300Bestv2Link(seg)}
+                      className="w-full h-full border-[2px] border-slate-200 rounded-md"
+                      lazyHeight={isMobile ? 126. : 146.}
+                      lazyOffset={50.}
+                    />
+                  </li>
+                } else {
+                  React.null
+                }
+              })
               ->array}
             </ul>
           </div>}
@@ -118,24 +118,27 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
             <ul
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full">
               {posters
-              ->Belt.Array.mapWithIndex((i, bd) =>
-                <li
-                  key={bd.file_path->Util.getOrEmptyString}
-                  className="cursor-pointer"
-                  onClick={_ => slidePosterImages(i)}>
-                  <LazyImageLite
-                    alt="poster image"
+              ->Belt.Array.mapWithIndex((i, bd) => {
+                let seg = bd.file_path->Util.getOrEmptyString
+                if !Util.isEmptyString(seg) {
+                  <li
                     key={bd.file_path->Util.getOrEmptyString}
-                    placeholderPath={Links.placeholderImage}
-                    src={Links.getPosterImage_W370_H556_bestv2Link(
-                      bd.file_path->Util.getOrEmptyString,
-                    )}
-                    className="w-full h-full border-[2px] border-slate-200 rounded-md"
-                    lazyHeight={isMobile ? 280. : 356.}
-                    lazyOffset={50.}
-                  />
-                </li>
-              )
+                    className="cursor-pointer"
+                    onClick={_ => slidePosterImages(i)}>
+                    <LazyImageLite
+                      alt="poster image"
+                      key={seg}
+                      placeholderPath={Links.placeholderImage}
+                      src={Links.getPosterImage_W370_H556_bestv2Link(seg)}
+                      className="w-full h-full border-[2px] border-slate-200 rounded-md"
+                      lazyHeight={isMobile ? 280. : 356.}
+                      lazyOffset={50.}
+                    />
+                  </li>
+                } else {
+                  React.null
+                }
+              })
               ->array}
             </ul>
           </div>}

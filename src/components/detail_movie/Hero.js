@@ -5,7 +5,6 @@ import * as Curry from "rescript/lib/es6/curry.js";
 import * as Links from "../../shared/Links.js";
 import * as React from "react";
 import * as Rating from "../Rating.js";
-import * as Loading from "../Loading.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as MediaQuery from "../../hooks/MediaQuery.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
@@ -143,7 +142,6 @@ function Hero(Props) {
         return false;
       });
   var setLoaded = match[1];
-  var loaded = match[0];
   var imgPathRef = React.useRef("");
   var match$1 = React.useState(function () {
         return {
@@ -210,8 +208,13 @@ function Hero(Props) {
         isVeryLargeScreen
       ]);
   React.useMemo((function () {
-          imgPathRef.current = Links.getOriginalBigImage(Util.getOrEmptyString(movie.backdrop_path));
+          var seg = Util.getOrEmptyString(movie.backdrop_path);
+          imgPathRef.current = Util.isEmptyString(seg) ? seg : Links.getOriginalBigImage(seg);
         }), [movie]);
+  var match$2 = React.useState(function () {
+        return false;
+      });
+  var setShowHeroText = match$2[1];
   var tagline = Util.getOrEmptyString(movie.tagline);
   var imageStyle = {
     height: "" + size.height.toString() + "rem",
@@ -229,37 +232,40 @@ function Hero(Props) {
                 }, React.createElement("div", {
                       className: "relative flex flex-col w-full"
                     }, React.createElement("button", {
-                          className: "flex w-auto gap-2 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30 px-6",
+                          className: "flex w-auto gap-2 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30 px-2 sm:px-4",
                           type: "button",
                           onClick: goBack
                         }, React.createElement(Solid.ArrowLeftIcon, {
-                              className: "w-5 h-6 fill-slate-400 bg-opacity-5"
+                              className: "w-5 h-6 fill-slate-400 sm:bg-opacity-5"
                             }), React.createElement("span", {
-                              className: "block text-slate-100 text-opacity-40"
+                              className: "hidden sm:block text-slate-100 text-opacity-40"
                             }, "Back")), Util.isEmptyString(tagline) ? null : React.createElement("span", {
                             className: "" + (
                               size.width === 100 ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full pr-4" : "top-0 left-0 text-[1.4rem] rounded-br-full pr-8"
                             ) + " absolute z-50 p-1 w-auto font-nav font-extrabold text-500 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-20"
                           }, Util.toStringElement(tagline)), size.width === 100 ? React.createElement("div", {
                             className: "relative flex-inline"
-                          }, React.createElement("img", {
-                                className: "w-full transition transform ease-in-out duration-100 ml-auto z-0",
-                                style: imageStyle,
-                                alt: "Poster",
-                                src: imgPathRef.current,
-                                onError: (function (e) {
-                                    if (e.target.src !== Links.heroPlaceholderImage) {
-                                      e.target.src = Links.heroPlaceholderImage;
-                                      return ;
-                                    }
-                                    
-                                  }),
-                                onLoad: (function (param) {
-                                    Curry._1(setLoaded, (function (param) {
-                                            return true;
-                                          }));
-                                  })
-                              }), React.createElement(Hero$WatchTrailerSmallButton, {
+                          }, Util.isEmptyString(imgPathRef.current) ? null : React.createElement("img", {
+                                  className: "w-full transition transform ease-in-out duration-100 ml-auto z-0",
+                                  style: imageStyle,
+                                  alt: "Poster",
+                                  src: imgPathRef.current,
+                                  onError: (function (e) {
+                                      Curry._1(setShowHeroText, (function (param) {
+                                              return true;
+                                            }));
+                                      if (e.target.src !== Links.placeholderImage) {
+                                        e.target.src = Links.placeholderImage;
+                                        return ;
+                                      }
+                                      
+                                    }),
+                                  onLoad: (function (e) {
+                                      Curry._1(setLoaded, (function (param) {
+                                              return true;
+                                            }));
+                                    })
+                                }), React.createElement(Hero$WatchTrailerSmallButton, {
                                 movie: movie
                               })) : null, size.width !== 100 ? React.createElement("div", {
                             className: "z-0 relative flex w-full h-full bg-black transition-all duration-300",
@@ -272,15 +278,18 @@ function Hero(Props) {
                                     className: "w-full ml-auto z-0",
                                     style: imageStyle,
                                     alt: "Poster",
-                                    src: imgPathRef.current,
+                                    src: Util.isEmptyString(imgPathRef.current) ? "" : imgPathRef.current,
                                     onError: (function (e) {
-                                        if (e.target.src !== Links.heroPlaceholderImage) {
-                                          e.target.src = Links.heroPlaceholderImage;
+                                        Curry._1(setShowHeroText, (function (param) {
+                                                return true;
+                                              }));
+                                        if (e.target.src !== Links.placeholderImage) {
+                                          e.target.src = Links.placeholderImage;
                                           return ;
                                         }
                                         
                                       }),
-                                    onLoad: (function (param) {
+                                    onLoad: (function (e) {
                                         Curry._1(setLoaded, (function (param) {
                                                 return true;
                                               }));
@@ -288,7 +297,7 @@ function Hero(Props) {
                                   })), React.createElement("div", {
                                 className: "absolute top-[20%] left-[6%] z-50"
                               }, React.createElement(React$1.Transition, {
-                                    show: loaded,
+                                    show: match[0] || match$2[0],
                                     as_: "div",
                                     enter: "transition ease duration-700 transform",
                                     enterFrom: "opacity-0 -translate-y-full",
@@ -306,11 +315,7 @@ function Hero(Props) {
                                         className: "flex pl-2 pt-[2rem]"
                                       }, React.createElement(Hero$WatchTrailerButton, {
                                             movie: movie
-                                          }))))) : null, loaded ? null : React.createElement("div", {
-                            className: "absolute top-[" + (size.height / 2 | 0).toString() + "rem)] w-full h-full flex flex-col items-center justify-center"
-                          }, React.createElement(Loading.make, {
-                                className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
-                              }))), size.width === 100 ? React.createElement(Hero$HeroText, {
+                                          }))))) : null), size.width === 100 ? React.createElement(Hero$HeroText, {
                         movie: movie,
                         textColor: "text-900"
                       }) : null));

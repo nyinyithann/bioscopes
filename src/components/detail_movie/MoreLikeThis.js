@@ -9,6 +9,7 @@ import * as Js_math from "rescript/lib/es6/js_math.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as MediaQuery from "../../hooks/MediaQuery.js";
+import * as ErrorDialog from "../ErrorDialog.js";
 import * as LazyImageLite from "../LazyImageLite.js";
 import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../../providers/MoviesProvider.js";
@@ -28,11 +29,12 @@ var nextPage = {
 function MoreLikeThis(Props) {
   var movieId = Props.movieId;
   var match = MoviesProvider.useMoviesContext(undefined);
+  var clearError = match.clearError;
   var loadRecommendedMovies = match.loadRecommendedMovies;
+  var error = match.error;
   var loading = match.loading;
   var recommendedMovies = match.recommendedMovies;
   var mlist = Js_option.getWithDefault([], recommendedMovies.results);
-  Util.getOrIntZero(recommendedMovies.page);
   var totalPages = Util.getOrIntZero(recommendedMovies.total_pages);
   var isMobile = MediaQuery.useMediaQuery("(max-width: 600px)");
   var match$1 = UrlQueryParam.useQueryParams(undefined);
@@ -45,6 +47,12 @@ function MoreLikeThis(Props) {
     nextPage.contents = nextPage.contents + 1 | 0;
     if (nextPage.contents <= totalPages) {
       return Curry._3(loadRecommendedMovies, movieId, nextPage.contents, controller.signal);
+    }
+    
+  };
+  var onClose = function (arg) {
+    if (arg) {
+      return Curry._1(clearError, undefined);
     }
     
   };
@@ -105,15 +113,17 @@ function MoreLikeThis(Props) {
                                         lazyOffset: 50
                                       }), React.createElement("p", {
                                         className: "" + (
-                                          Util.getOrEmptyString(m.title).length > 50 ? "text-[0.7rem]" : "text-[0.95rem]"
+                                          Util.getOrEmptyString(m.title).length > 30 ? "text-[0.7rem]" : "text-[0.95rem]"
                                         ) + " break-words transform duration-300 pt-[0.3rem] flex text-left text-900 truncate overflow-hidden p-1"
                                       }, Util.getOrEmptyString(m.title)), React.createElement("div", {
                                         className: "pb-2"
                                       }, React.createElement(Rating.make, {
                                             ratingValue: m.vote_average
                                           })), tmp);
-                      }))), React.createElement("div", {
-                  className: "flex gap-2 px-4 pt-[2rem]"
+                      }))), React.createElement(ErrorDialog.make, {
+                  isOpen: error.length > 0,
+                  errorMessage: error,
+                  onClose: onClose
                 }));
 }
 

@@ -17,7 +17,8 @@ type action =
       MovieModel.movielist,
     )
   | SuccessRecommendedMovies(MovieModel.movielist)
-  | Clear
+  | ClearError
+  | ClearAll
 
 let emptyMovieList: MovieModel.movielist = {
   dates: ?None,
@@ -68,7 +69,8 @@ type context_value = {
   loadDetailMovie: (~apiParams: UrlQueryParam.query_param, ~signal: Fetch.AbortSignal.t) => unit,
   loadRecommendedMovies: (~movieId: int, ~page: int, ~signal: Fetch.AbortSignal.t) => unit,
   apiParams: UrlQueryParam.query_param,
-  clearMovies: unit => unit,
+  clearError: unit => unit,
+  clearAll: unit => unit,
 }
 
 module MoviesContext = {
@@ -82,7 +84,8 @@ module MoviesContext = {
     loadDetailMovie: (~apiParams as _, ~signal as _) => (),
     loadRecommendedMovies: (~movieId as _, ~page as _, ~signal as _) => (),
     apiParams: initialState.apiParams,
-    clearMovies: () => (),
+    clearError: () => (),
+    clearAll: () => (),
   }
   let context = React.createContext(initialContextValue)
   module Provider = {
@@ -127,7 +130,7 @@ let reducer = (state: state, action) => {
       error: "",
     }
   | SuccessRecommendedMovies(recommendedMovies) => {
-      apiParams : Void("recommendedMovies"),
+      apiParams: Void("recommendedMovies"),
       movies: emptyMovieList,
       detail_movie: state.detail_movie,
       recommendedMovies: {
@@ -135,8 +138,9 @@ let reducer = (state: state, action) => {
         total_pages: ?recommendedMovies.total_pages,
         total_results: ?recommendedMovies.total_results,
         results: Belt.Array.concat(
-            Js.Option.getWithDefault([],state.recommendedMovies.results), 
-            Js.Option.getWithDefault([],recommendedMovies.results)->Belt.Array.sliceToEnd(1))
+          Js.Option.getWithDefault([], state.recommendedMovies.results),
+          Js.Option.getWithDefault([], recommendedMovies.results)->Belt.Array.sliceToEnd(1),
+        ),
       },
       loading: false,
       error: "",
@@ -149,7 +153,15 @@ let reducer = (state: state, action) => {
       loading: false,
       error: "",
     }
-  | Clear => {
+  | ClearError => {
+      apiParams: state.apiParams,
+      movies: state.movies,
+      detail_movie: state.detail_movie,
+      recommendedMovies: state.recommendedMovies,
+      loading: false,
+      error: "",
+    }
+  | ClearAll => {
       apiParams: state.apiParams,
       movies: emptyMovieList,
       detail_movie: emptyDetailMovie,
@@ -239,7 +251,7 @@ let loadDetailMovieInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, 
         }
       }
 
-    | _ => ()
+    | _ => dispatch(Error("Error occured while reteriving movie detail."))
     }
   }
 
@@ -295,7 +307,8 @@ let make = (~children) => {
     loadDetailMovie,
     loadRecommendedMovies,
     apiParams: state.apiParams,
-    clearMovies: () => dispatch(Clear),
+    clearAll: () => dispatch(ClearAll),
+    clearError: () => dispatch(ClearError),
   }
   <MoviesContext.Provider value> children </MoviesContext.Provider>
 }

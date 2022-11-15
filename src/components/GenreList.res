@@ -178,9 +178,7 @@ let make = () => {
         className="w-[4rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
       />
     | Error(errorMessage) =>
-      <div className="flex flex-wrap w-full h-auto">
-        <ErrorDisplay errorMessage />
-      </div>
+      <div className="flex flex-wrap w-full h-auto"> {errorMessage->React.string} </div>
     | Success(genres) =>
       <Listbox value={selectedRef.contents}>
         <div className="w-full relative flex">

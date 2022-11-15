@@ -10,7 +10,9 @@ function ModalDialog(Props) {
   var onClose = Props.onClose;
   var className = Props.className;
   var panelClassName = Props.panelClassName;
+  var opacityOpt = Props.opacity;
   var children = Props.children;
+  var opacity = opacityOpt !== undefined ? opacityOpt : 100;
   var tmp = {
     onClose: onClose,
     children: null
@@ -21,26 +23,28 @@ function ModalDialog(Props) {
   return React.createElement(React$1.Transition, {
               show: isOpen,
               children: React.createElement(React$1.Dialog, tmp, React.createElement(React$1.Transition.Child, {
-                        enter: "ease-out duration-200",
+                        enter: "ease-out duration-300",
                         enterFrom: "opacity-0",
                         enterTo: "opacity-100",
-                        leave: "ease-in duration-200",
+                        leave: "ease-in duration-300",
                         leaveFrom: "opacity-100",
                         leaveTo: "opacity-0",
-                        children: React.createElement("div", {
-                              className: "fixed inset-0 bg-black bg-opacity-100"
-                            })
-                      }), React.createElement("div", {
+                        children: null
+                      }, React.createElement("div", {
+                            className: "fixed inset-0 bg-black bg-opacity-40"
+                          }), React.createElement("div", {
+                            className: "fixed inset-0 bg-black bg-opacity-" + opacity.toString() + ""
+                          })), React.createElement("div", {
                         className: "fixed inset-0 overflow-y-auto"
                       }, React.createElement("div", {
                             className: "flex min-h-full items-center justify-center p-4 text-center"
                           }, React.createElement(React$1.Transition.Child, {
-                                enter: "ease-out duration-200",
-                                enterFrom: "opacity-0 scale-95",
-                                enterTo: "opacity-100 scale-100",
-                                leave: "ease-in duration-200",
-                                leaveFrom: "opacity-100 scale-100",
-                                leaveTo: "opacity-0 scale-95",
+                                enter: "ease-out duration-300",
+                                enterFrom: "opacity-0",
+                                enterTo: "opacity-100",
+                                leave: "ease-in duration-300",
+                                leaveFrom: "opacity-100",
+                                leaveTo: "opacity-0",
                                 children: React.createElement(React$1.Dialog.Panel, {
                                       className: "w-full h-full " + Util.getOrEmptyString(panelClassName) + "",
                                       children: children !== undefined ? Caml_option.valFromOption(children) : null

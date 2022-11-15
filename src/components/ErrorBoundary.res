@@ -1,11 +1,10 @@
-@val @scope(("window", "location")) external reload: unit => unit = "reload"
 
 module Fallback = {
   @react.component
   let make = (~error, ~info: RescriptReactErrorBoundary.info) => {
     let onClick = _ => {
       RescriptReactRouter.push("/")
-      reload()
+      DomBinding.reload()
     }
     <div
       className="w-full h-screen flex flex-col items-center justify-center bg-900 dark:bg-slate-900">

@@ -18,8 +18,7 @@ module Poster = {
     | None => ""
     }
     let title = Js.Option.getWithDefault("", title)
-    let releaseYear =
-        switch release_date {
+    let releaseYear = switch release_date {
     | Some(rd) => Js.String2.substring(rd, ~from=0, ~to_=4)
     | None => ""
     }
@@ -71,7 +70,7 @@ module Poster = {
 let make = () => {
   let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
 
-  let {movies, loading, error, loadMovies} = MoviesProvider.useMoviesContext()
+  let {movies, loading, error, loadMovies, clearAll} = MoviesProvider.useMoviesContext()
   let movieList = Js.Option.getWithDefault([], movies.results)
   let currentPage = Js.Option.getWithDefault(0, movies.page)
   let totalPages = Js.Option.getWithDefault(0, movies.total_pages)
@@ -145,66 +144,64 @@ let make = () => {
     }
   }
 
-  if Js.String2.length(error) > 0 {
-    <ErrorDisplay errorMessage={error} />
-  } else if loading {
-    <Loading
-      className="w-[6rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-green-500 fill-50 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
-    />
-  } else {
-    <div className="flex flex-col bg-white">
-      <div
-        className="flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200">
-        <div>
-          <GenreList />
-        </div>
-        <div className={`${isGenreRef.contents ? "flex" : "hidden"} justify-start ml-auto pr-4`}>
-          <FilterBox />
-        </div>
+  let onClose = arg => {
+    if arg {
+      clearAll()
+    }
+  }
+
+  <div className="flex flex-col bg-white">
+    <div
+      className="flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200">
+      <div>
+        <GenreList />
       </div>
-      <div
-        id="movie-list-here"
-        className="w-full h-full flex flex-1 flex-wrap p-1 pt-4 gap-[1rem] sm:gap-[1.4rem] justify-center items-center px-[1rem] sm:px-[2rem] bg-white">
-        {Belt.Array.length(movieList) == 0
-          ? <div className="text-300 text-2xl"> {"Movies Not Found."->string} </div>
-          : movieList
-            ->Belt.Array.map(m =>
-              <Poster
-                key={Js.Int.toString(m.id)}
-                id={m.id->Js.Int.toString}
-                title={m.title}
-                media_type={m.media_type}
-                poster_path={m.poster_path}
-                vote_average={m.vote_average}
-                release_date={m.release_date}
-              />
-            )
-            ->array}
-      </div>
-      <div className="flex gap-2 px-4 pt-[2rem]">
-        {currentPage > 1
-          ? <button
-              type_="button"
-              className="flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group"
-              onClick={_ => loadPage(-1)}>
-              <Heroicons.Solid.ArrowLeftIcon
-                className="h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
-              />
-              <span> {`Page ${Js.Int.toString(currentPage - 1)} `->string} </span>
-            </button>
-          : React.null}
-        {currentPage < totalPages
-          ? <button
-              type_="button"
-              className="flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group ml-auto"
-              onClick={_ => loadPage(1)}>
-              <span> {`Page ${Js.Int.toString(currentPage + 1)} `->string} </span>
-              <Heroicons.Solid.ArrowRightIcon
-                className="h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
-              />
-            </button>
-          : React.null}
+      <div className={`${isGenreRef.contents ? "flex" : "hidden"} justify-start ml-auto pr-4`}>
+        <FilterBox />
       </div>
     </div>
-  }
+    <div
+      id="movie-list-here"
+      className="w-full h-full flex flex-1 flex-wrap p-1 pt-4 gap-[1rem] sm:gap-[1.4rem] justify-center items-center px-[1rem] sm:px-[2rem] bg-white">
+      {movieList
+      ->Belt.Array.map(m =>
+        <Poster
+          key={Js.Int.toString(m.id)}
+          id={m.id->Js.Int.toString}
+          title={m.title}
+          media_type={m.media_type}
+          poster_path={m.poster_path}
+          vote_average={m.vote_average}
+          release_date={m.release_date}
+        />
+      )
+      ->array}
+    </div>
+    <div className="flex gap-2 px-4 pt-[2rem]">
+      {currentPage > 1
+        ? <button
+            type_="button"
+            className="flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group"
+            onClick={_ => loadPage(-1)}>
+            <Heroicons.Solid.ArrowLeftIcon
+              className="h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
+            />
+            <span> {`Page ${Js.Int.toString(currentPage - 1)} `->string} </span>
+          </button>
+        : React.null}
+      {currentPage < totalPages
+        ? <button
+            type_="button"
+            className="flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group ml-auto"
+            onClick={_ => loadPage(1)}>
+            <span> {`Page ${Js.Int.toString(currentPage + 1)} `->string} </span>
+            <Heroicons.Solid.ArrowRightIcon
+              className="h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
+            />
+          </button>
+        : React.null}
+    </div>
+    <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
+    { loading ? <LoadingDialog isOpen={loading} onClose /> : React.null }
+  </div>
 }

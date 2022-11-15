@@ -23,5 +23,7 @@ let pop = msg => alert(Webapi.Dom.window, msg)
 @send external toLocaleString: (Js.Date.t, string, {..}) => string = "toLocaleString"
 @send external flotToLocaleString: (float, string) => string = "toLocaleString"
 
-let getWindowInnerHeight = () =>  Webapi.Dom.Window.innerHeight(Webapi__Dom.window)
+let getWindowInnerHeight = () => Webapi.Dom.Window.innerHeight(Webapi__Dom.window)
 let getWindowInnerWidth = () => Webapi.Dom.Window.innerWidth(Webapi__Dom.window)
+
+@val @scope(("window", "location")) external reload: unit => unit = "reload"

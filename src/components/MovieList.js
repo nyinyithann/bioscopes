@@ -4,13 +4,13 @@ import * as Curry from "rescript/lib/es6/curry.js";
 import * as Links from "../shared/Links.js";
 import * as React from "react";
 import * as Rating from "./Rating.js";
-import * as Loading from "./Loading.js";
 import * as FilterBox from "./FilterBox.js";
 import * as GenreList from "./GenreList.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as LazyImage from "./LazyImage.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
-import * as ErrorDisplay from "./ErrorDisplay.js";
+import * as ErrorDialog from "./ErrorDialog.js";
+import * as LoadingDialog from "./LoadingDialog.js";
 import * as UrlQueryParam from "../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../providers/MoviesProvider.js";
 import * as Solid from "@heroicons/react/solid";
@@ -91,8 +91,10 @@ function MovieList(Props) {
   var setQueryParam = match[1];
   var queryParam = match[0];
   var match$1 = MoviesProvider.useMoviesContext(undefined);
+  var clearAll = match$1.clearAll;
   var loadMovies = match$1.loadMovies;
   var error = match$1.error;
+  var loading = match$1.loading;
   var movies = match$1.movies;
   var movieList = Js_option.getWithDefault([], movies.results);
   var currentPage = Js_option.getWithDefault(0, movies.page);
@@ -219,58 +221,59 @@ function MovieList(Props) {
         return ;
     }
   };
-  if (error.length > 0) {
-    return React.createElement(ErrorDisplay.make, {
-                errorMessage: error
-              });
-  } else if (match$1.loading) {
-    return React.createElement(Loading.make, {
-                className: "w-[6rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-green-500 fill-50 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
-              });
-  } else {
-    return React.createElement("div", {
-                className: "flex flex-col bg-white"
-              }, React.createElement("div", {
-                    className: "flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200"
-                  }, React.createElement("div", undefined, React.createElement(GenreList.make, {})), React.createElement("div", {
-                        className: "" + (
-                          isGenreRef.contents ? "flex" : "hidden"
-                        ) + " justify-start ml-auto pr-4"
-                      }, React.createElement(FilterBox.make, {}))), React.createElement("div", {
-                    className: "w-full h-full flex flex-1 flex-wrap p-1 pt-4 gap-[1rem] sm:gap-[1.4rem] justify-center items-center px-[1rem] sm:px-[2rem] bg-white",
-                    id: "movie-list-here"
-                  }, movieList.length === 0 ? React.createElement("div", {
-                          className: "text-300 text-2xl"
-                        }, "Movies Not Found.") : Belt_Array.map(movieList, (function (m) {
-                            return React.createElement(MovieList$Poster, {
-                                        id: m.id.toString(),
-                                        media_type: m.media_type,
-                                        title: m.title,
-                                        poster_path: m.poster_path,
-                                        vote_average: m.vote_average,
-                                        release_date: m.release_date,
-                                        key: m.id.toString()
-                                      });
-                          }))), React.createElement("div", {
-                    className: "flex gap-2 px-4 pt-[2rem]"
-                  }, currentPage > 1 ? React.createElement("button", {
-                          className: "flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group",
-                          type: "button",
-                          onClick: (function (param) {
-                              loadPage(-1);
-                            })
-                        }, React.createElement(Solid.ArrowLeftIcon, {
-                              className: "h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
-                            }), React.createElement("span", undefined, "Page " + (currentPage - 1 | 0).toString() + " ")) : null, currentPage < totalPages ? React.createElement("button", {
-                          className: "flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group ml-auto",
-                          type: "button",
-                          onClick: (function (param) {
-                              loadPage(1);
-                            })
-                        }, React.createElement("span", undefined, "Page " + (currentPage + 1 | 0).toString() + " "), React.createElement(Solid.ArrowRightIcon, {
-                              className: "h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
-                            })) : null));
-  }
+  var onClose = function (arg) {
+    if (arg) {
+      return Curry._1(clearAll, undefined);
+    }
+    
+  };
+  return React.createElement("div", {
+              className: "flex flex-col bg-white"
+            }, React.createElement("div", {
+                  className: "flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200"
+                }, React.createElement("div", undefined, React.createElement(GenreList.make, {})), React.createElement("div", {
+                      className: "" + (
+                        isGenreRef.contents ? "flex" : "hidden"
+                      ) + " justify-start ml-auto pr-4"
+                    }, React.createElement(FilterBox.make, {}))), React.createElement("div", {
+                  className: "w-full h-full flex flex-1 flex-wrap p-1 pt-4 gap-[1rem] sm:gap-[1.4rem] justify-center items-center px-[1rem] sm:px-[2rem] bg-white",
+                  id: "movie-list-here"
+                }, Belt_Array.map(movieList, (function (m) {
+                        return React.createElement(MovieList$Poster, {
+                                    id: m.id.toString(),
+                                    media_type: m.media_type,
+                                    title: m.title,
+                                    poster_path: m.poster_path,
+                                    vote_average: m.vote_average,
+                                    release_date: m.release_date,
+                                    key: m.id.toString()
+                                  });
+                      }))), React.createElement("div", {
+                  className: "flex gap-2 px-4 pt-[2rem]"
+                }, currentPage > 1 ? React.createElement("button", {
+                        className: "flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group",
+                        type: "button",
+                        onClick: (function (param) {
+                            loadPage(-1);
+                          })
+                      }, React.createElement(Solid.ArrowLeftIcon, {
+                            className: "h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
+                          }), React.createElement("span", undefined, "Page " + (currentPage - 1 | 0).toString() + " ")) : null, currentPage < totalPages ? React.createElement("button", {
+                        className: "flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group ml-auto",
+                        type: "button",
+                        onClick: (function (param) {
+                            loadPage(1);
+                          })
+                      }, React.createElement("span", undefined, "Page " + (currentPage + 1 | 0).toString() + " "), React.createElement(Solid.ArrowRightIcon, {
+                            className: "h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
+                          })) : null), React.createElement(ErrorDialog.make, {
+                  isOpen: error.length > 0,
+                  errorMessage: error,
+                  onClose: onClose
+                }), loading ? React.createElement(LoadingDialog.make, {
+                    isOpen: loading,
+                    onClose: onClose
+                  }) : null);
 }
 
 var make = MovieList;

@@ -166,15 +166,22 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     <div
       className="hidden md:flex pr-8 items-start md:items-center md:justify-center justify-start">
       {switch getFirstPosterImage(~movie) {
-      | Some(img) =>
-        <LazyImageLite
-          alt="poster image"
-          placeholderPath={Links.placeholderImage}
-          src={Links.getPosterImage_W370_H556_bestv2Link(Util.getOrEmptyString(img.file_path))}
-          className="h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto"
-          lazyHeight={456.}
-          lazyOffset={50.}
-        />
+      | Some(img) => {
+          let seg = Util.getOrEmptyString(img.file_path)
+          if !Util.isEmptyString(seg) {
+            <LazyImageLite
+              alt="poster image"
+              placeholderPath={Links.placeholderImage}
+              src={Links.getPosterImage_W370_H556_bestv2Link(seg)}
+              className="h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto"
+              lazyHeight={456.}
+              lazyOffset={50.}
+            />
+          } else {
+            React.null
+          }
+        }
+
       | None => React.null
       }}
     </div>
