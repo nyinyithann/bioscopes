@@ -93,8 +93,7 @@ let make = (~movieId: int) => {
 
             if Js.String2.length(releaseYear) == 4 {
               <div
-                className="absolute top-[2%] right-[8%] sm:right-[4%] text-[0.8rem] bg-700/60 text-slate-50 px-[12px] py-[1px] rounded-sm">
-                {releaseYear->React.string}
+                  className="absolute top-[2%] right-[3%] text-[0.8rem] bg-700/60 text-slate-50 px-[12px] py-[1px] rounded-sm">
               </div>
             } else {
               React.null

@@ -7,7 +7,7 @@ let make = () => {
     loading,
     error,
     loadDetailMovie,
-    clearAll,
+    clearError,
     recommendedMovies,
   } = MoviesProvider.useMoviesContext()
   let {videoPlayState, stop} = YoutubePlayerProvider.useVideoPlayerContext()
@@ -36,7 +36,7 @@ let make = () => {
 
   let onClose = arg =>
     if arg {
-      clearAll()
+      clearError()
     }
 
   open HeadlessUI

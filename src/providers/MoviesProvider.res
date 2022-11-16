@@ -122,7 +122,10 @@ let reducer = (state: state, action) => {
         page: ?movies.page,
         total_pages: ?movies.total_pages,
         total_results: ?movies.total_results,
-        results: ?movies.results,
+        results: Belt.Array.concat(
+          Js.Option.getWithDefault([], state.movies.results),
+          Js.Option.getWithDefault([], movies.results)->Belt.Array.sliceToEnd(1),
+        ),
       },
       detail_movie: emptyDetailMovie,
       recommendedMovies: emptyMovieList,

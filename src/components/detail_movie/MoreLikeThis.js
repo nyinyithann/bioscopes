@@ -75,8 +75,8 @@ function MoreLikeThis(Props) {
                         if (rd !== undefined) {
                           var releaseYear = rd.substring(0, 4);
                           tmp = releaseYear.length === 4 ? React.createElement("div", {
-                                  className: "absolute top-[2%] right-[8%] sm:right-[4%] text-[0.8rem] bg-700/60 text-slate-50 px-[12px] py-[1px] rounded-sm"
-                                }, releaseYear) : null;
+                                  className: "absolute top-[2%] right-[3%] text-[0.8rem] bg-700/60 text-slate-50 px-[12px] py-[1px] rounded-sm"
+                                }) : null;
                         } else {
                           tmp = null;
                         }

@@ -283,7 +283,7 @@ function GenreList(Props) {
                     className: "w-4 h-4"
                   }), React.createElement("span", {
                     className: "truncate"
-                  }, "Searching")), React.createElement("div", {
+                  }, "In search")), React.createElement("div", {
                 className: "ml-auto"
               }, React.createElement(Solid.ChevronDownIcon, {
                     className: "w-4 h-4"

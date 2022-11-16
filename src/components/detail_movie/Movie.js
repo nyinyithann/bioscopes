@@ -27,7 +27,7 @@ function string(prim) {
 
 function Movie(Props) {
   var match = MoviesProvider.useMoviesContext(undefined);
-  var clearAll = match.clearAll;
+  var clearError = match.clearError;
   var loadDetailMovie = match.loadDetailMovie;
   var error = match.error;
   var loading = match.loading;
@@ -64,7 +64,7 @@ function Movie(Props) {
         }), []);
   var onClose = function (arg) {
     if (arg) {
-      return Curry._1(clearAll, undefined);
+      return Curry._1(clearError, undefined);
     }
     
   };

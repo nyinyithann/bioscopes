@@ -178,8 +178,8 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
           ? React.null
           : <span
               className={`${size.width == 100
-                  ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full pr-4"
-                  : "top-0 left-0 text-[1.4rem] rounded-br-full pr-8"} absolute z-50 p-1 w-auto font-nav font-extrabold text-500 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-20`}>
+                  ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full p-1 pr-4"
+                  : "top-0 left-0 text-[1.4rem] rounded-br-full p-1 pr-8"} absolute z-50 w-auto font-nav font-extrabold text-900 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-70`}>
               {Util.toStringElement(tagline)}
             </span>}
         {size.width == 100

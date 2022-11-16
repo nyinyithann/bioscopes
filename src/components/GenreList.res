@@ -189,7 +189,7 @@ let make = () => {
               <div className="flex w-full items-center gap-4">
                 <div className="flex gap-2 w-[12rem] items-center">
                   <Heroicons.Outline.SearchCircleIcon className="w-4 h-4" />
-                  <span className="truncate"> {"Searching"->string} </span>
+                  <span className="truncate"> {"In search"->string} </span>
                 </div>
                 <div className="ml-auto">
                   <Heroicons.Solid.ChevronDownIcon className="w-4 h-4" />
