@@ -50,14 +50,16 @@ function Home$NavLink(Props) {
     RescriptReactRouter.push("/");
   };
   return React.createElement("button", {
-              className: "flex gap-1 justify-center p-1 group rounded ring-0 outline-none hover:bg-300",
+              className: "flex gap-1 items-center justify-center p-1 px-2 group rounded ring-0 outline-none hover:bg-300",
               type: "button",
               onClick: onClick
             }, React.createElement(Solid.HomeIcon, {
-                  className: "w-5 h-6 fill-klor-900"
-                }), React.createElement("span", {
-                  className: "hidden sm:block text-900"
-                }, title));
+                  className: "w-6 h-6 fill-klor-900"
+                }), React.createElement("div", {
+                  className: "flex flex-col items-end justify-end pt-[0.4rem]"
+                }, React.createElement("span", {
+                      className: "hidden sm:flex text-900 m-auto"
+                    }, title)));
 }
 
 var NavLink = {
@@ -122,7 +124,7 @@ function Home(Props) {
             }, React.createElement("div", {
                   className: "h-auto flex flex-col z-50 relative"
                 }, React.createElement("div", {
-                      className: "flex items-center w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0",
+                      className: "flex items-center w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0 shadow-md",
                       id: "navbar"
                     }, React.createElement("div", {
                           className: "pl-1 mr-auto"

@@ -10,6 +10,10 @@ let make = (
   let (loaded, setLoaded) = React.useState(_ => false)
   let lh = Js.Float.toString(lazyHeight /. 2.) ++ "px"
 
+  let className = `${Util.getOrEmptyString(className)} transition duration-1000 ${loaded
+      ? "opacity-100"
+      : "opacity-20"}`
+
   <div className="flex relative items-center justify-center">
     {!loaded
       ? <div
@@ -21,7 +25,7 @@ let make = (
       : React.null}
     <LazyLoad height={lazyHeight} offset={lazyOffset}>
       <img
-        ?className
+        className
         src
         ?alt
         onLoad={_ => setLoaded(_ => true)}

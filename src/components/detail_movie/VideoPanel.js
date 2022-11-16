@@ -40,6 +40,7 @@ function VideoPanel$VideoImage(Props) {
         return false;
       });
   var setLoaded = match[1];
+  var loaded = match[0];
   var match$1 = YoutubePlayerProvider.useVideoPlayerContext(undefined);
   var play = match$1.play;
   var vkey = Util.getOrEmptyString(video.key);
@@ -47,9 +48,12 @@ function VideoPanel$VideoImage(Props) {
     e.preventDefault();
     Curry._1(play, Links.getYoutubeVideoLink(vkey));
   };
+  var className$1 = "" + className + " transition duration-1000 " + (
+    loaded ? "opacity-100" : "opacity-20"
+  ) + "";
   return React.createElement(React.Fragment, undefined, Util.isEmptyString(vkey) ? null : React.createElement("div", {
                     className: "flex relative items-center justify-center"
-                  }, match[0] ? null : React.createElement("div", {
+                  }, loaded ? null : React.createElement("div", {
                           className: "absolute top-[50px] w-full h-full flex flex-col items-center justify-center"
                         }, React.createElement(Loading.make, {
                               className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
@@ -58,7 +62,7 @@ function VideoPanel$VideoImage(Props) {
                         role: "button",
                         onClick: onClick
                       }, React.createElement("img", {
-                            className: className,
+                            className: className$1,
                             alt: "Poster",
                             src: Links.getYoutubeImageLink(vkey),
                             onError: (function (e) {

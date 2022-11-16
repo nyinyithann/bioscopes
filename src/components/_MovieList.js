@@ -86,6 +86,10 @@ var Poster = {
   make: _MovieList$Poster
 };
 
+var isGenreRef = {
+  contents: false
+};
+
 function _MovieList(Props) {
   var match = UrlQueryParam.useQueryParams(undefined);
   var setQueryParam = match[1];
@@ -100,9 +104,6 @@ function _MovieList(Props) {
   var currentPage = Js_option.getWithDefault(0, movies.page);
   var totalPages = Js_option.getWithDefault(0, movies.total_pages);
   var viewingTitleRef = React.useRef("");
-  var isGenreRef = {
-    contents: false
-  };
   React.useMemo((function () {
           switch (queryParam.TAG | 0) {
             case /* Category */0 :
@@ -282,6 +283,7 @@ export {
   string ,
   array ,
   Poster ,
+  isGenreRef ,
   make ,
 }
 /* react Not a pure module */

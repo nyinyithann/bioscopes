@@ -181,7 +181,7 @@ let getApiPath = apiParams => {
 
   switch apiParams {
   | Category({name, page}) =>
-    `${apiBaseUrl}/${apiVersion}/movie/${name}?page=${Js.Int.toString(page)}`
+    `${apiBaseUrl}/${apiVersion}/movie/${name}?language=en-US&page=${Js.Int.toString(page)}`
   | Genre({id, page, sort_by}) =>
     `${apiBaseUrl}/${apiVersion}/discover/movie?with_genres=${string_of_int(
         id,

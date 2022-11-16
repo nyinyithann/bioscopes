@@ -187,7 +187,9 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
               {!Util.isEmptyString(imgPathRef.current)
                 ? <img
                     alt="Poster"
-                    className="w-full transition transform ease-in-out duration-100 ml-auto z-0"
+                    className={`w-full transition duration-1000 ml-auto z-0 ${loaded
+                        ? "opacity-100"
+                        : "opacity-0"}`}
                     src={imgPathRef.current}
                     style={imageStyle}
                     onLoad={e => {
@@ -215,7 +217,9 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                 className="relative z-10 ml-auto after:absolute after:top-0 after:left-0 after:bg-gradient-title after:z-20 after:w-full after:h-full">
                 <img
                   alt="Poster"
-                  className="w-full ml-auto z-0"
+                  className={`w-full ml-auto z-0 transition duration-1000 ${loaded
+                      ? "opacity-100"
+                      : "opacity-0"}`}
                   src={Util.isEmptyString(imgPathRef.current) ? "" : imgPathRef.current}
                   style={imageStyle}
                   onLoad={e => {

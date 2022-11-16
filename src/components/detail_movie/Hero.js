@@ -142,6 +142,7 @@ function Hero(Props) {
         return false;
       });
   var setLoaded = match[1];
+  var loaded = match[0];
   var imgPathRef = React.useRef("");
   var match$1 = React.useState(function () {
         return {
@@ -246,7 +247,9 @@ function Hero(Props) {
                           }, Util.toStringElement(tagline)), size.width === 100 ? React.createElement("div", {
                             className: "relative flex-inline"
                           }, Util.isEmptyString(imgPathRef.current) ? null : React.createElement("img", {
-                                  className: "w-full transition transform ease-in-out duration-100 ml-auto z-0",
+                                  className: "w-full transition duration-1000 ml-auto z-0 " + (
+                                    loaded ? "opacity-100" : "opacity-0"
+                                  ) + "",
                                   style: imageStyle,
                                   alt: "Poster",
                                   src: imgPathRef.current,
@@ -275,7 +278,9 @@ function Hero(Props) {
                                 id: "overlayed-image-container",
                                 style: imageStyle
                               }, React.createElement("img", {
-                                    className: "w-full ml-auto z-0",
+                                    className: "w-full ml-auto z-0 transition duration-1000 " + (
+                                      loaded ? "opacity-100" : "opacity-0"
+                                    ) + "",
                                     style: imageStyle,
                                     alt: "Poster",
                                     src: Util.isEmptyString(imgPathRef.current) ? "" : imgPathRef.current,
@@ -297,7 +302,7 @@ function Hero(Props) {
                                   })), React.createElement("div", {
                                 className: "absolute top-[20%] left-[6%] z-50"
                               }, React.createElement(React$1.Transition, {
-                                    show: match[0] || match$2[0],
+                                    show: loaded || match$2[0],
                                     as_: "div",
                                     enter: "transition ease duration-700 transform",
                                     enterFrom: "opacity-0 -translate-y-full",

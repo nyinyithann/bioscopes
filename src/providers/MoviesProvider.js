@@ -204,7 +204,7 @@ function getApiPath(apiParams) {
   switch (apiParams.TAG | 0) {
     case /* Category */0 :
         var match = apiParams._0;
-        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + match.name + "?page=" + match.page.toString() + "";
+        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/movie/" + match.name + "?language=en-US&page=" + match.page.toString() + "";
     case /* Genre */1 :
         var match$1 = apiParams._0;
         return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/discover/movie?with_genres=" + String(match$1.id) + "&page=" + match$1.page.toString() + "&sort_by=" + match$1.sort_by + "";

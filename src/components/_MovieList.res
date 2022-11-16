@@ -66,6 +66,8 @@ module Poster = {
   }
 }
 
+let isGenreRef = ref(false)
+
 @react.component
 let make = () => {
   let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
@@ -76,7 +78,6 @@ let make = () => {
   let totalPages = Js.Option.getWithDefault(0, movies.total_pages)
 
   let viewingTitleRef = React.useRef("")
-  let isGenreRef = ref(false)
 
   React.useMemo1(() => {
     switch queryParam {
@@ -134,7 +135,6 @@ let make = () => {
 
     Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
   })
-
 
   let loadPage = n => {
     switch queryParam {

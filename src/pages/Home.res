@@ -40,10 +40,12 @@ module NavLink = {
     }
     <button
       type_="button"
-      className="flex gap-1 justify-center p-1 group rounded ring-0 outline-none hover:bg-300"
+      className="flex gap-1 items-center justify-center p-1 px-2 group rounded ring-0 outline-none hover:bg-300"
       onClick>
-      <Heroicons.Solid.HomeIcon className="w-5 h-6 fill-klor-900" />
-      <span className="hidden sm:block text-900"> {title->React.string} </span>
+      <Heroicons.Solid.HomeIcon className="w-6 h-6 fill-klor-900" />
+      <div className="flex flex-col items-end justify-end pt-[0.4rem]">
+        <span className="hidden sm:flex text-900 m-auto"> {title->React.string} </span>
+      </div>
     </button>
   }
 }
@@ -68,7 +70,7 @@ let make = () => {
     <div className="h-auto flex flex-col z-50 relative">
       <div
         id="navbar"
-        className="flex items-center w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0">
+        className="flex items-center w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0 shadow-md">
         <div className="pl-1 mr-auto">
           <NavLink title={"Home"} />
         </div>

@@ -2,16 +2,12 @@
 
 import * as Util from "../../shared/Util.js";
 import * as Curry from "rescript/lib/es6/curry.js";
-import * as Links from "../../shared/Links.js";
 import * as React from "react";
-import * as Rating from "../Rating.js";
-import * as Js_math from "rescript/lib/es6/js_math.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
+import * as MovieList from "../MovieList.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
-import * as MediaQuery from "../../hooks/MediaQuery.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as ErrorDialog from "../ErrorDialog.js";
-import * as LazyImageLite from "../LazyImageLite.js";
-import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../../providers/MoviesProvider.js";
 
 function string(prim) {
@@ -21,10 +17,6 @@ function string(prim) {
 function array(prim) {
   return prim;
 }
-
-var nextPage = {
-  contents: 0
-};
 
 function MoreLikeThis(Props) {
   var movieId = Props.movieId;
@@ -36,90 +28,79 @@ function MoreLikeThis(Props) {
   var recommendedMovies = match.recommendedMovies;
   var mlist = Js_option.getWithDefault([], recommendedMovies.results);
   var totalPages = Util.getOrIntZero(recommendedMovies.total_pages);
-  var isMobile = MediaQuery.useMediaQuery("(max-width: 600px)");
-  var match$1 = UrlQueryParam.useQueryParams(undefined);
-  var setQueryParam = match$1[1];
-  var loadMore = function (param) {
-    if (!(Js_math.ceil(window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 300 | 0) && !loading)) {
-      return ;
-    }
-    var controller = new AbortController();
-    nextPage.contents = nextPage.contents + 1 | 0;
-    if (nextPage.contents <= totalPages) {
-      return Curry._3(loadRecommendedMovies, movieId, nextPage.contents, controller.signal);
-    }
-    
-  };
+  var currentPage = Util.getOrIntZero(recommendedMovies.page);
   var onClose = function (arg) {
     if (arg) {
       return Curry._1(clearError, undefined);
     }
     
   };
+  var controller = new AbortController();
+  var loadPage = function (page) {
+    Curry._3(loadRecommendedMovies, movieId, page, controller.signal);
+  };
+  var match$1 = React.useState(function () {
+        return null;
+      });
+  var setLastPoster = match$1[1];
+  var lastPoster = match$1[0];
+  var match$2 = React.useState(function () {
+        return currentPage;
+      });
+  var setPageToLoad = match$2[1];
+  var pageToLoad = match$2[0];
+  var setLastPosterRef = function (elem) {
+    Curry._1(setLastPoster, (function (param) {
+            return elem;
+          }));
+  };
+  var observer = React.useRef(new IntersectionObserver((function (entries, param) {
+              var entry = Belt_Array.get(entries, 0);
+              if (entry !== undefined && Caml_option.valFromOption(entry).isIntersecting) {
+                return Curry._1(setPageToLoad, (function (p) {
+                              return p + 1 | 0;
+                            }));
+              }
+              
+            })));
   React.useEffect((function () {
-          nextPage.contents = 0;
-        }), [movieId]);
+          if (pageToLoad !== currentPage && pageToLoad <= totalPages) {
+            loadPage(pageToLoad);
+          }
+          
+        }), [pageToLoad]);
   React.useEffect((function () {
-          window.addEventListener("scroll", loadMore);
+          var currentObserver = observer.current;
+          if (!(lastPoster == null)) {
+            currentObserver.observe(lastPoster);
+          }
           return (function (param) {
-                    window.removeEventListener("scroll", loadMore);
+                    if (!(lastPoster == null)) {
+                      currentObserver.unobserve(lastPoster);
+                      return ;
+                    }
+                    
                   });
-        }), []);
+        }), [lastPoster]);
   return React.createElement("div", {
               className: "flex flex-col items-center justify-center bg-white"
             }, React.createElement("ul", {
                   className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-center w-full relative"
                 }, Belt_Array.mapWithIndex(mlist, (function (i, m) {
-                        var rd = m.release_date;
-                        var tmp;
-                        if (rd !== undefined) {
-                          var releaseYear = rd.substring(0, 4);
-                          tmp = releaseYear.length === 4 ? React.createElement("div", {
-                                  className: "absolute top-[2%] right-[3%] text-[0.8rem] bg-700/60 text-slate-50 px-[12px] py-[1px] rounded-sm"
-                                }) : null;
+                        if (i === (mlist.length - 1 | 0) && !loading && currentPage <= totalPages) {
+                          return React.createElement("li", {
+                                      key: Util.itos(m.id) + currentPage.toString(),
+                                      ref: setLastPosterRef
+                                    }, React.createElement(MovieList.Poster.make, {
+                                          movie: m
+                                        }));
                         } else {
-                          tmp = null;
+                          return React.createElement("li", {
+                                      key: Util.itos(m.id) + currentPage.toString()
+                                    }, React.createElement(MovieList.Poster.make, {
+                                          movie: m
+                                        }));
                         }
-                        return React.createElement("li", {
-                                    key: Util.itos(m.id) + i.toString(),
-                                    className: "cursor-pointer transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 hover:rounded group",
-                                    role: "button",
-                                    onClick: (function (param) {
-                                        var mt = m.media_type;
-                                        if (mt !== undefined) {
-                                          return Curry._1(setQueryParam, {
-                                                      TAG: /* Movie */3,
-                                                      _0: {
-                                                        id: m.id.toString(),
-                                                        media_type: mt
-                                                      }
-                                                    });
-                                        } else {
-                                          return Curry._1(setQueryParam, {
-                                                      TAG: /* Movie */3,
-                                                      _0: {
-                                                        id: m.id.toString(),
-                                                        media_type: "movie"
-                                                      }
-                                                    });
-                                        }
-                                      })
-                                  }, React.createElement(LazyImageLite.make, {
-                                        className: "w-full h-full border-[2px] border-slate-200 rounded-md group-hover:border-0 group-hover rounded-b-none object-cover",
-                                        placeholderPath: Links.placeholderImage,
-                                        alt: "poster image",
-                                        src: Links.getPosterImage_W370_H556_bestv2Link(Util.getOrEmptyString(m.poster_path)),
-                                        lazyHeight: isMobile ? 280 : 356,
-                                        lazyOffset: 50
-                                      }), React.createElement("p", {
-                                        className: "" + (
-                                          Util.getOrEmptyString(m.title).length > 30 ? "text-[0.7rem]" : "text-[0.95rem]"
-                                        ) + " break-words transform duration-300 pt-[0.3rem] flex text-left text-900 truncate overflow-hidden p-1"
-                                      }, Util.getOrEmptyString(m.title)), React.createElement("div", {
-                                        className: "pb-2"
-                                      }, React.createElement(Rating.make, {
-                                            ratingValue: m.vote_average
-                                          })), tmp);
                       }))), React.createElement(ErrorDialog.make, {
                   isOpen: error.length > 0,
                   errorMessage: error,
@@ -132,7 +113,6 @@ var make = MoreLikeThis;
 export {
   string ,
   array ,
-  nextPage ,
   make ,
 }
 /* react Not a pure module */

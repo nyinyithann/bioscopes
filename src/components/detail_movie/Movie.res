@@ -180,6 +180,5 @@ let make = () => {
           </ModalDialog>
         </>}
     <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
-    {loading ? <LoadingDialog isOpen={loading} onClose /> : React.null}
   </>
 }

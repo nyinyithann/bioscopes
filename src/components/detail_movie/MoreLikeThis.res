@@ -1,7 +1,5 @@
 let {string, array} = module(React)
 
-let nextPage = ref(0)
-
 @react.component
 let make = (~movieId: int) => {
   let {
@@ -14,95 +12,84 @@ let make = (~movieId: int) => {
 
   let mlist = Js.Option.getWithDefault([], recommendedMovies.results)
   let totalPages = Util.getOrIntZero(recommendedMovies.total_pages)
+  let currentPage = Util.getOrIntZero(recommendedMovies.page)
 
-  let isMobile = MediaQuery.useMediaQuery("(max-width: 600px)")
-
-  let (_, setQueryParam) = UrlQueryParam.useQueryParams()
-
-  let handleClick = (movie: MovieModel.movie) => {
-    switch movie.media_type {
-    | Some(mt) =>
-      setQueryParam(UrlQueryParam.Movie({id: movie.id->Js.Int.toString, media_type: mt}))
-    | _ => setQueryParam(UrlQueryParam.Movie({id: movie.id->Js.Int.toString, media_type: "movie"}))
+  let onClose = arg =>
+    if arg {
+      clearError()
     }
+
+  let controller = Fetch.AbortController.make()
+
+  let loadPage = (~page: int) => {
+    loadRecommendedMovies(~movieId, ~page, ~signal=Fetch.AbortController.signal(controller))
   }
 
-  let loadMore = _ => {
-    open Webapi.Dom.Window
-    open Js.Int
-    if (
-      Js.Math.ceil(toFloat(innerHeight(Webapi__Dom.window)) +. scrollY(Webapi__Dom.window)) >=
-      Webapi.Dom.Element.scrollHeight(
-        Webapi.Dom.Document.documentElement(Webapi__Dom.document),
-      ) - 300 && !loading
-    ) {
-      let controller = Fetch.AbortController.make()
-      nextPage.contents = nextPage.contents + 1
-      if nextPage.contents <= totalPages {
-        loadRecommendedMovies(
-          ~movieId,
-          ~page=nextPage.contents,
-          ~signal=Fetch.AbortController.signal(controller),
-        )
+  let (lastPoster, setLastPoster) = React.useState(_ => Js.Nullable.null)
+  let (pageToLoad, setPageToLoad) = React.useState(_ => currentPage)
+
+  let setLastPosterRef = elem => {
+    setLastPoster(_ => elem)
+  }
+
+  let observer = React.useRef(
+    Webapi.IntersectionObserver.make((entries, _) => {
+      switch Belt.Array.get(entries, 0) {
+      | Some(entry) =>
+        if Webapi.IntersectionObserver.IntersectionObserverEntry.isIntersecting(entry) {
+          setPageToLoad(p => {
+            p + 1
+          })
+        }
+      | _ => ()
       }
-    }
-  }
-
-  let onClose = arg => if arg { clearError() }
+    }),
+  )
 
   React.useEffect1(() => {
-    nextPage.contents = 0
+    if pageToLoad != currentPage && pageToLoad <= totalPages {
+      loadPage(~page=pageToLoad)
+    }
     None
-  }, [movieId])
+  }, [pageToLoad])
 
-  React.useEffect0(() => {
-    Webapi.Dom.Window.addEventListener(Webapi.Dom.window, "scroll", loadMore)
-    Some(() => Webapi.Dom.Window.removeEventListener(Webapi.Dom.window, "scroll", loadMore))
-  })
+  React.useEffect1(() => {
+    let currentElem = lastPoster
+    let currentObserver = observer.current
+
+    switch Js.Nullable.toOption(currentElem) {
+    | Some(ce) => Webapi.IntersectionObserver.observe(currentObserver, ce)
+
+    | _ => ()
+    }
+
+    Some(
+      () => {
+        switch Js.Nullable.toOption(currentElem) {
+        | Some(ce) => Webapi.IntersectionObserver.unobserve(currentObserver, ce)
+        | _ => ()
+        }
+      },
+    )
+  }, [lastPoster])
 
   <div className="flex flex-col items-center justify-center bg-white">
     <ul
       className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-center w-full relative">
       {mlist
-      ->Belt.Array.mapWithIndex((i, m) =>
-        <li
-          key={m.id->Util.itos ++ Js.Int.toString(i)}
-          className="cursor-pointer transform duration-300 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 hover:rounded group"
-          onClick={_ => handleClick(m)}
-          role="button">
-          <LazyImageLite
-            alt="poster image"
-            placeholderPath={Links.placeholderImage}
-            src={Links.getPosterImage_W370_H556_bestv2Link(m.poster_path->Util.getOrEmptyString)}
-            className="w-full h-full border-[2px] border-slate-200 rounded-md group-hover:border-0 group-hover rounded-b-none object-cover"
-            lazyHeight={isMobile ? 280. : 356.}
-            lazyOffset={50.}
-          />
-          <p
-            className={`${Js.String2.length(Util.getOrEmptyString(m.title)) > 30
-                ? "text-[0.7rem]"
-                : "text-[0.95rem]"} break-words transform duration-300 pt-[0.3rem] flex text-left text-900 truncate overflow-hidden p-1`}>
-            {Util.getOrEmptyString(m.title)->string}
-          </p>
-          <div className="pb-2">
-            <Rating ratingValue={m.vote_average} />
-          </div>
-          {switch m.release_date {
-          | Some(rd) =>
-            let releaseYear = Js.String2.substring(rd, ~from=0, ~to_=4)
-
-            if Js.String2.length(releaseYear) == 4 {
-              <div
-                  className="absolute top-[2%] right-[3%] text-[0.8rem] bg-700/60 text-slate-50 px-[12px] py-[1px] rounded-sm">
-              </div>
-            } else {
-              React.null
-            }
-
-          | None => React.null
-          }}
-        </li>
-      )
+      ->Belt.Array.mapWithIndex((i, m) => {
+        if i == Belt.Array.length(mlist) - 1 && !loading && currentPage <= totalPages {
+          <li
+            key={m.id->Util.itos ++ Js.Int.toString(currentPage)}
+            ref={ReactDOM.Ref.callbackDomRef(setLastPosterRef)}>
+            <MovieList.Poster movie={m} />
+          </li>
+        } else {
+          <li key={m.id->Util.itos ++ Js.Int.toString(currentPage)}>
+            <MovieList.Poster movie={m} />
+          </li>
+        }
+      })
       ->array}
     </ul>
     <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />

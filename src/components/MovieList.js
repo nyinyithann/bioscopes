@@ -13,7 +13,6 @@ import * as MediaQuery from "../hooks/MediaQuery.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as ErrorDialog from "./ErrorDialog.js";
 import * as LazyImageLite from "./LazyImageLite.js";
-import * as LoadingDialog from "./LoadingDialog.js";
 import * as UrlQueryParam from "../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../providers/MoviesProvider.js";
 
@@ -74,7 +73,7 @@ function MovieList$Poster(Props) {
                   alt: "poster image",
                   src: imgLink,
                   lazyHeight: isMobile ? 286 : 366,
-                  lazyOffset: 50
+                  lazyOffset: 200
                 }), React.createElement("p", {
                   className: "text-base break-words transform duration-300 pt-[0.3rem] flex text-left text-900 truncate overflow-hidden p-1"
                 }, Util.getOrEmptyString(movie.title)), React.createElement("div", {
@@ -186,6 +185,12 @@ function MovieList(Props) {
                     controller.abort("Cancel the request");
                   });
         }), []);
+  var onClose = function (arg) {
+    if (arg) {
+      return Curry._1(clearError, undefined);
+    }
+    
+  };
   var controller = new AbortController();
   var loadPage = function (page) {
     switch (queryParam.TAG | 0) {
@@ -222,12 +227,6 @@ function MovieList(Props) {
       default:
         return ;
     }
-  };
-  var onClose = function (arg) {
-    if (arg) {
-      return Curry._1(clearError, undefined);
-    }
-    
   };
   var match$2 = React.useState(function () {
         return null;
@@ -299,16 +298,19 @@ function MovieList(Props) {
                                               movie: m
                                             }));
                             }
-                          })))), (currentPage - 1 | 0) === totalPages ? React.createElement("div", {
+                          }))), loading ? React.createElement("div", {
+                        className: "flex w-full items-center justify-center p-2"
+                      }, React.createElement("div", {
+                            className: "flex items-center justify-center p-1 h-[1.2rem] w-[1.2rem] rounded-full bg-900 animate-ping"
+                          }, React.createElement("span", {
+                                className: "h-[1rem] w-[1rem] rounded-full bg-300 animate-pulse"
+                              }))) : null), (currentPage - 1 | 0) === totalPages ? React.createElement("div", {
                     className: "flex items-center justify-center w-full bg-900 gap-2 p-2"
                   }, React.createElement("p", {
                         className: "text-slate-50"
                       }, "Amazing... you browsed all the movies!  😲")) : null, error.length > 0 ? React.createElement(ErrorDialog.make, {
                     isOpen: error.length > 0,
                     errorMessage: error,
-                    onClose: onClose
-                  }) : null, loading ? React.createElement(LoadingDialog.make, {
-                    isOpen: loading,
                     onClose: onClose
                   }) : null);
 }

@@ -32,7 +32,7 @@ module Poster = {
         src={imgLink}
         className="w-[16rem] h-full border-[2px] border-slate-200 rounded-md group-hover:border-0 group-hover rounded-b-none"
         lazyHeight={isMobile ? 286. : 366.}
-        lazyOffset={50.}
+        lazyOffset={200.}
       />
       <p
         className="text-base break-words transform duration-300 pt-[0.3rem] flex text-left text-900 truncate overflow-hidden p-1">
@@ -61,6 +61,7 @@ module Poster = {
 }
 
 let isGenreRef = ref(false)
+
 @react.component
 let make = () => {
   let (queryParam, _) = UrlQueryParam.useQueryParams()
@@ -129,6 +130,12 @@ let make = () => {
     Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
   })
 
+  let onClose = arg => {
+    if arg {
+      clearError()
+    }
+  }
+
   let controller = Fetch.AbortController.make()
   let loadPage = (~page: int) => {
     switch queryParam {
@@ -148,14 +155,6 @@ let make = () => {
     }
   }
 
-  /* React.useEffect(() => Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))) */
-
-  let onClose = arg => {
-    if arg {
-      clearError()
-    }
-  }
-
   let (lastPoster, setLastPoster) = React.useState(_ => Js.Nullable.null)
   let (pageToLoad, setPageToLoad) = React.useState(_ => 1)
 
@@ -169,7 +168,6 @@ let make = () => {
       | Some(entry) =>
         if Webapi.IntersectionObserver.IntersectionObserverEntry.isIntersecting(entry) {
           setPageToLoad(p => {
-            /* DomBinding.pop(p->Js.Int.toString) */
             p + 1
           })
         }
@@ -180,7 +178,6 @@ let make = () => {
 
   React.useEffect1(() => {
     if pageToLoad <= totalPages {
-      /* DomBinding.pop(pageToLoad->Js.Int.toString) */
       loadPage(~page=pageToLoad)
     }
     None
@@ -235,6 +232,14 @@ let make = () => {
         })
         ->array}
       </ul>
+      {loading
+        ? <div className="flex w-full items-center justify-center p-2">
+            <div
+              className="flex items-center justify-center p-1 h-[1.2rem] w-[1.2rem] rounded-full bg-900 animate-ping">
+              <span className="h-[1rem] w-[1rem] rounded-full bg-300 animate-pulse" />
+            </div>
+          </div>
+        : React.null}
     </div>
     {currentPage - 1 == totalPages
       ? <div className="flex items-center justify-center w-full bg-900 gap-2 p-2">
@@ -246,6 +251,6 @@ let make = () => {
     {Js.String2.length(error) > 0
       ? <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
       : React.null}
-    {loading ? <LoadingDialog isOpen={loading} onClose /> : React.null}
+    /* {loading ? <LoadingDialog isOpen={loading} onClose /> : React.null} */
   </div>
 }

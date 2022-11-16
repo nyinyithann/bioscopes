@@ -25,6 +25,9 @@ module VideoImage = {
       play(Links.getYoutubeVideoLink(vkey))
     }
 
+    let className = `${className} transition duration-1000 ${loaded
+        ? "opacity-100"
+        : "opacity-20"}`
     <>
       {!Util.isEmptyString(vkey)
         ? <div className="flex relative items-center justify-center">

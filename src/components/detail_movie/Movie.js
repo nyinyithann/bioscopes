@@ -12,7 +12,6 @@ import * as ErrorDialog from "../ErrorDialog.js";
 import * as ModalDialog from "../ModalDialog.js";
 import * as PhotosPanel from "./PhotosPanel.js";
 import * as MoreLikeThis from "./MoreLikeThis.js";
-import * as LoadingDialog from "../LoadingDialog.js";
 import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../../providers/MoviesProvider.js";
 import * as StorylinePanel from "./StorylinePanel.js";
@@ -30,7 +29,6 @@ function Movie(Props) {
   var clearError = match.clearError;
   var loadDetailMovie = match.loadDetailMovie;
   var error = match.error;
-  var loading = match.loading;
   var detail_movie = match.detail_movie;
   var match$1 = YoutubePlayerProvider.useVideoPlayerContext(undefined);
   var stop = match$1.stop;
@@ -69,7 +67,7 @@ function Movie(Props) {
     
   };
   var tmp;
-  if (loading) {
+  if (match.loading) {
     tmp = null;
   } else {
     var movieId = detail_movie.id;
@@ -209,10 +207,7 @@ function Movie(Props) {
                   isOpen: error.length > 0,
                   errorMessage: error,
                   onClose: onClose
-                }), loading ? React.createElement(LoadingDialog.make, {
-                    isOpen: loading,
-                    onClose: onClose
-                  }) : null);
+                }));
 }
 
 var make = Movie;

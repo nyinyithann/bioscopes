@@ -28,7 +28,7 @@ function ModalDialog(Props) {
                         leaveFrom: "opacity-100",
                         leaveTo: "opacity-0",
                         children: React.createElement("div", {
-                              className: "fixed inset-0 bg-black bg-opacity-10"
+                              className: "fixed inset-0 bg-black bg-opacity-100"
                             })
                       }), React.createElement("div", {
                         className: "fixed inset-0 overflow-y-auto"
