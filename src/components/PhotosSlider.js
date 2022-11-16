@@ -109,7 +109,9 @@ function PhotosSlider(Props) {
                       }, React.createElement(Loading.make, {
                             className: "w-[8rem] h-[5rem] stroke-[0.2rem] p-3 stroke-white text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900"
                           })), React.createElement("img", {
-                      className: "object-contain m-auto",
+                      className: "object-contain transition duration-1000 m-auto " + (
+                        state.loaded ? "opacity-100" : "opacity-0"
+                      ) + "",
                       style: imgSize,
                       src: state.url,
                       onError: (function (e) {

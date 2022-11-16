@@ -91,7 +91,9 @@ let make = (~imageUrls: array<string>, ~currentImageIndex: int, ~width: int, ~he
         : React.null}
       <img
         style={imgSize}
-        className="object-contain m-auto"
+        className={`object-contain transition duration-1000 m-auto ${state.loaded
+            ? "opacity-100"
+            : "opacity-0"}`}
         src={state.url}
         onLoad={_ =>
           setState(prev => {
