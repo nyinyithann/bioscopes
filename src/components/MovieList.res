@@ -7,7 +7,7 @@ module Poster = {
     let (_, setQueryParam) = UrlQueryParam.useQueryParams()
 
     let imgLink = switch movie.poster_path {
-    | Some(p) => Links.getPosterImage_W370_H556_bestv2Link(p)
+    | Some(p) => Links.getPosterImageW342Link(p)
     | None => ""
     }
 
@@ -60,9 +60,10 @@ module Poster = {
   }
 }
 
+let isGenreRef = ref(false)
 @react.component
 let make = () => {
-  let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
+  let (queryParam, _) = UrlQueryParam.useQueryParams()
 
   let {movies, loading, error, loadMovies, clearError} = MoviesProvider.useMoviesContext()
   let movieList = Js.Option.getWithDefault([], movies.results)
@@ -70,7 +71,6 @@ let make = () => {
   let totalPages = Js.Option.getWithDefault(0, movies.total_pages)
 
   let viewingTitleRef = React.useRef("")
-  let isGenreRef = ref(false)
 
   React.useMemo1(() => {
     switch queryParam {
@@ -129,15 +129,26 @@ let make = () => {
     Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
   })
 
-  let loadPage = n => {
+  let controller = Fetch.AbortController.make()
+  let loadPage = (~page: int) => {
     switch queryParam {
-    | Category({name, display, page}) => setQueryParam(Category({name, display, page: page + n}))
-    | Genre({id, name, display, page, sort_by}) =>
-      setQueryParam(Genre({id, name, display, page: page + n, sort_by}))
-    | Search({query, page}) => setQueryParam(Search({query, page: page + n}))
+    | Category({name, display}) =>
+      loadMovies(
+        ~apiParams=Category({name, display, page}),
+        ~signal=Fetch.AbortController.signal(controller),
+      )
+    | Genre({id, name, display, sort_by}) =>
+      loadMovies(
+        ~apiParams=Genre({id, name, display, page, sort_by}),
+        ~signal=Fetch.AbortController.signal(controller),
+      )
+    | Search({query}) =>
+      loadMovies(~apiParams=Search({query, page}), ~signal=Fetch.AbortController.signal(controller))
     | _ => ()
     }
   }
+
+  /* React.useEffect(() => Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))) */
 
   let onClose = arg => {
     if arg {
@@ -145,17 +156,55 @@ let make = () => {
     }
   }
 
-  /* let handleClick = mediaType => { */
-  /* switch mediaType { */
-  /* | Some(mt) => setQueryParam(UrlQueryParam.Movie({id, media_type: mt})) */
-  /* | _ => setQueryParam(UrlQueryParam.Movie({id, media_type: "movie"})) */
-  /* } */
-  /* } */
-  /*  */
-  /* let handleClick = React.useM((e) => { */
-  /* open ReactEvent.Mouse */
-  /* preventDefault(e) */
-  /* }) */
+  let (lastPoster, setLastPoster) = React.useState(_ => Js.Nullable.null)
+  let (pageToLoad, setPageToLoad) = React.useState(_ => 1)
+
+  let setLastPosterRef = elem => {
+    setLastPoster(_ => elem)
+  }
+
+  let observer = React.useRef(
+    Webapi.IntersectionObserver.make((entries, _) => {
+      switch Belt.Array.get(entries, 0) {
+      | Some(entry) =>
+        if Webapi.IntersectionObserver.IntersectionObserverEntry.isIntersecting(entry) {
+          setPageToLoad(p => {
+            /* DomBinding.pop(p->Js.Int.toString) */
+            p + 1
+          })
+        }
+      | _ => ()
+      }
+    }),
+  )
+
+  React.useEffect1(() => {
+    if pageToLoad <= totalPages {
+      /* DomBinding.pop(pageToLoad->Js.Int.toString) */
+      loadPage(~page=pageToLoad)
+    }
+    None
+  }, [pageToLoad])
+
+  React.useEffect1(() => {
+    let currentElem = lastPoster
+    let currentObserver = observer.current
+
+    switch Js.Nullable.toOption(currentElem) {
+    | Some(ce) => Webapi.IntersectionObserver.observe(currentObserver, ce)
+
+    | _ => ()
+    }
+
+    Some(
+      () => {
+        switch Js.Nullable.toOption(currentElem) {
+        | Some(ce) => Webapi.IntersectionObserver.unobserve(currentObserver, ce)
+        | _ => ()
+        }
+      },
+    )
+  }, [lastPoster])
 
   <div className="flex flex-col bg-white">
     <div
@@ -171,39 +220,32 @@ let make = () => {
       <ul
         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-center w-full relative">
         {movieList
-        ->Belt.Array.map(m =>
-          <li key={m.id->Util.itos ++ Js.Int.toString(currentPage)}>
-            <Poster movie={m} />
-          </li>
-        )
+        ->Belt.Array.mapWithIndex((i, m) => {
+          if i == Belt.Array.length(movieList) - 1 && !loading && currentPage <= totalPages {
+            <li
+              key={m.id->Util.itos ++ Js.Int.toString(currentPage)}
+              ref={ReactDOM.Ref.callbackDomRef(setLastPosterRef)}>
+              <Poster movie={m} />
+            </li>
+          } else {
+            <li key={m.id->Util.itos ++ Js.Int.toString(currentPage)}>
+              <Poster movie={m} />
+            </li>
+          }
+        })
         ->array}
       </ul>
     </div>
-    <div className="flex gap-2 px-4 pt-[2rem]">
-      {currentPage > 1
-        ? <button
-            type_="button"
-            className="flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group"
-            onClick={_ => loadPage(-1)}>
-            <Heroicons.Solid.ArrowLeftIcon
-              className="h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
-            />
-            <span> {`Page ${Js.Int.toString(currentPage - 1)} `->string} </span>
-          </button>
-        : React.null}
-      {currentPage < totalPages
-        ? <button
-            type_="button"
-            className="flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group ml-auto"
-            onClick={_ => loadPage(1)}>
-            <span> {`Page ${Js.Int.toString(currentPage + 1)} `->string} </span>
-            <Heroicons.Solid.ArrowRightIcon
-              className="h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
-            />
-          </button>
-        : React.null}
-    </div>
-    <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
+    {currentPage - 1 == totalPages
+      ? <div className="flex items-center justify-center w-full bg-900 gap-2 p-2">
+          <p className="text-slate-50">
+            {"Amazing... you browsed all the movies!  😲"->string}
+          </p>
+        </div>
+      : React.null}
+    {Js.String2.length(error) > 0
+      ? <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
+      : React.null}
     {loading ? <LoadingDialog isOpen={loading} onClose /> : React.null}
   </div>
 }

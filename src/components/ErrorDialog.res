@@ -1,21 +1,16 @@
 @react.component
-let make = (~isOpen, ~errorMessage, ~onClose : bool => unit) => {
+let make = (~isOpen, ~errorMessage, ~onClose: bool => unit) => {
   let onClick = e => {
     ReactEvent.Mouse.preventDefault(e)
     onClose(true)
   }
-  
+
   let reload = _ => {
     RescriptReactRouter.push("/")
     DomBinding.reload()
   }
-  
-  <ModalDialog
-    isOpen
-    onClose
-    className="relative z-50"
-    opacity={(#40: ModalDialog.dialog_opacity)}
-    panelClassName="w-full h-full">
+
+  <ModalDialog isOpen onClose className="relative z-50" panelClassName="w-full h-full">
     <div className="flex flex-col w-full items-center bg-red-400 border-2 border-red-500 rounded">
       <div className="flex w-full items-center bg-red-400 h-8 px-2">
         <span className="mr-auto text-red-800"> {"Oops..."->React.string} </span>

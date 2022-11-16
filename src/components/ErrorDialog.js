@@ -23,7 +23,6 @@ function ErrorDialog(Props) {
               onClose: onClose,
               className: "relative z-50",
               panelClassName: "w-full h-full",
-              opacity: 40,
               children: React.createElement("div", {
                     className: "flex flex-col w-full items-center bg-red-400 border-2 border-red-500 rounded"
                   }, React.createElement("div", {

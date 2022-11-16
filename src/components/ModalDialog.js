@@ -10,9 +10,7 @@ function ModalDialog(Props) {
   var onClose = Props.onClose;
   var className = Props.className;
   var panelClassName = Props.panelClassName;
-  var opacityOpt = Props.opacity;
   var children = Props.children;
-  var opacity = opacityOpt !== undefined ? opacityOpt : 100;
   var tmp = {
     onClose: onClose,
     children: null
@@ -29,12 +27,10 @@ function ModalDialog(Props) {
                         leave: "ease-in duration-300",
                         leaveFrom: "opacity-100",
                         leaveTo: "opacity-0",
-                        children: null
-                      }, React.createElement("div", {
-                            className: "fixed inset-0 bg-black bg-opacity-40"
-                          }), React.createElement("div", {
-                            className: "fixed inset-0 bg-black bg-opacity-" + opacity.toString() + ""
-                          })), React.createElement("div", {
+                        children: React.createElement("div", {
+                              className: "fixed inset-0 bg-black bg-opacity-10"
+                            })
+                      }), React.createElement("div", {
                         className: "fixed inset-0 overflow-y-auto"
                       }, React.createElement("div", {
                             className: "flex min-h-full items-center justify-center p-4 text-center"

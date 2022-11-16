@@ -12,7 +12,6 @@ function LoadingDialog(Props) {
               onClose: onClose,
               className: "z-50 relative",
               panelClassName: "w-full h-full rounded",
-              opacity: 20,
               children: React.createElement("div", {
                     className: "flex items-center h-8 px-2 rounded-full"
                   }, React.createElement(Loading.make, {

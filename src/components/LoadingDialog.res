@@ -4,7 +4,6 @@ let make = (~isOpen, ~onClose) => {
     isOpen
     onClose={onClose}
     className="z-50 relative"
-    opacity={(#20: ModalDialog.dialog_opacity)}
     panelClassName="w-full h-full rounded">
     <div className="flex items-center h-8 px-2 rounded-full">
       <Loading

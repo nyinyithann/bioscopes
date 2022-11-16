@@ -160,7 +160,7 @@ function reducer(state, action) {
                 movies: {
                   dates: movies.dates,
                   page: movies.page,
-                  results: Belt_Array.concat(Js_option.getWithDefault([], state.movies.results), Belt_Array.sliceToEnd(Js_option.getWithDefault([], movies.results), 1)),
+                  results: Belt_Array.concat(Js_option.getWithDefault([], state.movies.results), Js_option.getWithDefault([], movies.results)),
                   total_pages: movies.total_pages,
                   total_results: movies.total_results
                 },

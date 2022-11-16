@@ -10,12 +10,12 @@ import * as GenreList from "./GenreList.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as MediaQuery from "../hooks/MediaQuery.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as ErrorDialog from "./ErrorDialog.js";
 import * as LazyImageLite from "./LazyImageLite.js";
 import * as LoadingDialog from "./LoadingDialog.js";
 import * as UrlQueryParam from "../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../providers/MoviesProvider.js";
-import * as Solid from "@heroicons/react/solid";
 
 function string(prim) {
   return prim;
@@ -31,7 +31,7 @@ function MovieList$Poster(Props) {
   var match = UrlQueryParam.useQueryParams(undefined);
   var setQueryParam = match[1];
   var p = movie.poster_path;
-  var imgLink = p !== undefined ? Links.getPosterImage_W370_H556_bestv2Link(p) : "";
+  var imgLink = p !== undefined ? Links.getPosterImageW342Link(p) : "";
   var id = movie.id.toString();
   var onClick = function (e) {
     e.preventDefault();
@@ -88,9 +88,12 @@ var Poster = {
   make: MovieList$Poster
 };
 
+var isGenreRef = {
+  contents: false
+};
+
 function MovieList(Props) {
   var match = UrlQueryParam.useQueryParams(undefined);
-  var setQueryParam = match[1];
   var queryParam = match[0];
   var match$1 = MoviesProvider.useMoviesContext(undefined);
   var clearError = match$1.clearError;
@@ -102,9 +105,6 @@ function MovieList(Props) {
   var currentPage = Js_option.getWithDefault(0, movies.page);
   var totalPages = Js_option.getWithDefault(0, movies.total_pages);
   var viewingTitleRef = React.useRef("");
-  var isGenreRef = {
-    contents: false
-  };
   React.useMemo((function () {
           switch (queryParam.TAG | 0) {
             case /* Category */0 :
@@ -186,39 +186,39 @@ function MovieList(Props) {
                     controller.abort("Cancel the request");
                   });
         }), []);
-  var loadPage = function (n) {
+  var controller = new AbortController();
+  var loadPage = function (page) {
     switch (queryParam.TAG | 0) {
       case /* Category */0 :
           var match = queryParam._0;
-          return Curry._1(setQueryParam, {
+          return Curry._2(loadMovies, {
                       TAG: /* Category */0,
                       _0: {
                         name: match.name,
                         display: match.display,
-                        page: match.page + n | 0
+                        page: page
                       }
-                    });
+                    }, controller.signal);
       case /* Genre */1 :
           var match$1 = queryParam._0;
-          return Curry._1(setQueryParam, {
+          return Curry._2(loadMovies, {
                       TAG: /* Genre */1,
                       _0: {
                         id: match$1.id,
                         name: match$1.name,
                         display: match$1.display,
-                        page: match$1.page + n | 0,
+                        page: page,
                         sort_by: match$1.sort_by
                       }
-                    });
+                    }, controller.signal);
       case /* Search */2 :
-          var match$2 = queryParam._0;
-          return Curry._1(setQueryParam, {
+          return Curry._2(loadMovies, {
                       TAG: /* Search */2,
                       _0: {
-                        query: match$2.query,
-                        page: match$2.page + n | 0
+                        query: queryParam._0.query,
+                        page: page
                       }
-                    });
+                    }, controller.signal);
       default:
         return ;
     }
@@ -229,6 +229,49 @@ function MovieList(Props) {
     }
     
   };
+  var match$2 = React.useState(function () {
+        return null;
+      });
+  var setLastPoster = match$2[1];
+  var lastPoster = match$2[0];
+  var match$3 = React.useState(function () {
+        return 1;
+      });
+  var setPageToLoad = match$3[1];
+  var pageToLoad = match$3[0];
+  var setLastPosterRef = function (elem) {
+    Curry._1(setLastPoster, (function (param) {
+            return elem;
+          }));
+  };
+  var observer = React.useRef(new IntersectionObserver((function (entries, param) {
+              var entry = Belt_Array.get(entries, 0);
+              if (entry !== undefined && Caml_option.valFromOption(entry).isIntersecting) {
+                return Curry._1(setPageToLoad, (function (p) {
+                              return p + 1 | 0;
+                            }));
+              }
+              
+            })));
+  React.useEffect((function () {
+          if (pageToLoad <= totalPages) {
+            loadPage(pageToLoad);
+          }
+          
+        }), [pageToLoad]);
+  React.useEffect((function () {
+          var currentObserver = observer.current;
+          if (!(lastPoster == null)) {
+            currentObserver.observe(lastPoster);
+          }
+          return (function (param) {
+                    if (!(lastPoster == null)) {
+                      currentObserver.unobserve(lastPoster);
+                      return ;
+                    }
+                    
+                  });
+        }), [lastPoster]);
   return React.createElement("div", {
               className: "flex flex-col bg-white"
             }, React.createElement("div", {
@@ -241,35 +284,30 @@ function MovieList(Props) {
                   className: "flex flex-col items-center justify-center bg-white p-2"
                 }, React.createElement("ul", {
                       className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-center w-full relative"
-                    }, Belt_Array.map(movieList, (function (m) {
-                            return React.createElement("li", {
-                                        key: Util.itos(m.id) + currentPage.toString()
-                                      }, React.createElement(MovieList$Poster, {
-                                            movie: m
-                                          }));
-                          })))), React.createElement("div", {
-                  className: "flex gap-2 px-4 pt-[2rem]"
-                }, currentPage > 1 ? React.createElement("button", {
-                        className: "flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group",
-                        type: "button",
-                        onClick: (function (param) {
-                            loadPage(-1);
-                          })
-                      }, React.createElement(Solid.ArrowLeftIcon, {
-                            className: "h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
-                          }), React.createElement("span", undefined, "Page " + (currentPage - 1 | 0).toString() + " ")) : null, currentPage < totalPages ? React.createElement("button", {
-                        className: "flex gap-2 px-4 py-2 border-[1px] border-300 bg-300 text-900 rounded hover:bg-400 hover:text-50 group ml-auto",
-                        type: "button",
-                        onClick: (function (param) {
-                            loadPage(1);
-                          })
-                      }, React.createElement("span", undefined, "Page " + (currentPage + 1 | 0).toString() + " "), React.createElement(Solid.ArrowRightIcon, {
-                            className: "h-6 w-6 fill-klor-900 group-hover:fill-klor-50"
-                          })) : null), React.createElement(ErrorDialog.make, {
-                  isOpen: error.length > 0,
-                  errorMessage: error,
-                  onClose: onClose
-                }), loading ? React.createElement(LoadingDialog.make, {
+                    }, Belt_Array.mapWithIndex(movieList, (function (i, m) {
+                            if (i === (movieList.length - 1 | 0) && !loading && currentPage <= totalPages) {
+                              return React.createElement("li", {
+                                          key: Util.itos(m.id) + currentPage.toString(),
+                                          ref: setLastPosterRef
+                                        }, React.createElement(MovieList$Poster, {
+                                              movie: m
+                                            }));
+                            } else {
+                              return React.createElement("li", {
+                                          key: Util.itos(m.id) + currentPage.toString()
+                                        }, React.createElement(MovieList$Poster, {
+                                              movie: m
+                                            }));
+                            }
+                          })))), (currentPage - 1 | 0) === totalPages ? React.createElement("div", {
+                    className: "flex items-center justify-center w-full bg-900 gap-2 p-2"
+                  }, React.createElement("p", {
+                        className: "text-slate-50"
+                      }, "Amazing... you browsed all the movies!  😲")) : null, error.length > 0 ? React.createElement(ErrorDialog.make, {
+                    isOpen: error.length > 0,
+                    errorMessage: error,
+                    onClose: onClose
+                  }) : null, loading ? React.createElement(LoadingDialog.make, {
                     isOpen: loading,
                     onClose: onClose
                   }) : null);
@@ -281,6 +319,7 @@ export {
   string ,
   array ,
   Poster ,
+  isGenreRef ,
   make ,
 }
 /* react Not a pure module */
