@@ -1,6 +1,7 @@
 let {string, array} = module(React)
 
 type person_viewmodel = {
+  id: string,
   name: string,
   profileImagePath: string,
   biography: array<string>,
@@ -20,7 +21,7 @@ let getImgElem = (src, height, imageLoaded, setImageLoaded) =>
   <img
     className={`transition duration-1000 ${imageLoaded
         ? "opacity-100"
-        : "opacity-0"} pt-2 pr-4 pb-4 float-left lg:float-none w-auto`}
+        : "opacity-0"} pt-2 pr-4 pb-4 float-left w-auto`}
     src
     style={ReactDOM.Style.make(~height=Js.Int.toString(height) ++ "px", ())}
     alt="image"
@@ -74,6 +75,7 @@ let getAge = (person: PersonModel.person) => {
 
 @react.component
 let make = () => {
+  open HeadlessUI
   let isMedium = MediaQuery.useMediaQuery("(max-width: 900px)")
   let height = isMedium ? 280 : 376
 
@@ -100,9 +102,10 @@ let make = () => {
         profilePath != "" ? Links.getPosterImage_W370_H556_bestv2Link(profilePath) : ""
 
       setPersonVM(_ => Some({
+        id: person.id->Js.Int.toString,
         name: Js.Option.getWithDefault("🏃", person.name),
         profileImagePath,
-        biography: Util.getOrEmptyString(person.biography)->Js.String2.split("\n"),
+        biography: Util.getOrEmptyString(person.biography)->Js.String2.split("\n")->Array.keep(x => x !== ""),
         knownFor: Util.getOrEmptyString(person.known_for_department),
         born: Util.toLocaleString(~date=person.birthday),
         died: Util.toLocaleString(~date=person.deathday),
@@ -135,22 +138,22 @@ let make = () => {
 
   switch personVM {
   | Some(personVM) =>
-    <main className="flex flex-col items-center justify-center w-full p-2">
+    <main className="flex flex-col items-center justify-center w-full py-2">
       <Pulse show={loading} />
       <div>
-        <p className="block lg:hidden font-nav font-semibold text-[1.4rem] pb-1">
+        <p className="block lg:hidden font-nav font-semibold text-[1.4rem] pb-1 pl-4">
           {personVM.name->string}
         </p>
-        <div className="md:flex">
+        <div className="block px-4 py-2">
           {personVM.profileImagePath != ""
             ? getImgElem(personVM.profileImagePath, height, imageLoaded, setImageLoaded)
             : React.null}
           <div>
-            <p className="hidden lg:block font-nav font-semibold text-[1.4rem] pb-4">
+            <p className="hidden lg:block font-nav font-semibold text-[1.4rem] pb-2">
               {personVM.name->string}
             </p>
             {Belt.Array.map(personVM.biography, x =>
-              <p key={Js.String2.slice(x, ~from=0, ~to_=8)} className="pb-2 prose md:w-[50vw]">
+              <p key={Js.String2.slice(x, ~from=0, ~to_=32)} className="pb-2 prose-base w-auto md:w-[60vw]">
                 {x->string}
               </p>
             )->array}
@@ -182,6 +185,78 @@ let make = () => {
           </div>
           {isMedium ? getSocialLinks(personVM) : React.null}
         </div>
+      </div>
+      <div
+        id="movie_info_tab_container"
+        className="w-full flex flex-col items-center justify-center pt-8">
+        <Tab.Group>
+          {selectedIndex => {
+            <div className="flex flex-col w-full">
+              <Tab.List className="flex w-full flex-nowrap items-center justify-around">
+                {_ => {
+                  <>
+                    <Tab
+                      key={"knownfor"}
+                      className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300">
+                      {props =>
+                        <div
+                          className={`${props.selected
+                              ? "bg-300 text-900"
+                              : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
+                          {"KNOWN FOR"->string}
+                        </div>}
+                    </Tab>
+                    <Tab
+                      key={"credits"}
+                      className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300">
+                      {props =>
+                        <div
+                          className={`${props.selected
+                              ? "bg-300 text-900"
+                              : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
+                          {"CREDITS"->string}
+                        </div>}
+                    </Tab>
+                    <Tab
+                      key={"photos"}
+                      className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300">
+                      {props =>
+                        <div
+                          className={`${props.selected
+                              ? "bg-300 text-900"
+                              : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
+                          {"PHOTOS"->string}
+                        </div>}
+                    </Tab>
+                  </>
+                }}
+              </Tab.List>
+              <Tab.Panels className="pt-1">
+                {props => {
+                  <>
+                    <Tab.Panel key="knownfor-panel">
+                      {props => {
+                        <div className="flex w-full p-2">
+                          <KnownFor person />
+                        </div>
+                      }}
+                    </Tab.Panel>
+                    <Tab.Panel key="credits-panel">
+                      {props => {
+                        <div className="flex w-full p-2" />
+                      }}
+                    </Tab.Panel>
+                    <Tab.Panel key="photos-panel">
+                      {props => {
+                        <div className="flex w-full p-2" />
+                      }}
+                    </Tab.Panel>
+                  </>
+                }}
+              </Tab.Panels>
+            </div>
+          }}
+        </Tab.Group>
       </div>
       {Js.String2.length(error) > 0
         ? <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />

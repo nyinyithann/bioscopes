@@ -10,6 +10,7 @@ import * as Js_int from "rescript/lib/es6/js_int.js";
 import * as Twitter from "../social_media/Twitter.js";
 import * as $$Document from "../../hooks/Document.js";
 import * as Facebook from "../social_media/Facebook.js";
+import * as KnownFor from "./KnownFor.js";
 import * as Instagram from "../social_media/Instagram.js";
 import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
@@ -21,6 +22,7 @@ import * as WebsiteLink from "../social_media/WebsiteLink.js";
 import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../../providers/MoviesProvider.js";
 import * as StorylinePanel from "../detail_movie/StorylinePanel.js";
+import * as React$1 from "@headlessui/react";
 
 function string(prim) {
   return prim;
@@ -34,7 +36,7 @@ function getImgElem(src, height, imageLoaded, setImageLoaded) {
   return React.createElement("img", {
               className: "transition duration-1000 " + (
                 imageLoaded ? "opacity-100" : "opacity-0"
-              ) + " pt-2 pr-4 pb-4 float-left lg:float-none w-auto",
+              ) + " pt-2 pr-4 pb-4 float-left w-auto",
               style: {
                 height: height.toString() + "px"
               },
@@ -141,9 +143,12 @@ function Person(Props) {
             var profileImagePath = profilePath !== "" ? Links.getPosterImage_W370_H556_bestv2Link(profilePath) : "";
             Curry._1(setPersonVM, (function (param) {
                     return {
+                            id: person.id.toString(),
                             name: Js_option.getWithDefault("🏃", person.name),
                             profileImagePath: profileImagePath,
-                            biography: Util.getOrEmptyString(person.biography).split("\n"),
+                            biography: Belt_Array.keep(Util.getOrEmptyString(person.biography).split("\n"), (function (x) {
+                                    return x !== "";
+                                  })),
                             knownFor: Util.getOrEmptyString(person.known_for_department),
                             born: Util.toLocaleString(person.birthday),
                             died: Util.toLocaleString(person.deathday),
@@ -176,19 +181,19 @@ function Person(Props) {
   };
   if (personVM !== undefined) {
     return React.createElement("main", {
-                className: "flex flex-col items-center justify-center w-full p-2"
+                className: "flex flex-col items-center justify-center w-full py-2"
               }, React.createElement(Pulse.make, {
                     show: loading
                   }), React.createElement("div", undefined, React.createElement("p", {
-                        className: "block lg:hidden font-nav font-semibold text-[1.4rem] pb-1"
+                        className: "block lg:hidden font-nav font-semibold text-[1.4rem] pb-1 pl-4"
                       }, personVM.name), React.createElement("div", {
-                        className: "md:flex"
+                        className: "block px-4 py-2"
                       }, personVM.profileImagePath !== "" ? getImgElem(personVM.profileImagePath, height, match[0], match[1]) : null, React.createElement("div", undefined, React.createElement("p", {
-                                className: "hidden lg:block font-nav font-semibold text-[1.4rem] pb-4"
+                                className: "hidden lg:block font-nav font-semibold text-[1.4rem] pb-2"
                               }, personVM.name), Belt_Array.map(personVM.biography, (function (x) {
                                   return React.createElement("p", {
-                                              key: x.slice(0, 8),
-                                              className: "pb-2 prose md:w-[50vw]"
+                                              key: x.slice(0, 32),
+                                              className: "pb-2 prose-base w-auto md:w-[60vw]"
                                             }, x);
                                 })), React.createElement("div", {
                                 className: "flex flex-col items-start justify-start prose pt-6 w-[22rem]"
@@ -214,7 +219,79 @@ function Person(Props) {
                                 ) : null, personVM.placeOfBirth !== "" ? React.createElement(StorylinePanel.Pair.make, {
                                       title: "Place of Birth",
                                       value: personVM.placeOfBirth
-                                    }) : null), isMedium ? null : getSocialLinks(personVM)), isMedium ? getSocialLinks(personVM) : null)), error.length > 0 ? React.createElement(ErrorDialog.make, {
+                                    }) : null), isMedium ? null : getSocialLinks(personVM)), isMedium ? getSocialLinks(personVM) : null)), React.createElement("div", {
+                    className: "w-full flex flex-col items-center justify-center pt-8",
+                    id: "movie_info_tab_container"
+                  }, React.createElement(React$1.Tab.Group, {
+                        children: (function (selectedIndex) {
+                            return React.createElement("div", {
+                                        className: "flex flex-col w-full"
+                                      }, React.createElement(React$1.Tab.List, {
+                                            className: "flex w-full flex-nowrap items-center justify-around",
+                                            children: (function (param) {
+                                                return React.createElement(React.Fragment, undefined, React.createElement(React$1.Tab, {
+                                                                className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300",
+                                                                children: (function (props) {
+                                                                    return React.createElement("div", {
+                                                                                className: "" + (
+                                                                                  props.selected ? "bg-300 text-900" : ""
+                                                                                ) + " w-full h-full control-color flex items-center justify-center py-2 font-semibold"
+                                                                              }, "KNOWN FOR");
+                                                                  }),
+                                                                key: "knownfor"
+                                                              }), React.createElement(React$1.Tab, {
+                                                                className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300",
+                                                                children: (function (props) {
+                                                                    return React.createElement("div", {
+                                                                                className: "" + (
+                                                                                  props.selected ? "bg-300 text-900" : ""
+                                                                                ) + " w-full h-full control-color flex items-center justify-center py-2 font-semibold"
+                                                                              }, "CREDITS");
+                                                                  }),
+                                                                key: "credits"
+                                                              }), React.createElement(React$1.Tab, {
+                                                                className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300",
+                                                                children: (function (props) {
+                                                                    return React.createElement("div", {
+                                                                                className: "" + (
+                                                                                  props.selected ? "bg-300 text-900" : ""
+                                                                                ) + " w-full h-full control-color flex items-center justify-center py-2 font-semibold"
+                                                                              }, "PHOTOS");
+                                                                  }),
+                                                                key: "photos"
+                                                              }));
+                                              })
+                                          }), React.createElement(React$1.Tab.Panels, {
+                                            className: "pt-1",
+                                            children: (function (props) {
+                                                return React.createElement(React.Fragment, undefined, React.createElement(React$1.Tab.Panel, {
+                                                                children: (function (props) {
+                                                                    return React.createElement("div", {
+                                                                                className: "flex w-full p-2"
+                                                                              }, React.createElement(KnownFor.make, {
+                                                                                    person: person
+                                                                                  }));
+                                                                  }),
+                                                                key: "knownfor-panel"
+                                                              }), React.createElement(React$1.Tab.Panel, {
+                                                                children: (function (props) {
+                                                                    return React.createElement("div", {
+                                                                                className: "flex w-full p-2"
+                                                                              });
+                                                                  }),
+                                                                key: "credits-panel"
+                                                              }), React.createElement(React$1.Tab.Panel, {
+                                                                children: (function (props) {
+                                                                    return React.createElement("div", {
+                                                                                className: "flex w-full p-2"
+                                                                              });
+                                                                  }),
+                                                                key: "photos-panel"
+                                                              }));
+                                              })
+                                          }));
+                          })
+                      })), error.length > 0 ? React.createElement(ErrorDialog.make, {
                       isOpen: error.length > 0,
                       errorMessage: error,
                       onClose: onClose
