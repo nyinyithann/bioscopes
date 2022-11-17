@@ -95,7 +95,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                 let seg = bd.file_path->Util.getOrEmptyString
                 if !Util.isEmptyString(seg) {
                   <li key={seg} className="cursor-pointer" onClick={_ => slideBackdropImages(i)}>
-                    <LazyImageLite
+                    <LazyImage
                       alt="backdrop image"
                       placeholderPath={Links.placeholderImage}
                       src={Links.getPosterImageW533H300Bestv2Link(seg)}
@@ -125,7 +125,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                     key={bd.file_path->Util.getOrEmptyString}
                     className="cursor-pointer"
                     onClick={_ => slidePosterImages(i)}>
-                    <LazyImageLite
+                    <LazyImage
                       alt="poster image"
                       key={seg}
                       placeholderPath={Links.placeholderImage}

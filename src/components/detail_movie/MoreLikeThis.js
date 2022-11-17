@@ -4,7 +4,7 @@ import * as Util from "../../shared/Util.js";
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Js_option from "rescript/lib/es6/js_option.js";
-import * as MovieList from "../MovieList.js";
+import * as MovieList from "../movie_list/MovieList.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as ErrorDialog from "../ErrorDialog.js";
@@ -56,7 +56,7 @@ function MoreLikeThis(Props) {
   };
   var observer = React.useRef(new IntersectionObserver((function (entries, param) {
               var entry = Belt_Array.get(entries, 0);
-              if (entry !== undefined && Caml_option.valFromOption(entry).isIntersecting) {
+              if (entry !== undefined && Caml_option.valFromOption(entry).isIntersecting && !loading) {
                 return Curry._1(setPageToLoad, (function (p) {
                               return p + 1 | 0;
                             }));
@@ -85,7 +85,7 @@ function MoreLikeThis(Props) {
   return React.createElement("div", {
               className: "flex flex-col items-center justify-center bg-white"
             }, React.createElement("ul", {
-                  className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-center w-full relative"
+                  className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative"
                 }, Belt_Array.mapWithIndex(mlist, (function (i, m) {
                         if (i === (mlist.length - 1 | 0) && !loading && currentPage <= totalPages) {
                           return React.createElement("li", {
@@ -101,11 +101,11 @@ function MoreLikeThis(Props) {
                                           movie: m
                                         }));
                         }
-                      }))), React.createElement(ErrorDialog.make, {
-                  isOpen: error.length > 0,
-                  errorMessage: error,
-                  onClose: onClose
-                }));
+                      }))), error.length > 0 ? React.createElement(ErrorDialog.make, {
+                    isOpen: error.length > 0,
+                    errorMessage: error,
+                    onClose: onClose
+                  }) : null);
 }
 
 var make = MoreLikeThis;

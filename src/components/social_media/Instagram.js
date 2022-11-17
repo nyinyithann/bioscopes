@@ -6,6 +6,9 @@ import * as React from "react";
 function Instagram(Props) {
   var id = Props.id;
   var className = Props.className;
+  if (id === "") {
+    return null;
+  }
   var lnk = Links.getInstagramLink(id);
   return React.createElement("a", {
               "aria-label": "Link to Instagram",

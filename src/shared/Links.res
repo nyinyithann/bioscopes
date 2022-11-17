@@ -14,7 +14,8 @@ let getPosterImage_W370_H556_bestv2Link = (seg: string) =>
 let getOriginalBigImage = (seg: string) => `${originalImageBaseUrl}/${seg}`
 let getHeroImage = (seg: string) => `${imageBaseUrl}/w780/${seg}`
 
-let getImdbLink = (id: string) => `https://www.imdb.com/title/${id}`
+let getImdbLink = (id: string, type_: string) => `https://www.imdb.com/${type_}/${id}`
+
 let getTwitterLink = (id: string) => `https://twitter.com/${id}`
 let getFacebookLink = (id: string) => `https://www.facebook.com/${id}`
 let getInstagramLink = (id: string) => `https://instagram.com/${id}`

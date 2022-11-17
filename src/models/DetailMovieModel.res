@@ -6,20 +6,10 @@ type video = {
   type_?: string,
 }
 
-type image = {
-  aspect_ratio?: float,
-  height?: float,
-  iso_639_1?: string,
-  file_path?: string,
-  vote_average?: float,
-  vote_count?: int,
-  width?: float,
-}
-
 type images = {
-  backdrops?: array<image>,
-  logos?: array<image>,
-  posters?: array<image>,
+  backdrops?: array<ImageModel.image>,
+  logos?: array<ImageModel.image>,
+  posters?: array<ImageModel.image>,
 }
 
 type cast = {
@@ -144,20 +134,10 @@ module Decoder = {
     type_: ?Marshal.to_opt(. fields, "type", string),
   })
 
-  let image = object(fields => {
-    aspect_ratio: ?Marshal.to_opt(. fields, "aspect_ratio", float),
-    iso_639_1: ?Marshal.to_opt(. fields, "iso_639_1", string),
-    height: ?Marshal.to_opt(. fields, "height", float),
-    width: ?Marshal.to_opt(. fields, "width", float),
-    file_path: ?Marshal.to_opt(. fields, "file_path", string),
-    vote_average: ?Marshal.to_opt(. fields, "vote_average", float),
-    vote_count: ?Marshal.to_opt(. fields, "vote_count", int),
-  })
-
   let images = object(fields => {
-    backdrops: ?Marshal.to_opt(. fields, "backdrops", array(image)),
-    logos: ?Marshal.to_opt(. fields, "logos", array(image)),
-    posters: ?Marshal.to_opt(. fields, "posters", array(image)),
+    backdrops: ?Marshal.to_opt(. fields, "backdrops", array(ImageModel.ImageDecoder.image)),
+    logos: ?Marshal.to_opt(. fields, "logos", array(ImageModel.ImageDecoder.image)),
+    posters: ?Marshal.to_opt(. fields, "posters", array(ImageModel.ImageDecoder.image)),
   })
 
   let cast = object(fields => {

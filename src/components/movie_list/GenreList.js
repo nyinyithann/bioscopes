@@ -3,14 +3,13 @@
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
-import * as Loading from "./Loading.js";
-import * as MovieAPI from "../http/MovieAPI.js";
+import * as MovieAPI from "../../http/MovieAPI.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Caml_array from "rescript/lib/es6/caml_array.js";
-import * as GenreModel from "../models/GenreModel.js";
-import * as MovieModel from "../models/MovieModel.js";
+import * as GenreModel from "../../models/GenreModel.js";
+import * as MovieModel from "../../models/MovieModel.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
-import * as UrlQueryParam from "../routes/UrlQueryParam.js";
+import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 import * as React$1 from "@headlessui/react";
 import * as Solid from "@heroicons/react/solid";
 import * as Outline from "@heroicons/react/outline";
@@ -266,9 +265,9 @@ function GenreList(Props) {
         }), []);
   var tmp;
   if (typeof state === "number") {
-    tmp = React.createElement(Loading.make, {
-          className: "w-[4rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
-        });
+    tmp = React.createElement("p", {
+          className: "w-full text-left"
+        }, "...");
   } else if (state.TAG === /* Error */0) {
     tmp = React.createElement("div", {
           className: "flex flex-wrap w-full h-auto"

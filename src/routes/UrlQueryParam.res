@@ -2,14 +2,14 @@ type category_param = {name: string, display: string, page: int}
 type genre_param = {id: int, name: string, display: string, page: int, sort_by: string}
 type search_param = {query: string, page: int}
 type movie_tv_param = {id: string, media_type: string}
-type id_param = {id: string}
+type person_param = {id: string}
 
 type query_param =
   | Category(category_param)
   | Genre(genre_param)
   | Search(search_param)
   | Movie(movie_tv_param)
-  | Person(id_param)
+  | Person(person_param)
   | Void(string)
 
 module Converter_category_param = Marshal.Make({
@@ -94,10 +94,10 @@ module Converter_movie_tv_param = Marshal.Make({
   }
 })
 
-module Converter_id_param = Marshal.Make({
+module Converter_person_param = Marshal.Make({
   open! JsonCombinators
   open! JsonCombinators.Json.Decode
-  type t = id_param
+  type t = person_param
 
   let to = object(fields => {
     id: fields.required(. "id", string),
@@ -135,6 +135,11 @@ let useQueryParams = (): (query_param, query_param => unit) => {
     | Ok(p) => Movie(p)
     | Error(msg) => Void(msg)
     }
+  | (list{"person"}, q) =>
+    switch Converter_person_param.parse(. q) {
+    | Ok(p) => Person(p)
+    | Error(msg) => Void(msg)
+    }
   | _ => Void("Invalid Route")
   }
 
@@ -166,6 +171,13 @@ let useQueryParams = (): (query_param, query_param => unit) => {
         let seg =
           `/movie?` ++
           Converter_movie_tv_param.stringfy(. m)->URLSearchParams.make->URLSearchParams.toString
+        RescriptReactRouter.push(seg)
+      }
+
+    | Person(p) => {
+        let seg =
+          `/person?` ++
+          Converter_person_param.stringfy(. p)->URLSearchParams.make->URLSearchParams.toString
         RescriptReactRouter.push(seg)
       }
 

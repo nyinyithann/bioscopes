@@ -25,8 +25,8 @@ function getHeroImage(seg) {
   return "" + imageBaseUrl + "/w780/" + seg + "";
 }
 
-function getImdbLink(id) {
-  return "https://www.imdb.com/title/" + id + "";
+function getImdbLink(id, type_) {
+  return "https://www.imdb.com/" + type_ + "/" + id + "";
 }
 
 function getTwitterLink(id) {

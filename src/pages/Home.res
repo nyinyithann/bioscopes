@@ -3,7 +3,7 @@ let {string} = module(React)
 open ReactBinding
 let lazyMovieList = React.createElement(
   Lazy.lazy_(() =>
-    Lazy.import_("../components/MovieList.js")->Js.Promise.then_(
+    Lazy.import_("../components/movie_list/MovieList.js")->Js.Promise.then_(
       comp => Js.Promise.resolve({"default": comp["make"]}),
       _,
     )
@@ -23,7 +23,7 @@ let lazyMovie = React.createElement(
 
 let lazyPerson = React.createElement(
   Lazy.lazy_(() =>
-    Lazy.import_("../components/Person.js")->Js.Promise.then_(
+    Lazy.import_("../components/person/Person.js")->Js.Promise.then_(
       comp => Js.Promise.resolve({"default": comp["make"]}),
       _,
     )

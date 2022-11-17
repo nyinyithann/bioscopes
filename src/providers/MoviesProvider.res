@@ -3,6 +3,7 @@ type state = {
   movies: MovieModel.movielist,
   detail_movie: DetailMovieModel.detail_movie,
   recommendedMovies: MovieModel.movielist,
+  person: PersonModel.person,
   loading: bool,
   error: string,
 }
@@ -17,6 +18,7 @@ type action =
       MovieModel.movielist,
     )
   | SuccessRecommendedMovies(MovieModel.movielist)
+  | SuccessPerson(PersonModel.person)
   | ClearError
   | ClearAll
 
@@ -50,11 +52,32 @@ let emptyDetailMovie: DetailMovieModel.detail_movie = {
   images: ?None,
 }
 
+let emptyPerson: PersonModel.person = {
+  adult: ?None,
+  also_known_as: ?None,
+  biography: ?None,
+  birthday: ?None,
+  deathday: ?None,
+  gender: ?None,
+  homepage: ?None,
+  id: PersonModel.initial_invalid_id,
+  imdb_id: ?None,
+  known_for_department: ?None,
+  name: ?None,
+  place_of_birth: ?None,
+  popularity: ?None,
+  profile_path: ?None,
+  images: ?None,
+  external_ids: ?None,
+  combined_credits: ?None,
+}
+
 let initialState = {
   apiParams: Category({name: "popular", display: "Popular", page: 1}),
   movies: emptyMovieList,
   detail_movie: emptyDetailMovie,
   recommendedMovies: emptyMovieList,
+  person: emptyPerson,
   loading: false,
   error: "",
 }
@@ -63,11 +86,13 @@ type context_value = {
   movies: MovieModel.movielist,
   detail_movie: DetailMovieModel.detail_movie,
   recommendedMovies: MovieModel.movielist,
+  person: PersonModel.person,
   loading: bool,
   error: string,
   loadMovies: (~apiParams: UrlQueryParam.query_param, ~signal: Fetch.AbortSignal.t) => unit,
   loadDetailMovie: (~apiParams: UrlQueryParam.query_param, ~signal: Fetch.AbortSignal.t) => unit,
   loadRecommendedMovies: (~movieId: int, ~page: int, ~signal: Fetch.AbortSignal.t) => unit,
+  loadPerson: (~apiParams: UrlQueryParam.query_param, ~signal: Fetch.AbortSignal.t) => unit,
   apiParams: UrlQueryParam.query_param,
   clearError: unit => unit,
   clearAll: unit => unit,
@@ -78,11 +103,13 @@ module MoviesContext = {
     movies: emptyMovieList,
     detail_movie: emptyDetailMovie,
     recommendedMovies: emptyMovieList,
+    person: emptyPerson,
     loading: false,
     error: "",
     loadMovies: (~apiParams as _, ~signal as _) => (),
     loadDetailMovie: (~apiParams as _, ~signal as _) => (),
     loadRecommendedMovies: (~movieId as _, ~page as _, ~signal as _) => (),
+    loadPerson: (~apiParams as _, ~signal as _) => (),
     apiParams: initialState.apiParams,
     clearError: () => (),
     clearAll: () => (),
@@ -97,6 +124,7 @@ module MoviesContext = {
   }
 }
 
+
 let reducer = (state: state, action) => {
   switch action {
   | Error(msg) => {
@@ -104,6 +132,7 @@ let reducer = (state: state, action) => {
       movies: state.movies,
       detail_movie: state.detail_movie,
       recommendedMovies: state.recommendedMovies,
+      person: state.person,
       loading: false,
       error: msg,
     }
@@ -112,6 +141,7 @@ let reducer = (state: state, action) => {
       movies: state.movies,
       detail_movie: state.detail_movie,
       recommendedMovies: state.recommendedMovies,
+      person: state.person,
       loading: true,
       error: "",
     }
@@ -122,13 +152,14 @@ let reducer = (state: state, action) => {
         page: ?movies.page,
         total_pages: ?movies.total_pages,
         total_results: ?movies.total_results,
-        results: Belt.Array.concat(
+        results: MovieModel.unique(
           Js.Option.getWithDefault([], state.movies.results),
           Js.Option.getWithDefault([], movies.results),
         ),
       },
       detail_movie: emptyDetailMovie,
       recommendedMovies: emptyMovieList,
+      person: emptyPerson,
       loading: false,
       error: "",
     }
@@ -140,11 +171,12 @@ let reducer = (state: state, action) => {
         page: ?recommendedMovies.page,
         total_pages: ?recommendedMovies.total_pages,
         total_results: ?recommendedMovies.total_results,
-        results: Belt.Array.concat(
+        results: MovieModel.unique(
           Js.Option.getWithDefault([], state.recommendedMovies.results),
-          Js.Option.getWithDefault([], recommendedMovies.results)->Belt.Array.sliceToEnd(1),
+          Js.Option.getWithDefault([], recommendedMovies.results)
         ),
       },
+      person: emptyPerson,
       loading: false,
       error: "",
     }
@@ -153,6 +185,16 @@ let reducer = (state: state, action) => {
       movies: emptyMovieList,
       detail_movie: detailMovie,
       recommendedMovies,
+      person: emptyPerson,
+      loading: false,
+      error: "",
+    }
+  | SuccessPerson(person) => {
+      apiParams: Void("person"),
+      movies: emptyMovieList,
+      detail_movie: emptyDetailMovie,
+      recommendedMovies: emptyMovieList,
+      person,
       loading: false,
       error: "",
     }
@@ -161,6 +203,7 @@ let reducer = (state: state, action) => {
       movies: state.movies,
       detail_movie: state.detail_movie,
       recommendedMovies: state.recommendedMovies,
+      person: emptyPerson,
       loading: false,
       error: "",
     }
@@ -169,6 +212,7 @@ let reducer = (state: state, action) => {
       movies: emptyMovieList,
       detail_movie: emptyDetailMovie,
       recommendedMovies: emptyMovieList,
+      person: emptyPerson,
       loading: false,
       error: "",
     }
@@ -190,6 +234,8 @@ let getApiPath = apiParams => {
     `${apiBaseUrl}/${apiVersion}/search/multi?query=${query}&page=${Js.Int.toString(page)}`
   | Movie({id, media_type}) =>
     `${apiBaseUrl}/${apiVersion}/${media_type}/${id}?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en`
+  | Person({id}) =>
+    `${apiBaseUrl}/${apiVersion}/person/${id}?language=en-US&append_to_response=images,combined_credits,external_ids&include_image_language=en`
   | _ => ""
   }
 }
@@ -220,7 +266,7 @@ let loadMovieInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signa
   }
 
   dispatch(Loading(apiParams))
-  MovieAPI.getMovies(~apiPath, ~callback, ~signal, ())->ignore
+  MovieAPI.getData(~apiPath, ~callback, ~signal, ())->ignore
 }
 
 let loadDetailMovieInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signal) => {
@@ -282,12 +328,39 @@ let loadRecommendedMoviesInternal = (dispatch, ~movieId: int, ~page: int, ~signa
           dispatch(Error(errors))
         }
 
-      | _ => dispatch(Error("Unexpected error occured while reteriving recommended movie data."))
+      | _ =>
+        dispatch(
+          Error(
+            "Unexpected error occured while reteriving recommended movie data." ++
+            Js.Json.stringify(json),
+          ),
+        )
       }
     }
   }
 
-  MovieAPI.getMovies(~apiPath, ~callback, ~signal, ())->ignore
+  MovieAPI.getData(~apiPath, ~callback, ~signal, ())->ignore
+}
+
+let loadPersonInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signal) => {
+  let apiPath = getApiPath(apiParams)
+
+  let callback = result => {
+    switch result {
+    | Ok(json) =>
+      switch PersonModel.Decoder.decode(. ~json) {
+      | Ok(p) => dispatch(SuccessPerson(p))
+      | Error(msg) => dispatch(Error(msg))
+      }
+    | Error(json) =>
+      dispatch(
+        Error("Unexpected error occured while reteriving person data." ++ Js.Json.stringify(json)),
+      )
+    }
+  }
+
+  dispatch(Loading(apiParams))
+  MovieAPI.getData(~apiPath, ~callback, ~signal, ())->ignore
 }
 
 @react.component
@@ -299,16 +372,19 @@ let make = (~children) => {
     () => loadRecommendedMoviesInternal(dispatch),
     [dispatch],
   )
+  let loadPerson = React.useMemo1(() => loadPersonInternal(dispatch), [dispatch])
 
   let value = {
     movies: state.movies,
     detail_movie: state.detail_movie,
     recommendedMovies: state.recommendedMovies,
+    person: state.person,
     loading: state.loading,
     error: state.error,
     loadMovies,
     loadDetailMovie,
     loadRecommendedMovies,
+    loadPerson,
     apiParams: state.apiParams,
     clearAll: () => dispatch(ClearAll),
     clearError: () => dispatch(ClearError),

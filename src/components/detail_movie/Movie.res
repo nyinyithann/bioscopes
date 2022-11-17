@@ -9,17 +9,18 @@ let make = () => {
     loadDetailMovie,
     clearError,
     recommendedMovies,
+    apiParams,
   } = MoviesProvider.useMoviesContext()
   let {videoPlayState, stop} = YoutubePlayerProvider.useVideoPlayerContext()
   let windowSize: Window.window_size = Window.useWindowSize()
   let (queryParam, _) = UrlQueryParam.useQueryParams()
 
-  React.useMemo1(() => {
-    switch detail_movie.title {
-    | Some(t) => DomBinding.setTitle(DomBinding.htmlDoc, t)
-    | None => DomBinding.setTitle(DomBinding.htmlDoc, "Bioscopes")
-    }
-  }, [detail_movie])
+  Document.useTitle(Js.Option.getWithDefault("🏃", detail_movie.title))
+
+  let voidLoading = switch apiParams {
+  | Void(_) => true
+  | _ => false
+  }
 
   React.useEffect0(() => {
     let controller = Fetch.AbortController.make()
@@ -43,7 +44,7 @@ let make = () => {
 
   <>
     {loading
-      ? React.null
+      ? <Pulse show={loading && !voidLoading} />
       : <>
           <main className="flex border-t-[2px] border-slate-200 relative">
             <div className="flex flex-col w-full h-full">
@@ -179,6 +180,8 @@ let make = () => {
             />
           </ModalDialog>
         </>}
-    <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
+    {Js.String2.length(error) > 0
+      ? <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
+      : React.null}
   </>
 }

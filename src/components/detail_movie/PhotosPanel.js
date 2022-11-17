@@ -5,13 +5,13 @@ import * as Curry from "rescript/lib/es6/curry.js";
 import * as Links from "../../shared/Links.js";
 import * as React from "react";
 import * as $$Window from "../../hooks/Window.js";
+import * as LazyImage from "../LazyImage.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as MediaQuery from "../../hooks/MediaQuery.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as ModalDialog from "../ModalDialog.js";
-import * as NotAvailable from "./NotAvailable.js";
+import * as NotAvailable from "../NotAvailable.js";
 import * as PhotosSlider from "../PhotosSlider.js";
-import * as LazyImageLite from "../LazyImageLite.js";
 import * as Outline from "@heroicons/react/outline";
 
 function string(prim) {
@@ -121,7 +121,7 @@ function PhotosPanel(Props) {
                                                                 };
                                                         }));
                                                 })
-                                            }, React.createElement(LazyImageLite.make, {
+                                            }, React.createElement(LazyImage.make, {
                                                   className: "w-full h-full border-[2px] border-slate-200 rounded-md",
                                                   placeholderPath: Links.placeholderImage,
                                                   alt: "backdrop image",
@@ -160,7 +160,7 @@ function PhotosPanel(Props) {
                                                                 };
                                                         }));
                                                 })
-                                            }, React.createElement(LazyImageLite.make, {
+                                            }, React.createElement(LazyImage.make, {
                                                   className: "w-full h-full border-[2px] border-slate-200 rounded-md",
                                                   placeholderPath: Links.placeholderImage,
                                                   alt: "poster image",

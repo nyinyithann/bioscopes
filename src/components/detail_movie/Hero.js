@@ -246,29 +246,29 @@ function Hero(Props) {
                             ) + " absolute z-50 w-auto font-nav font-extrabold text-900 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-70"
                           }, Util.toStringElement(tagline)), size.width === 100 ? React.createElement("div", {
                             className: "relative flex-inline"
-                          }, Util.isEmptyString(imgPathRef.current) ? null : React.createElement("img", {
-                                  className: "w-full transition duration-1000 ml-auto z-0 " + (
-                                    loaded ? "opacity-100" : "opacity-0"
-                                  ) + "",
-                                  style: imageStyle,
-                                  alt: "Poster",
-                                  src: imgPathRef.current,
-                                  onError: (function (e) {
-                                      Curry._1(setShowHeroText, (function (param) {
-                                              return true;
-                                            }));
-                                      if (e.target.src !== Links.placeholderImage) {
-                                        e.target.src = Links.placeholderImage;
-                                        return ;
-                                      }
-                                      
-                                    }),
-                                  onLoad: (function (e) {
-                                      Curry._1(setLoaded, (function (param) {
-                                              return true;
-                                            }));
-                                    })
-                                }), React.createElement(Hero$WatchTrailerSmallButton, {
+                          }, React.createElement("img", {
+                                className: "w-full transition duration-1000 ml-auto z-0 " + (
+                                  loaded ? "opacity-100" : "opacity-0"
+                                ) + "",
+                                style: imageStyle,
+                                alt: "Poster",
+                                src: imgPathRef.current,
+                                onError: (function (e) {
+                                    Curry._1(setShowHeroText, (function (param) {
+                                            return true;
+                                          }));
+                                    if (e.target.src !== Links.placeholderImage) {
+                                      e.target.src = Links.placeholderImage;
+                                      return ;
+                                    }
+                                    
+                                  }),
+                                onLoad: (function (e) {
+                                    Curry._1(setLoaded, (function (param) {
+                                            return true;
+                                          }));
+                                  })
+                              }), React.createElement(Hero$WatchTrailerSmallButton, {
                                 movie: movie
                               })) : null, size.width !== 100 ? React.createElement("div", {
                             className: "z-0 relative flex w-full h-full bg-black transition-all duration-300",

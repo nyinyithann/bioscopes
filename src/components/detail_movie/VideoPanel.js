@@ -7,7 +7,7 @@ import * as React from "react";
 import * as Loading from "../Loading.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
-import * as NotAvailable from "./NotAvailable.js";
+import * as NotAvailable from "../NotAvailable.js";
 import * as YoutubePlayerProvider from "../../providers/YoutubePlayerProvider.js";
 import * as Solid from "@heroicons/react/solid";
 

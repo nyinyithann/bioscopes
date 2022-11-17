@@ -26,7 +26,7 @@ module Poster = {
       className="cursor-pointer transform duration-300 hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.01] hover:rounded group"
       role="button"
       onClick>
-      <LazyImageLite
+      <LazyImage
         alt="poster image"
         placeholderPath={Links.placeholderImage}
         src={imgLink}
@@ -35,7 +35,7 @@ module Poster = {
         lazyOffset={200.}
       />
       <p
-        className="text-base break-words transform duration-300 pt-[0.3rem] flex text-left text-900 truncate overflow-hidden p-1">
+        className="text-base break-words transform duration-300 pt-[0.3rem] flex text-left text-900  p-1">
         {Util.getOrEmptyString(movie.title)->string}
       </p>
       <div className="pb-2">
@@ -166,7 +166,7 @@ let make = () => {
     Webapi.IntersectionObserver.make((entries, _) => {
       switch Belt.Array.get(entries, 0) {
       | Some(entry) =>
-        if Webapi.IntersectionObserver.IntersectionObserverEntry.isIntersecting(entry) {
+        if Webapi.IntersectionObserver.IntersectionObserverEntry.isIntersecting(entry) && !loading {
           setPageToLoad(p => {
             p + 1
           })
@@ -215,7 +215,7 @@ let make = () => {
     </div>
     <div className="flex flex-col items-center justify-center bg-white p-2">
       <ul
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-center w-full relative">
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative">
         {movieList
         ->Belt.Array.mapWithIndex((i, m) => {
           if i == Belt.Array.length(movieList) - 1 && !loading && currentPage <= totalPages {
@@ -232,14 +232,7 @@ let make = () => {
         })
         ->array}
       </ul>
-      {loading
-        ? <div className="flex w-full items-center justify-center p-2">
-            <div
-              className="flex items-center justify-center p-1 h-[1.2rem] w-[1.2rem] rounded-full bg-900 animate-ping">
-              <span className="h-[1rem] w-[1rem] rounded-full bg-300 animate-pulse" />
-            </div>
-          </div>
-        : React.null}
+      <Pulse show={loading} />
     </div>
     {currentPage - 1 == totalPages
       ? <div className="flex items-center justify-center w-full bg-900 gap-2 p-2">
@@ -251,6 +244,5 @@ let make = () => {
     {Js.String2.length(error) > 0
       ? <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
       : React.null}
-    /* {loading ? <LoadingDialog isOpen={loading} onClose /> : React.null} */
   </div>
 }

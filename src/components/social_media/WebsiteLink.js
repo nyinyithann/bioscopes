@@ -6,23 +6,27 @@ import * as React from "react";
 function WebsiteLink(Props) {
   var link = Props.link;
   var className = Props.className;
-  return React.createElement("a", {
-              "aria-label": "Link to Website",
-              href: link,
-              rel: "noopener",
-              target: "_blank"
-            }, React.createElement("svg", {
-                  className: className,
-                  fill: "none",
-                  stroke: "currentColor",
-                  strokeWidth: Util.itos(2),
-                  viewBox: "0 0 24 24",
-                  xmlns: "http://www.w3.org/2000/svg"
-                }, React.createElement("path", {
-                      d: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round"
-                    })));
+  if (link === "") {
+    return null;
+  } else {
+    return React.createElement("a", {
+                "aria-label": "Link to Website",
+                href: link,
+                rel: "noopener",
+                target: "_blank"
+              }, React.createElement("svg", {
+                    className: className,
+                    fill: "none",
+                    stroke: "currentColor",
+                    strokeWidth: Util.itos(2),
+                    viewBox: "0 0 24 24",
+                    xmlns: "http://www.w3.org/2000/svg"
+                  }, React.createElement("path", {
+                        d: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1",
+                        strokeLinecap: "round",
+                        strokeLinejoin: "round"
+                      })));
+  }
 }
 
 var make = WebsiteLink;

@@ -110,18 +110,7 @@ module GenreLinks = {
 @react.component
 let make = (~movie: DetailMovieModel.detail_movie) => {
   let sotryline = Util.getOrEmptyString(movie.overview)->Util.toStringElement
-  let releasedDate = switch movie.release_date {
-  | Some(x) =>
-    try {
-      Js.Date.fromString(x)->DomBinding.toLocaleString(
-        "en-GB",
-        {"day": "numeric", "month": "long", "year": "numeric"},
-      )
-    } catch {
-    | _ => ""
-    }
-  | None => ""
-  }
+  let releasedDate = Util.toLocaleString(~date = movie.release_date)
 
   let runtime = switch movie.runtime {
   | Some(x) if x == 0. => ""
@@ -132,24 +121,24 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
 
   | None => ""
   }
-  let budget = Util.getOrFloatZero(movie.budget)->DomBinding.flotToLocaleString("en-GB")
-  let revenue = Util.getOrFloatZero(movie.revenue)->DomBinding.flotToLocaleString("en-GB")
+  let budget = Util.getOrFloatZero(movie.budget)->DomBinding.floatToLocaleString("en-GB")
+  let revenue = Util.getOrFloatZero(movie.revenue)->DomBinding.floatToLocaleString("en-GB")
   let status = Util.getOrEmptyString(movie.status)
   let imdbId =
     movie.external_ids
-    ->Belt.Option.flatMap(x => Some(Util.getOrEmptyString(x.imdb_id)))
+    ->Belt.Option.map(x => (Util.getOrEmptyString(x.imdb_id)))
     ->Util.getOrEmptyString
   let twitterId =
     movie.external_ids
-    ->Belt.Option.flatMap(x => Some(Util.getOrEmptyString(x.twitter_id)))
+    ->Belt.Option.map(x => (Util.getOrEmptyString(x.twitter_id)))
     ->Util.getOrEmptyString
   let facebookId =
     movie.external_ids
-    ->Belt.Option.flatMap(x => Some(Util.getOrEmptyString(x.facebook_id)))
+    ->Belt.Option.map(x => (Util.getOrEmptyString(x.facebook_id)))
     ->Util.getOrEmptyString
   let insgagramId =
     movie.external_ids
-    ->Belt.Option.flatMap(x => Some(Util.getOrEmptyString(x.instagram_id)))
+    ->Belt.Option.map(x => (Util.getOrEmptyString(x.instagram_id)))
     ->Util.getOrEmptyString
   let website = movie.homepage->Util.getOrEmptyString
 
@@ -169,7 +158,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
       | Some(img) => {
           let seg = Util.getOrEmptyString(img.file_path)
           if !Util.isEmptyString(seg) {
-            <LazyImageLite
+            <LazyImage
               alt="poster image"
               placeholderPath={Links.placeholderImage}
               src={Links.getPosterImage_W370_H556_bestv2Link(seg)}
@@ -209,7 +198,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
         <Twitter id={twitterId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
         <Facebook id={facebookId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
         <Instagram id={insgagramId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-        <Imdb id={imdbId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+        <Imdb id={imdbId} type_={"title"} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
         <WebsiteLink
           link={website} className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
         />

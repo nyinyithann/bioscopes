@@ -4,8 +4,11 @@ import * as Hero from "./Hero.js";
 import * as Util from "../../shared/Util.js";
 import * as Casts from "./Casts.js";
 import * as Curry from "rescript/lib/es6/curry.js";
+import * as Pulse from "../Pulse.js";
 import * as React from "react";
 import * as $$Window from "../../hooks/Window.js";
+import * as $$Document from "../../hooks/Document.js";
+import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as VideoPanel from "./VideoPanel.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as ErrorDialog from "../ErrorDialog.js";
@@ -29,6 +32,7 @@ function Movie(Props) {
   var clearError = match.clearError;
   var loadDetailMovie = match.loadDetailMovie;
   var error = match.error;
+  var loading = match.loading;
   var detail_movie = match.detail_movie;
   var match$1 = YoutubePlayerProvider.useVideoPlayerContext(undefined);
   var stop = match$1.stop;
@@ -36,14 +40,9 @@ function Movie(Props) {
   var windowSize = $$Window.useWindowSize(undefined);
   var match$2 = UrlQueryParam.useQueryParams(undefined);
   var queryParam = match$2[0];
-  React.useMemo((function () {
-          var t = detail_movie.title;
-          if (t !== undefined) {
-            window.document.title = t;
-          } else {
-            window.document.title = "Bioscopes";
-          }
-        }), [detail_movie]);
+  $$Document.useTitle(Js_option.getWithDefault("🏃", detail_movie.title));
+  var voidLoading;
+  voidLoading = match.apiParams.TAG === /* Void */5 ? true : false;
   React.useEffect((function () {
           var controller = new AbortController();
           if (queryParam.TAG === /* Movie */3) {
@@ -67,8 +66,10 @@ function Movie(Props) {
     
   };
   var tmp;
-  if (match.loading) {
-    tmp = null;
+  if (loading) {
+    tmp = React.createElement(Pulse.make, {
+          show: loading && !voidLoading
+        });
   } else {
     var movieId = detail_movie.id;
     tmp = React.createElement(React.Fragment, undefined, React.createElement("main", {
@@ -203,11 +204,11 @@ function Movie(Props) {
                   height: "" + (windowSize.height - 32 | 0).toString() + "px"
                 })));
   }
-  return React.createElement(React.Fragment, undefined, tmp, React.createElement(ErrorDialog.make, {
-                  isOpen: error.length > 0,
-                  errorMessage: error,
-                  onClose: onClose
-                }));
+  return React.createElement(React.Fragment, undefined, tmp, error.length > 0 ? React.createElement(ErrorDialog.make, {
+                    isOpen: error.length > 0,
+                    errorMessage: error,
+                    onClose: onClose
+                  }) : null);
 }
 
 var make = Movie;

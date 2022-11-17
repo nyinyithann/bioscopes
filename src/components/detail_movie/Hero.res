@@ -184,26 +184,24 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
             </span>}
         {size.width == 100
           ? <div className="relative flex-inline">
-              {!Util.isEmptyString(imgPathRef.current)
-                ? <img
-                    alt="Poster"
-                    className={`w-full transition duration-1000 ml-auto z-0 ${loaded
-                        ? "opacity-100"
-                        : "opacity-0"}`}
-                    src={imgPathRef.current}
-                    style={imageStyle}
-                    onLoad={e => {
-                      setLoaded(_ => true)
-                    }}
-                    onError={e => {
-                      setShowHeroText(_ => true)
-                      open ReactEvent.Media
-                      if target(e)["src"] !== Links.placeholderImage {
-                        target(e)["src"] = Links.placeholderImage
-                      }
-                    }}
-                  />
-                : React.null}
+              <img
+                alt="Poster"
+                className={`w-full transition duration-1000 ml-auto z-0 ${loaded
+                    ? "opacity-100"
+                    : "opacity-0"}`}
+                src={imgPathRef.current}
+                style={imageStyle}
+                onLoad={e => {
+                  setLoaded(_ => true)
+                }}
+                onError={e => {
+                  setShowHeroText(_ => true)
+                  open ReactEvent.Media
+                  if target(e)["src"] !== Links.placeholderImage {
+                    target(e)["src"] = Links.placeholderImage
+                  }
+                }}
+              />
               <WatchTrailerSmallButton movie />
             </div>
           : React.null}

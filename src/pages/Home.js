@@ -2,10 +2,10 @@
 
 import * as React from "react";
 import * as NotFound from "./NotFound.js";
-import * as SearchBox from "../components/SearchBox.js";
+import * as SearchBox from "../components/movie_list/SearchBox.js";
 import * as ThemeMenu from "../components/ThemeMenu.js";
 import * as Js_promise from "rescript/lib/es6/js_promise.js";
-import * as GithubButton from "../components/GithubButton.js";
+import * as GithubButton from "../components/social_media/GithubButton.js";
 import * as MoviesProvider from "../providers/MoviesProvider.js";
 import * as SuspensionLoader from "../components/SuspensionLoader.js";
 import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js";
@@ -17,7 +17,7 @@ function string(prim) {
 }
 
 var lazyMovieList = React.createElement(React.lazy(function (param) {
-          var __x = import("../components/MovieList.js");
+          var __x = import("../components/movie_list/MovieList.js");
           return Js_promise.then_((function (comp) {
                         return Promise.resolve({
                                     default: comp.make
@@ -35,7 +35,7 @@ var lazyMovie = React.createElement(React.lazy(function (param) {
         }), undefined);
 
 var lazyPerson = React.createElement(React.lazy(function (param) {
-          var __x = import("../components/Person.js");
+          var __x = import("../components/person/Person.js");
           return Js_promise.then_((function (comp) {
                         return Promise.resolve({
                                     default: comp.make

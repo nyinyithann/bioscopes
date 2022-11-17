@@ -2,6 +2,7 @@
 
 import * as Marshal from "../shared/Marshal.js";
 import * as GenreModel from "./GenreModel.js";
+import * as ImageModel from "./ImageModel.js";
 import * as Json$JsonCombinators from "@glennsl/rescript-json-combinators/src/Json.js";
 import * as Json_Decode$JsonCombinators from "@glennsl/rescript-json-combinators/src/Json_Decode.js";
 
@@ -15,23 +16,11 @@ var video = Json_Decode$JsonCombinators.object(function (fields) {
             };
     });
 
-var image = Json_Decode$JsonCombinators.object(function (fields) {
-      return {
-              aspect_ratio: Marshal.to_opt(fields, "aspect_ratio", Json_Decode$JsonCombinators.$$float),
-              height: Marshal.to_opt(fields, "height", Json_Decode$JsonCombinators.$$float),
-              iso_639_1: Marshal.to_opt(fields, "iso_639_1", Json_Decode$JsonCombinators.string),
-              file_path: Marshal.to_opt(fields, "file_path", Json_Decode$JsonCombinators.string),
-              vote_average: Marshal.to_opt(fields, "vote_average", Json_Decode$JsonCombinators.$$float),
-              vote_count: Marshal.to_opt(fields, "vote_count", Json_Decode$JsonCombinators.$$int),
-              width: Marshal.to_opt(fields, "width", Json_Decode$JsonCombinators.$$float)
-            };
-    });
-
 var images = Json_Decode$JsonCombinators.object(function (fields) {
       return {
-              backdrops: Marshal.to_opt(fields, "backdrops", Json_Decode$JsonCombinators.array(image)),
-              logos: Marshal.to_opt(fields, "logos", Json_Decode$JsonCombinators.array(image)),
-              posters: Marshal.to_opt(fields, "posters", Json_Decode$JsonCombinators.array(image))
+              backdrops: Marshal.to_opt(fields, "backdrops", Json_Decode$JsonCombinators.array(ImageModel.ImageDecoder.image)),
+              logos: Marshal.to_opt(fields, "logos", Json_Decode$JsonCombinators.array(ImageModel.ImageDecoder.image)),
+              posters: Marshal.to_opt(fields, "posters", Json_Decode$JsonCombinators.array(ImageModel.ImageDecoder.image))
             };
     });
 
@@ -173,7 +162,6 @@ function decode(json) {
 
 var Decoder = {
   video: video,
-  image: image,
   images: images,
   cast: cast,
   crew: crew,

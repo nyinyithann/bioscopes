@@ -173,10 +173,7 @@ let make = () => {
   <div
     className="flex w-[10rem] items-center justify-center text-base text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300">
     {switch state {
-    | Loading =>
-      <Loading
-        className="w-[4rem] h-[3rem] stroke-[0.2rem] p-3 stroke-klor-200 text-700 dark:fill-slate-600 dark:stroke-slate-400 dark:text-900 m-auto"
-      />
+    | Loading => <p className="w-full text-left"> {"..."->React.string} </p>
     | Error(errorMessage) =>
       <div className="flex flex-wrap w-full h-auto"> {errorMessage->React.string} </div>
     | Success(genres) =>

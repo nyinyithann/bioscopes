@@ -100,7 +100,7 @@ function from$4(o) {
         };
 }
 
-var Converter_id_param = Marshal.Make({
+var Converter_person_param = Marshal.Make({
       to: to$4,
       from: from$4
     });
@@ -146,6 +146,23 @@ function useQueryParams(param) {
                 });
           }
           break;
+      case "person" :
+          if (match.tl) {
+            queryParam = {
+              TAG: /* Void */5,
+              _0: "Invalid Route"
+            };
+          } else {
+            var p$2 = Converter_person_param.parse(match$1);
+            queryParam = p$2.TAG === /* Ok */0 ? ({
+                  TAG: /* Person */4,
+                  _0: p$2._0
+                }) : ({
+                  TAG: /* Void */5,
+                  _0: p$2._0
+                });
+          }
+          break;
       case "search" :
           if (match.tl) {
             queryParam = {
@@ -153,13 +170,13 @@ function useQueryParams(param) {
               _0: "Invalid Route"
             };
           } else {
-            var p$2 = Converter_search_param.parse(match$1);
-            queryParam = p$2.TAG === /* Ok */0 ? ({
+            var p$3 = Converter_search_param.parse(match$1);
+            queryParam = p$3.TAG === /* Ok */0 ? ({
                   TAG: /* Search */2,
-                  _0: p$2._0
+                  _0: p$3._0
                 }) : ({
                   TAG: /* Void */5,
-                  _0: p$2._0
+                  _0: p$3._0
                 });
           }
           break;
@@ -179,13 +196,13 @@ function useQueryParams(param) {
       }
     };
   } else {
-    var p$3 = Converter_category_param.parse(match$1);
-    queryParam = p$3.TAG === /* Ok */0 ? ({
+    var p$4 = Converter_category_param.parse(match$1);
+    queryParam = p$4.TAG === /* Ok */0 ? ({
           TAG: /* Category */0,
-          _0: p$3._0
+          _0: p$4._0
         }) : ({
           TAG: /* Void */5,
-          _0: p$3._0
+          _0: p$4._0
         });
   }
   var setQueryParam = function (params) {
@@ -199,6 +216,7 @@ function useQueryParams(param) {
       case /* Movie */3 :
           return RescriptReactRouter.push("/movie?" + new URLSearchParams(Converter_movie_tv_param.stringfy(params._0)).toString());
       case /* Person */4 :
+          return RescriptReactRouter.push("/person?" + new URLSearchParams(Converter_person_param.stringfy(params._0)).toString());
       case /* Void */5 :
           return ;
       
@@ -215,7 +233,7 @@ export {
   Converter_genre_param ,
   Converter_search_param ,
   Converter_movie_tv_param ,
-  Converter_id_param ,
+  Converter_person_param ,
   useQueryParams ,
 }
 /* Converter_category_param Not a pure module */

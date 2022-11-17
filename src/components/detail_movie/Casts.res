@@ -31,18 +31,28 @@ let getCaptionElement = (cast: DetailMovieModel.cast) => {
 let make = (~movie: DetailMovieModel.detail_movie) => {
   let isMobile = MediaQuery.useMediaQuery("(max-width: 600px)")
   let casts = getCasts(~movie)
+  let (_, setQueryParam) = UrlQueryParam.useQueryParams()
+
   if Util.isEmptyArray(casts) {
     <NotAvailable thing={"casts"} />
   } else {
     <ul
-      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full list-none">
+      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none items-start">
       {casts
       ->Belt.Array.map(cast => {
         let id = Util.getOrIntZero(cast.id)->Js.Int.toString
         let seg = cast.profile_path->Util.getOrEmptyString
         if !Util.isEmptyString(seg) {
-          <li key={id} className="cursor-pointer flex flex-col w-full gap-2">
-            <LazyImageLite
+          <li
+            key={id}
+            className="cursor-pointer flex flex-col w-full gap-2"
+            role="button"
+            onClick={e => {
+              open ReactEvent.Mouse
+              preventDefault(e)
+              setQueryParam(UrlQueryParam.Person({id: id}))
+            }}>
+            <LazyImage
               alt="backdrop image"
               placeholderPath={Links.placeholderImage}
               src={Links.getPosterImage_W370_H556_bestv2Link(seg)}

@@ -100,3 +100,12 @@ module MovieListDecoder = {
     Json.decode(json, movieList)
   }
 }
+
+module HashableMovie = unpack(
+  Belt.Id.hashableU(~hash=(. m: movie) => land(m.id, 65536), ~eq=(. x, y) => x.id == y.id)
+)
+
+let unique = (arr1, arr2) => {
+  open Belt.HashSet
+  fromArray(Belt.Array.concat(arr1, arr2), ~id=module(HashableMovie))->toArray
+}

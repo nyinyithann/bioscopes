@@ -2,7 +2,7 @@
 
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
-import * as UrlQueryParam from "../routes/UrlQueryParam.js";
+import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 import * as Solid from "@heroicons/react/solid";
 
 function SearchBox(Props) {

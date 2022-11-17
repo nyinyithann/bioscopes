@@ -6,6 +6,9 @@ import * as React from "react";
 function Twitter(Props) {
   var id = Props.id;
   var className = Props.className;
+  if (id === "") {
+    return null;
+  }
   var lnk = Links.getTwitterLink(id);
   return React.createElement("a", {
               "aria-label": "Link to Twitter",

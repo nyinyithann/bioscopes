@@ -8,11 +8,11 @@ import * as React from "react";
 import * as Twitter from "../social_media/Twitter.js";
 import * as Facebook from "../social_media/Facebook.js";
 import * as Instagram from "../social_media/Instagram.js";
+import * as LazyImage from "../LazyImage.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as MovieModel from "../../models/MovieModel.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as WebsiteLink from "../social_media/WebsiteLink.js";
-import * as LazyImageLite from "../LazyImageLite.js";
 import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 
 function string(prim) {
@@ -183,26 +183,11 @@ var GenreLinks = {
 function StorylinePanel(Props) {
   var movie = Props.movie;
   var sotryline = Util.toStringElement(Util.getOrEmptyString(movie.overview));
-  var x = movie.release_date;
-  var releasedDate;
-  if (x !== undefined) {
-    try {
-      releasedDate = new Date(x).toLocaleString("en-GB", {
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-          });
-    }
-    catch (exn){
-      releasedDate = "";
-    }
-  } else {
-    releasedDate = "";
-  }
-  var x$1 = movie.runtime;
+  var releasedDate = Util.toLocaleString(movie.release_date);
+  var x = movie.runtime;
   var runtime;
-  if (x$1 !== undefined && x$1 !== 0) {
-    var t = x$1 | 0;
+  if (x !== undefined && x !== 0) {
+    var t = x | 0;
     runtime = "" + Util.itos(t / 60 | 0) + "h " + Util.itos(t % 60) + "min";
   } else {
     runtime = "";
@@ -210,16 +195,16 @@ function StorylinePanel(Props) {
   var budget = Util.getOrFloatZero(movie.budget).toLocaleString("en-GB");
   var revenue = Util.getOrFloatZero(movie.revenue).toLocaleString("en-GB");
   var status = Util.getOrEmptyString(movie.status);
-  var imdbId = Util.getOrEmptyString(Belt_Option.flatMap(movie.external_ids, (function (x) {
+  var imdbId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
               return Util.getOrEmptyString(x.imdb_id);
             })));
-  var twitterId = Util.getOrEmptyString(Belt_Option.flatMap(movie.external_ids, (function (x) {
+  var twitterId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
               return Util.getOrEmptyString(x.twitter_id);
             })));
-  var facebookId = Util.getOrEmptyString(Belt_Option.flatMap(movie.external_ids, (function (x) {
+  var facebookId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
               return Util.getOrEmptyString(x.facebook_id);
             })));
-  var insgagramId = Util.getOrEmptyString(Belt_Option.flatMap(movie.external_ids, (function (x) {
+  var insgagramId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
               return Util.getOrEmptyString(x.instagram_id);
             })));
   var website = Util.getOrEmptyString(movie.homepage);
@@ -232,7 +217,7 @@ function StorylinePanel(Props) {
   var tmp;
   if (img !== undefined) {
     var seg = Util.getOrEmptyString(img.file_path);
-    tmp = Util.isEmptyString(seg) ? null : React.createElement(LazyImageLite.make, {
+    tmp = Util.isEmptyString(seg) ? null : React.createElement(LazyImage.make, {
             className: "h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto",
             placeholderPath: Links.placeholderImage,
             alt: "poster image",
@@ -295,6 +280,7 @@ function StorylinePanel(Props) {
                           className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
                         }), React.createElement(Imdb.make, {
                           id: imdbId,
+                          type_: "title",
                           className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
                         }), React.createElement(WebsiteLink.make, {
                           link: website,

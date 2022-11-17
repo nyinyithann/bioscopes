@@ -7,7 +7,7 @@ import * as Loading from "./Loading.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import ReactLazyLoad from "react-lazy-load";
 
-function LazyImageLite(Props) {
+function LazyImage(Props) {
   var className = Props.className;
   var placeholderPath = Props.placeholderPath;
   var alt = Props.alt;
@@ -55,7 +55,7 @@ function LazyImageLite(Props) {
                 }));
 }
 
-var make = LazyImageLite;
+var make = LazyImage;
 
 export {
   make ,

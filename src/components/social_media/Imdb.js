@@ -5,8 +5,12 @@ import * as React from "react";
 
 function Imdb(Props) {
   var id = Props.id;
+  var type_ = Props.type_;
   var className = Props.className;
-  var lnk = Links.getImdbLink(id);
+  if (id === "") {
+    return null;
+  }
+  var lnk = Links.getImdbLink(id, type_);
   return React.createElement("a", {
               "aria-label": "Link to Imdb",
               href: lnk,

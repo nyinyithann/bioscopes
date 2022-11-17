@@ -3,8 +3,8 @@
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
-import * as MovieModel from "../models/MovieModel.js";
-import * as UrlQueryParam from "../routes/UrlQueryParam.js";
+import * as MovieModel from "../../models/MovieModel.js";
+import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 import * as React$1 from "@headlessui/react";
 import * as Solid from "@heroicons/react/solid";
 

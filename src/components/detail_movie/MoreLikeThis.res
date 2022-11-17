@@ -36,7 +36,7 @@ let make = (~movieId: int) => {
     Webapi.IntersectionObserver.make((entries, _) => {
       switch Belt.Array.get(entries, 0) {
       | Some(entry) =>
-        if Webapi.IntersectionObserver.IntersectionObserverEntry.isIntersecting(entry) {
+        if Webapi.IntersectionObserver.IntersectionObserverEntry.isIntersecting(entry) && !loading {
           setPageToLoad(p => {
             p + 1
           })
@@ -75,7 +75,7 @@ let make = (~movieId: int) => {
 
   <div className="flex flex-col items-center justify-center bg-white">
     <ul
-      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-center w-full relative">
+      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative">
       {mlist
       ->Belt.Array.mapWithIndex((i, m) => {
         if i == Belt.Array.length(mlist) - 1 && !loading && currentPage <= totalPages {
@@ -92,6 +92,8 @@ let make = (~movieId: int) => {
       })
       ->array}
     </ul>
-    <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
+    {Js.String2.length(error) > 0
+      ? <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
+      : React.null}
   </div>
 }

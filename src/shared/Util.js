@@ -47,6 +47,22 @@ function isEmptyArray(arr) {
   return arr.length === 0;
 }
 
+function toLocaleString(date) {
+  if (date === undefined) {
+    return "";
+  }
+  try {
+    return new Date(date).toLocaleString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+              });
+  }
+  catch (exn){
+    return "";
+  }
+}
+
 export {
   getOrEmptyString ,
   getOrIntZero ,
@@ -60,5 +76,6 @@ export {
   stof ,
   isEmptyString ,
   isEmptyArray ,
+  toLocaleString ,
 }
 /* No side effect */

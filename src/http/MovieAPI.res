@@ -30,13 +30,11 @@ let catchPromiseFault: Promise.t<result<Promise.t<Js.Json.t>, Promise.t<Js.Json.
             },
           ),
         )->resolve
-      | e => {
-          Js.log(e)
+      | _ => {
           Error(Promise.resolve(defaultFaultMsg()))->resolve
         }
       }
-    | e => {
-        Js.log(e)
+    | _ => {
         Error(Promise.resolve(defaultFaultMsg()))->resolve
       }
     }
@@ -135,58 +133,7 @@ let getMultipleDataset2 = (
   })
 }
 
-/* careful to use this method. it' will throws error if callback array is out of bound. */
-/* let getMultipleDataset = ( */
-/* ~apiPaths: array<string>, */
-/* ~callbacks: array<result<Js.Json.t, Js.Json.t> => unit>, */
-/* ~signal=?, */
-/* (), */
-/* ) => { */
-/* open Belt */
-/* Promise.all( */
-/* apiPaths->Array.map(p => */
-/* fetch( */
-/* p, */
-/* { */
-/* method: #GET, */
-/* headers: Headers.fromArray([contentType, authorization]), */
-/* ?signal, */
-/* }, */
-/* ) */
-/* ->checkResponseStatus */
-/* ->catchPromiseFault */
-/* ), */
-/* )->then(results => { */
-/* results */
-/* ->Array.mapWithIndex((i, result) => { */
-/* switch result { */
-/* | Ok(p) => */
-/* p */
-/* ->thenResolve( */
-/* data => { */
-/* Array.getExn(callbacks, i)(Ok(data)) */
-/* resolve() */
-/* }, */
-/* ) */
-/* ->ignore */
-/* | Error(msg) => */
-/* msg */
-/* ->thenResolve( */
-/* err => { */
-/* Array.getExn(callbacks, i)(Error(err)) */
-/* resolve() */
-/* }, */
-/* ) */
-/* ->ignore */
-/* } */
-/* resolve() */
-/* }) */
-/* ->ignore */
-/* resolve() */
-/* }) */
-/* } */
-
-let getMovies = (
+let getData = (
   ~apiPath: string,
   ~callback: result<Js.Json.t, Js.Json.t> => unit,
   ~signal=?,
