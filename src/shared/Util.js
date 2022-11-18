@@ -47,14 +47,15 @@ function isEmptyArray(arr) {
   return arr.length === 0;
 }
 
-function toLocaleString(date) {
+function toLocaleString(date, monthTypeOpt, param) {
+  var monthType = monthTypeOpt !== undefined ? monthTypeOpt : "long";
   if (date === undefined) {
     return "";
   }
   try {
     return new Date(date).toLocaleString("en-GB", {
                 day: "numeric",
-                month: "long",
+                month: monthType,
                 year: "numeric"
               });
   }

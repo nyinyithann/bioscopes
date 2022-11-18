@@ -109,8 +109,8 @@ let make = () => {
         ->Js.String2.split("\n")
         ->Array.keep(x => x !== ""),
         knownFor: Util.getOrEmptyString(person.known_for_department),
-        born: Util.toLocaleString(~date=person.birthday),
-        died: Util.toLocaleString(~date=person.deathday),
+        born: Util.toLocaleString(~date=person.birthday, ()),
+        died: Util.toLocaleString(~date=person.deathday, ()),
         age: getAge(person),
         placeOfBirth: Util.getOrEmptyString(person.place_of_birth),
         imdbId: person.external_ids

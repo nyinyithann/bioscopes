@@ -242,7 +242,7 @@ function GenreList(Props) {
                   TAG: /* Category */0,
                   _0: {
                     name: genre.name,
-                    display: genre.name,
+                    display: getDisplayName(genre),
                     page: 1
                   }
                 });

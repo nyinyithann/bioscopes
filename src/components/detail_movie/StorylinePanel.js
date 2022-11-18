@@ -183,7 +183,7 @@ var GenreLinks = {
 function StorylinePanel(Props) {
   var movie = Props.movie;
   var sotryline = Util.toStringElement(Util.getOrEmptyString(movie.overview));
-  var releasedDate = Util.toLocaleString(movie.release_date);
+  var releasedDate = Util.toLocaleString(movie.release_date, undefined, undefined);
   var x = movie.runtime;
   var runtime;
   if (x !== undefined && x !== 0) {

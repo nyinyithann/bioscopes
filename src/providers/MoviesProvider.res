@@ -124,7 +124,6 @@ module MoviesContext = {
   }
 }
 
-
 let reducer = (state: state, action) => {
   switch action {
   | Error(msg) => {
@@ -163,6 +162,7 @@ let reducer = (state: state, action) => {
       loading: false,
       error: "",
     }
+
   | SuccessRecommendedMovies(recommendedMovies) => {
       apiParams: Void("recommendedMovies"),
       movies: emptyMovieList,
@@ -173,7 +173,7 @@ let reducer = (state: state, action) => {
         total_results: ?recommendedMovies.total_results,
         results: MovieModel.unique(
           Js.Option.getWithDefault([], state.recommendedMovies.results),
-          Js.Option.getWithDefault([], recommendedMovies.results)
+          Js.Option.getWithDefault([], recommendedMovies.results),
         ),
       },
       person: emptyPerson,
@@ -373,7 +373,6 @@ let make = (~children) => {
     [dispatch],
   )
   let loadPerson = React.useMemo1(() => loadPersonInternal(dispatch), [dispatch])
-
   let value = {
     movies: state.movies,
     detail_movie: state.detail_movie,

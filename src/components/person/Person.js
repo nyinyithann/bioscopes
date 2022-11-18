@@ -146,8 +146,8 @@ function Person(Props) {
                     return x !== "";
                   })),
             knownFor: Util.getOrEmptyString(person.known_for_department),
-            born: Util.toLocaleString(person.birthday),
-            died: Util.toLocaleString(person.deathday),
+            born: Util.toLocaleString(person.birthday, undefined, undefined),
+            died: Util.toLocaleString(person.deathday, undefined, undefined),
             age: getAge(person),
             placeOfBirth: Util.getOrEmptyString(person.place_of_birth),
             imdbId: Util.getOrEmptyString(Belt_Option.map(person.external_ids, (function (x) {

@@ -79,28 +79,33 @@ let make = () => {
         if Js.String2.toLowerCase(display) == "upcoming" {
           let msg = switch movies.dates {
           | Some(ds) =>
-            switch (ds.maximum, ds.minimum) {
-            | (Some(mx), Some(mi)) => `${display} (${mi} ~ ${mx})`
-            | _ => display
-            }
-          | None => display
+            `(${Util.toLocaleString(
+                ~date=ds.maximum,
+                ~monthType="short",
+                (),
+              )} ~ ${Util.toLocaleString(~date=ds.minimum, ~monthType="short", ())})`
+          | None => ""
           }
           viewingTitleRef.current = msg
         } else {
-          viewingTitleRef.current = display
+          viewingTitleRef.current = ""
         }
         DomBinding.setTitle(DomBinding.htmlDoc, display ++ " Movies")
         isGenreRef.contents = false
       }
 
     | Genre({display}) => {
-        viewingTitleRef.current = display
+        viewingTitleRef.current = ""
         DomBinding.setTitle(DomBinding.htmlDoc, display ++ " Movies")
         isGenreRef.contents = true
       }
 
-    | Search({query}) => {
-        viewingTitleRef.current = `Search: '${query}'`
+    | Search(_) => {
+        if Belt.Array.length(movieList) == 0 {
+          viewingTitleRef.current = "No search results!"
+        } else {
+          viewingTitleRef.current = ""
+        }
         DomBinding.setTitle(DomBinding.htmlDoc, viewingTitleRef.current)
         isGenreRef.contents = false
       }
@@ -206,8 +211,11 @@ let make = () => {
   <div className="flex flex-col bg-white">
     <div
       className="flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200">
-      <div>
+      <div className="flex items-center justify-center gap-2">
         <GenreList />
+        {viewingTitleRef.current != ""
+          ? <span className="text-[0.9rem] text-900"> {viewingTitleRef.current->string} </span>
+          : React.null}
       </div>
       <div className={`${isGenreRef.contents ? "flex" : "hidden"} justify-start ml-auto pr-4`}>
         <FilterBox />
@@ -234,7 +242,7 @@ let make = () => {
       </ul>
       <Pulse show={loading} />
     </div>
-    {currentPage - 1 == totalPages
+    {currentPage - 1 == totalPages && Belt.Array.length(movieList) > 0
       ? <div className="flex items-center justify-center w-full bg-900 gap-2 p-2">
           <p className="text-slate-50">
             {"Amazing... you browsed all the movies!  😲"->string}

@@ -67,23 +67,19 @@ let make = () => {
   }
 
   <div className="flex flex-col w-full h-full">
-    <div className="h-auto flex flex-col z-50 relative">
+    <div className="h-auto flex w-full flex-col z-50 relative">
       <div
         id="navbar"
         className="flex items-center w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0 shadow-md">
-        <div className="pl-1 mr-auto">
+        <div className="pl-2 mr-auto">
           <NavLink title={"Home"} />
         </div>
-        <div
-          id="search-colorswatch-container"
-          className="flex flex-1 pl-[4px] sm:pl-4 items-center justify-between sm:justify-end gap-2">
+        <div id="search-colorswatch-container" className="flex w-full items-center px-2 sm:items-end md:w-[30rem]">
           <SearchBox />
-          <div
-            id="colorswatch-container"
-            className="pr-2 place-items-start flex items-center gap-2 z-[50]">
-            <ThemeMenu />
-            <GithubButton />
-          </div>
+        </div>
+        <div id="colorswatch-container" className="flex items-center justify-center gap-2 pr-2">
+          <ThemeMenu />
+          <GithubButton />
         </div>
       </div>
       <div className="z-30 bg-white">

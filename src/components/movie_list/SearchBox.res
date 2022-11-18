@@ -6,15 +6,16 @@ let make = () => {
   let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
   let inputRef = React.useRef(Js.Nullable.null)
 
-  React.useMemo2(() => {
+  React.useEffect2(() => {
     switch queryParam {
-    | Search({query}) =>
-      switch Js.Nullable.toOption(inputRef.current) {
+    | Search({query}) => switch Js.Nullable.toOption(inputRef.current) {
       | Some(elem) => setValue(elem, query)
       | None => ()
       }
+
     | _ => ()
     }
+    None
   }, (queryParam, inputRef.current))
 
   let handleKeyDown = e => {
@@ -43,7 +44,7 @@ let make = () => {
 
   <div
     id="search-container"
-    className="relative w-[16rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center">
+    className="relative text-slate-500 focus-within:text-slate-600 flex items-center w-full">
     <div className="pointer-events-none absolute inset-y-0 left-1 flex items-center">
       <Heroicons.Solid.SearchIcon className="h-5 w-5 fill-klor-400" />
     </div>
@@ -54,7 +55,7 @@ let make = () => {
       placeholder="Search"
       type_="search"
       name="search"
-      maxLength={128}
+      maxLength={64}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
     />

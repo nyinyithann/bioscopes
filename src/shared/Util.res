@@ -15,13 +15,13 @@ let stof = float_of_string
 let isEmptyString = str => Js.String2.length(str) == 0
 let isEmptyArray = arr => Js.Array2.length(arr) == 0
 
-let toLocaleString = (~date: option<string>) => {
+let toLocaleString = (~date: option<string>, ~monthType="long", ()) => {
   switch date {
   | Some(x) =>
     try {
       Js.Date.fromString(x)->DomBinding.toLocaleString(
         "en-GB",
-        {"day": "numeric", "month": "long", "year": "numeric"},
+        {"day": "numeric", "month": monthType, "year": "numeric"},
       )
     } catch {
     | _ => ""
@@ -29,4 +29,3 @@ let toLocaleString = (~date: option<string>) => {
   | None => ""
   }
 }
-

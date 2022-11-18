@@ -7,10 +7,9 @@ switch querySelector("#root") {
 | None => ()
 | Some(root) =>
   render(
-    /* <React.StrictMode> */
-    /* <App /> */
-    /* </React.StrictMode>, */
-    <App />,
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
     root,
   )
 }

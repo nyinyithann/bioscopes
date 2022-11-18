@@ -110,7 +110,7 @@ module GenreLinks = {
 @react.component
 let make = (~movie: DetailMovieModel.detail_movie) => {
   let sotryline = Util.getOrEmptyString(movie.overview)->Util.toStringElement
-  let releasedDate = Util.toLocaleString(~date = movie.release_date)
+  let releasedDate = Util.toLocaleString(~date=movie.release_date, ())
 
   let runtime = switch movie.runtime {
   | Some(x) if x == 0. => ""
@@ -126,19 +126,19 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
   let status = Util.getOrEmptyString(movie.status)
   let imdbId =
     movie.external_ids
-    ->Belt.Option.map(x => (Util.getOrEmptyString(x.imdb_id)))
+    ->Belt.Option.map(x => Util.getOrEmptyString(x.imdb_id))
     ->Util.getOrEmptyString
   let twitterId =
     movie.external_ids
-    ->Belt.Option.map(x => (Util.getOrEmptyString(x.twitter_id)))
+    ->Belt.Option.map(x => Util.getOrEmptyString(x.twitter_id))
     ->Util.getOrEmptyString
   let facebookId =
     movie.external_ids
-    ->Belt.Option.map(x => (Util.getOrEmptyString(x.facebook_id)))
+    ->Belt.Option.map(x => Util.getOrEmptyString(x.facebook_id))
     ->Util.getOrEmptyString
   let insgagramId =
     movie.external_ids
-    ->Belt.Option.map(x => (Util.getOrEmptyString(x.instagram_id)))
+    ->Belt.Option.map(x => Util.getOrEmptyString(x.instagram_id))
     ->Util.getOrEmptyString
   let website = movie.homepage->Util.getOrEmptyString
 

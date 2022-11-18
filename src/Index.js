@@ -10,7 +10,9 @@ import '../style/main.css';
 var root = document.querySelector("#root");
 
 if (!(root == null)) {
-  var prim0 = React.createElement(App.make, {});
+  var prim0 = React.createElement(React.StrictMode, {
+        children: React.createElement(App.make, {})
+      });
   ReactDom.render(prim0, root);
 }
 

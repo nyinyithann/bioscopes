@@ -111,29 +111,25 @@ function MovieList(Props) {
                 var display = queryParam._0.display;
                 if (display.toLowerCase() === "upcoming") {
                   var ds = movies.dates;
-                  var msg;
-                  if (ds !== undefined) {
-                    var match = ds.maximum;
-                    var match$1 = ds.minimum;
-                    msg = match !== undefined && match$1 !== undefined ? "" + display + " (" + match$1 + " ~ " + match + ")" : display;
-                  } else {
-                    msg = display;
-                  }
+                  var msg = ds !== undefined ? "(" + Util.toLocaleString(ds.maximum, "short", undefined) + " ~ " + Util.toLocaleString(ds.minimum, "short", undefined) + ")" : "";
                   viewingTitleRef.current = msg;
                 } else {
-                  viewingTitleRef.current = display;
+                  viewingTitleRef.current = "";
                 }
                 window.document.title = display + " Movies";
                 isGenreRef.contents = false;
                 return ;
             case /* Genre */1 :
-                var display$1 = queryParam._0.display;
-                viewingTitleRef.current = display$1;
-                window.document.title = display$1 + " Movies";
+                viewingTitleRef.current = "";
+                window.document.title = queryParam._0.display + " Movies";
                 isGenreRef.contents = true;
                 return ;
             case /* Search */2 :
-                viewingTitleRef.current = "Search: '" + queryParam._0.query + "'";
+                if (movieList.length === 0) {
+                  viewingTitleRef.current = "No search results!";
+                } else {
+                  viewingTitleRef.current = "";
+                }
                 window.document.title = viewingTitleRef.current;
                 isGenreRef.contents = false;
                 return ;
@@ -276,7 +272,11 @@ function MovieList(Props) {
               className: "flex flex-col bg-white"
             }, React.createElement("div", {
                   className: "flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200"
-                }, React.createElement("div", undefined, React.createElement(GenreList.make, {})), React.createElement("div", {
+                }, React.createElement("div", {
+                      className: "flex items-center justify-center gap-2"
+                    }, React.createElement(GenreList.make, {}), viewingTitleRef.current !== "" ? React.createElement("span", {
+                            className: "text-[0.9rem] text-900"
+                          }, viewingTitleRef.current) : null), React.createElement("div", {
                       className: "" + (
                         isGenreRef.contents ? "flex" : "hidden"
                       ) + " justify-start ml-auto pr-4"
@@ -301,7 +301,7 @@ function MovieList(Props) {
                             }
                           }))), React.createElement(Pulse.make, {
                       show: loading
-                    })), (currentPage - 1 | 0) === totalPages ? React.createElement("div", {
+                    })), (currentPage - 1 | 0) === totalPages && movieList.length !== 0 ? React.createElement("div", {
                     className: "flex items-center justify-center w-full bg-900 gap-2 p-2"
                   }, React.createElement("p", {
                         className: "text-slate-50"

@@ -10,14 +10,13 @@ function SearchBox(Props) {
   var setQueryParam = match[1];
   var queryParam = match[0];
   var inputRef = React.useRef(null);
-  React.useMemo((function () {
-          if (queryParam.TAG !== /* Search */2) {
-            return ;
-          }
-          var elem = inputRef.current;
-          if (!(elem == null)) {
-            elem.value = queryParam._0.query;
-            return ;
+  React.useEffect((function () {
+          if (queryParam.TAG === /* Search */2) {
+            var elem = inputRef.current;
+            if (!(elem == null)) {
+              elem.value = queryParam._0.query;
+            }
+            
           }
           
         }), [
@@ -57,7 +56,7 @@ function SearchBox(Props) {
     
   };
   return React.createElement("div", {
-              className: "relative w-[16rem] sm:w-[24rem] md:w-[28rem] text-slate-500 focus-within:text-slate-600 flex items-center",
+              className: "relative text-slate-500 focus-within:text-slate-600 flex items-center w-full",
               id: "search-container"
             }, React.createElement("div", {
                   className: "pointer-events-none absolute inset-y-0 left-1 flex items-center"
@@ -67,7 +66,7 @@ function SearchBox(Props) {
                   ref: inputRef,
                   className: "block w-full pl-[2rem] placeholder-klor-400 outline-none ring-0 border-t-0 border-r-0 border-l-0 border-b-[1px] border-b-400 hover:border-b-500 focus:placeholder-slate-500 focus:outline-none focus:ring-0 text-900 active:ring-0 active:outline-none rounded-b-md",
                   id: "search-field",
-                  maxLength: 128,
+                  maxLength: 64,
                   name: "search",
                   placeholder: "Search",
                   type: "search",

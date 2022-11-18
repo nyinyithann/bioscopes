@@ -159,7 +159,7 @@ let make = () => {
 
   let onClick = React.useCallback0((genre: GenreModel.genre) => {
     if genre.id < 0 {
-      setQueryParam(Category({name: genre.name, display: genre.name, page: 1}))
+      setQueryParam(Category({name: genre.name, display: getDisplayName(genre), page: 1}))
     }
     if genre.id > 0 {
       let sort_by = switch queryParam {
