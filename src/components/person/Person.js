@@ -106,7 +106,6 @@ function getAge(person) {
 
 function Person(Props) {
   var isMedium = MediaQuery.useMediaQuery("(max-width: 900px)");
-  var height = isMedium ? 280 : 376;
   var match = React.useState(function () {
         return false;
       });
@@ -118,11 +117,7 @@ function Person(Props) {
   var error = match$2.error;
   var loading = match$2.loading;
   var person = match$2.person;
-  var match$3 = React.useState(function () {
-        
-      });
-  var setPersonVM = match$3[1];
-  var personVM = match$3[0];
+  var personVM = React.useRef(undefined);
   React.useEffect((function () {
           var controller = new AbortController();
           if (queryParam.TAG === /* Person */4) {
@@ -137,40 +132,38 @@ function Person(Props) {
                     controller.abort("Cancel the request");
                   });
         }), []);
-  React.useEffect((function () {
-          if (person.id !== PersonModel.initial_invalid_id) {
-            var profilePath = Util.getOrEmptyString(person.profile_path);
-            var profileImagePath = profilePath !== "" ? Links.getPosterImage_W370_H556_bestv2Link(profilePath) : "";
-            Curry._1(setPersonVM, (function (param) {
-                    return {
-                            id: person.id.toString(),
-                            name: Js_option.getWithDefault("🏃", person.name),
-                            profileImagePath: profileImagePath,
-                            biography: Belt_Array.keep(Util.getOrEmptyString(person.biography).split("\n"), (function (x) {
-                                    return x !== "";
-                                  })),
-                            knownFor: Util.getOrEmptyString(person.known_for_department),
-                            born: Util.toLocaleString(person.birthday),
-                            died: Util.toLocaleString(person.deathday),
-                            age: getAge(person),
-                            placeOfBirth: Util.getOrEmptyString(person.place_of_birth),
-                            imdbId: Util.getOrEmptyString(Belt_Option.map(person.external_ids, (function (x) {
-                                        return Util.getOrEmptyString(x.imdb_id);
-                                      }))),
-                            twitterId: Util.getOrEmptyString(Belt_Option.map(person.external_ids, (function (x) {
-                                        return Util.getOrEmptyString(x.twitter_id);
-                                      }))),
-                            facebookId: Util.getOrEmptyString(Belt_Option.map(person.external_ids, (function (x) {
-                                        return Util.getOrEmptyString(x.facebook_id);
-                                      }))),
-                            instagramId: Util.getOrEmptyString(Belt_Option.map(person.external_ids, (function (x) {
-                                        return Util.getOrEmptyString(x.instagram_id);
-                                      }))),
-                            websiteLink: Util.getOrEmptyString(person.homepage)
-                          };
-                  }));
+  React.useMemo((function () {
+          if (person.id === PersonModel.initial_invalid_id) {
+            return ;
           }
-          
+          var profilePath = Util.getOrEmptyString(person.profile_path);
+          var profileImagePath = profilePath !== "" ? Links.getPosterImage_W370_H556_bestv2Link(profilePath) : "";
+          personVM.current = {
+            id: person.id.toString(),
+            name: Js_option.getWithDefault("🏃", person.name),
+            profileImagePath: profileImagePath,
+            biography: Belt_Array.keep(Util.getOrEmptyString(person.biography).split("\n"), (function (x) {
+                    return x !== "";
+                  })),
+            knownFor: Util.getOrEmptyString(person.known_for_department),
+            born: Util.toLocaleString(person.birthday),
+            died: Util.toLocaleString(person.deathday),
+            age: getAge(person),
+            placeOfBirth: Util.getOrEmptyString(person.place_of_birth),
+            imdbId: Util.getOrEmptyString(Belt_Option.map(person.external_ids, (function (x) {
+                        return Util.getOrEmptyString(x.imdb_id);
+                      }))),
+            twitterId: Util.getOrEmptyString(Belt_Option.map(person.external_ids, (function (x) {
+                        return Util.getOrEmptyString(x.twitter_id);
+                      }))),
+            facebookId: Util.getOrEmptyString(Belt_Option.map(person.external_ids, (function (x) {
+                        return Util.getOrEmptyString(x.facebook_id);
+                      }))),
+            instagramId: Util.getOrEmptyString(Belt_Option.map(person.external_ids, (function (x) {
+                        return Util.getOrEmptyString(x.instagram_id);
+                      }))),
+            websiteLink: Util.getOrEmptyString(person.homepage)
+          };
         }), [person]);
   $$Document.useTitle(Util.getOrEmptyString(person.name));
   var onClose = function (arg) {
@@ -179,47 +172,48 @@ function Person(Props) {
     }
     
   };
-  if (personVM !== undefined) {
+  var personVM$1 = personVM.current;
+  if (personVM$1 !== undefined) {
     return React.createElement("main", {
                 className: "flex flex-col items-center justify-center w-full py-2"
               }, React.createElement(Pulse.make, {
                     show: loading
                   }), React.createElement("div", undefined, React.createElement("p", {
                         className: "block lg:hidden font-nav font-semibold text-[1.4rem] pb-1 pl-4"
-                      }, personVM.name), React.createElement("div", {
+                      }, personVM$1.name), React.createElement("div", {
                         className: "block px-4 py-2"
-                      }, personVM.profileImagePath !== "" ? getImgElem(personVM.profileImagePath, height, match[0], match[1]) : null, React.createElement("div", undefined, React.createElement("p", {
+                      }, personVM$1.profileImagePath !== "" ? getImgElem(personVM$1.profileImagePath, 280, match[0], match[1]) : null, React.createElement("div", undefined, React.createElement("p", {
                                 className: "hidden lg:block font-nav font-semibold text-[1.4rem] pb-2"
-                              }, personVM.name), Belt_Array.map(personVM.biography, (function (x) {
+                              }, personVM$1.name), Belt_Array.map(personVM$1.biography, (function (x) {
                                   return React.createElement("p", {
                                               key: x.slice(0, 32),
                                               className: "pb-2 prose-base w-auto md:w-[60vw]"
                                             }, x);
                                 })), React.createElement("div", {
                                 className: "flex flex-col items-start justify-start prose pt-6 w-[22rem]"
-                              }, personVM.knownFor !== "" ? React.createElement(StorylinePanel.Pair.make, {
+                              }, personVM$1.knownFor !== "" ? React.createElement(StorylinePanel.Pair.make, {
                                       title: "Known For",
-                                      value: personVM.knownFor
-                                    }) : null, personVM.born !== "" ? (
-                                  personVM.died === "" && personVM.age !== Js_int.min ? React.createElement(StorylinePanel.Pair.make, {
+                                      value: personVM$1.knownFor
+                                    }) : null, personVM$1.born !== "" ? (
+                                  personVM$1.died === "" && personVM$1.age !== Js_int.min ? React.createElement(StorylinePanel.Pair.make, {
                                           title: "Born",
-                                          value: "" + personVM.born + " (age " + personVM.age.toString() + ")"
+                                          value: "" + personVM$1.born + " (age " + personVM$1.age.toString() + ")"
                                         }) : React.createElement(StorylinePanel.Pair.make, {
                                           title: "Born",
-                                          value: personVM.born
+                                          value: personVM$1.born
                                         })
-                                ) : null, personVM.died !== "" ? (
-                                  personVM.age !== Js_int.min ? React.createElement(StorylinePanel.Pair.make, {
+                                ) : null, personVM$1.died !== "" ? (
+                                  personVM$1.age !== Js_int.min ? React.createElement(StorylinePanel.Pair.make, {
                                           title: "Died",
-                                          value: "" + personVM.died + " (age " + personVM.age.toString() + ")"
+                                          value: "" + personVM$1.died + " (age " + personVM$1.age.toString() + ")"
                                         }) : React.createElement(StorylinePanel.Pair.make, {
                                           title: "Died",
-                                          value: personVM.died
+                                          value: personVM$1.died
                                         })
-                                ) : null, personVM.placeOfBirth !== "" ? React.createElement(StorylinePanel.Pair.make, {
+                                ) : null, personVM$1.placeOfBirth !== "" ? React.createElement(StorylinePanel.Pair.make, {
                                       title: "Place of Birth",
-                                      value: personVM.placeOfBirth
-                                    }) : null), isMedium ? null : getSocialLinks(personVM)), isMedium ? getSocialLinks(personVM) : null)), React.createElement("div", {
+                                      value: personVM$1.placeOfBirth
+                                    }) : null), isMedium ? null : getSocialLinks(personVM$1)), isMedium ? getSocialLinks(personVM$1) : null)), React.createElement("div", {
                     className: "w-full flex flex-col items-center justify-center pt-8",
                     id: "movie_info_tab_container"
                   }, React.createElement(React$1.Tab.Group, {
@@ -291,6 +285,8 @@ function Person(Props) {
                                               })
                                           }));
                           })
+                      }), React.createElement(KnownFor.make, {
+                        person: MoviesProvider.emptyPerson
                       })), error.length > 0 ? React.createElement(ErrorDialog.make, {
                       isOpen: error.length > 0,
                       errorMessage: error,
@@ -303,7 +299,7 @@ function Person(Props) {
   }
 }
 
-var make = Person;
+var make = React.memo(Person);
 
 export {
   string ,
@@ -313,4 +309,4 @@ export {
   getAge ,
   make ,
 }
-/* Imdb Not a pure module */
+/* make Not a pure module */

@@ -3,9 +3,12 @@
 import * as Util from "../../shared/Util.js";
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
+import * as Js_option from "rescript/lib/es6/js_option.js";
 import * as MovieList from "../movie_list/MovieList.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
+import * as MovieModel from "../../models/MovieModel.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 function string(prim) {
   return prim;
@@ -15,57 +18,129 @@ function array(prim) {
   return prim;
 }
 
-function toMovie(cast) {
+function toMovie(stew) {
   return {
-          id: Util.getOrIntZero(cast.id),
-          poster_path: cast.poster_path,
-          release_date: cast.release_date,
-          title: cast.title,
-          vote_average: cast.vote_average,
-          media_type: cast.media_type
+          id: Util.getOrIntZero(stew.id),
+          poster_path: stew.poster_path,
+          release_date: stew.release_date,
+          title: stew.title,
+          vote_average: stew.vote_average,
+          media_type: stew.media_type
         };
 }
+
+var c = {
+  contents: 0
+};
 
 function KnownFor(Props) {
   var person = Props.person;
   var match = React.useState(function () {
         return [];
       });
-  var setMovies = match[1];
+  var setMoviesToDisplay = match[1];
+  var moviesToDisplay = match[0];
+  var totalPages = React.useRef(0);
+  var allMovies = React.useRef([]);
   React.useMemo((function () {
-          var castList = Belt_Array.keepMap(Belt_Option.getWithDefault(Belt_Option.getWithDefault(Belt_Option.map(person.combined_credits, (function (c) {
-                              return Belt_Option.map(c.cast, (function (cc) {
-                                            return cc;
-                                          }));
-                            })), []), []), (function (c) {
-                  if (Util.getOrEmptyString(c.media_type) === "movie") {
-                    return toMovie(c);
-                  }
-                  
+          var castList = Belt_Option.getWithDefault(Belt_Option.map(person.combined_credits, (function (c) {
+                      var cast = Belt_Array.keepMap(Js_option.getWithDefault([], c.cast), (function (c) {
+                              if (Util.getOrEmptyString(c.media_type) === "movie") {
+                                return toMovie(c);
+                              }
+                              
+                            }));
+                      var crew = Belt_Array.keepMap(Js_option.getWithDefault([], c.crew), (function (c) {
+                              if (Util.getOrEmptyString(c.media_type) === "movie") {
+                                return toMovie(c);
+                              }
+                              
+                            }));
+                      return Belt_Array.concat(cast, crew);
+                    })), []);
+          totalPages.current = castList.length;
+          Curry._1(setMoviesToDisplay, (function (param) {
+                  return Belt_Array.slice(castList, 0, 30);
                 }));
-          return Curry._1(setMovies, (function (param) {
-                        return castList;
-                      }));
+          allMovies.current = castList;
         }), [person]);
+  var match$1 = React.useState(function () {
+        return null;
+      });
+  var setLastPoster = match$1[1];
+  var lastPoster = match$1[0];
+  var match$2 = React.useState(function () {
+        return 1;
+      });
+  var setPageToLoad = match$2[1];
+  var pageToLoad = match$2[0];
+  var setLastPosterRef = function (elem) {
+    Curry._1(setLastPoster, (function (param) {
+            return elem;
+          }));
+  };
+  var observer = React.useRef(new IntersectionObserver((function (entries, param) {
+              var entry = Belt_Array.get(entries, 0);
+              if (entry !== undefined && Caml_option.valFromOption(entry).isIntersecting) {
+                return Curry._1(setPageToLoad, (function (p) {
+                              return p + 1 | 0;
+                            }));
+              }
+              
+            })));
+  React.useEffect((function () {
+          if (pageToLoad <= totalPages.current) {
+            Curry._1(setMoviesToDisplay, (function (prev) {
+                    return MovieModel.unique(prev, Belt_Array.slice(allMovies.current, prev.length, 30));
+                  }));
+          }
+          
+        }), [pageToLoad]);
+  React.useEffect((function () {
+          var currentObserver = observer.current;
+          if (!(lastPoster == null)) {
+            currentObserver.observe(lastPoster);
+          }
+          return (function (param) {
+                    if (!(lastPoster == null)) {
+                      currentObserver.unobserve(lastPoster);
+                      return ;
+                    }
+                    
+                  });
+        }), [lastPoster]);
   return React.createElement("div", {
               className: "flex flex-col items-center justify-center bg-white"
             }, React.createElement("ul", {
                   className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative"
-                }, Belt_Array.map(match[0], (function (movie) {
-                        return React.createElement("li", {
-                                    key: movie.id.toString() + Util.getOrEmptyString(movie.title)
-                                  }, React.createElement(MovieList.Poster.make, {
-                                        movie: movie
-                                      }));
+                }, Belt_Array.mapWithIndex(moviesToDisplay, (function (i, movie) {
+                        if (i === (moviesToDisplay.length - 1 | 0) && pageToLoad <= totalPages.current) {
+                          return React.createElement("li", {
+                                      key: movie.id.toString() + Util.getOrEmptyString(movie.title),
+                                      ref: setLastPosterRef
+                                    }, React.createElement(MovieList.Poster.make, {
+                                          movie: movie
+                                        }));
+                        } else {
+                          return React.createElement("li", {
+                                      key: movie.id.toString() + Util.getOrEmptyString(movie.title)
+                                    }, React.createElement(MovieList.Poster.make, {
+                                          movie: movie
+                                        }));
+                        }
                       }))));
 }
 
-var make = KnownFor;
+var make = React.memo(KnownFor);
+
+var moviesPerPage = 30;
 
 export {
   string ,
   array ,
   toMovie ,
+  moviesPerPage ,
+  c ,
   make ,
 }
-/* react Not a pure module */
+/* make Not a pure module */

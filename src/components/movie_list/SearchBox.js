@@ -10,13 +10,14 @@ function SearchBox(Props) {
   var setQueryParam = match[1];
   var queryParam = match[0];
   var inputRef = React.useRef(null);
-  React.useEffect((function () {
-          if (queryParam.TAG === /* Search */2) {
-            var elem = inputRef.current;
-            if (!(elem == null)) {
-              elem.value = queryParam._0.query;
-            }
-            
+  React.useMemo((function () {
+          if (queryParam.TAG !== /* Search */2) {
+            return ;
+          }
+          var elem = inputRef.current;
+          if (!(elem == null)) {
+            elem.value = queryParam._0.query;
+            return ;
           }
           
         }), [

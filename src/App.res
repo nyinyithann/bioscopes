@@ -44,3 +44,5 @@ let make = () => {
     </div>
   </ThemeSwitchProvider>
 }
+
+let make = React.memo(make)

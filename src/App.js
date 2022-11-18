@@ -93,11 +93,11 @@ function App(Props) {
             });
 }
 
-var make = App;
+var make = React.memo(App);
 
 export {
   string ,
   useState ,
   make ,
 }
-/* react Not a pure module */
+/* make Not a pure module */

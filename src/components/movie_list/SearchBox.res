@@ -6,7 +6,7 @@ let make = () => {
   let (queryParam, setQueryParam) = UrlQueryParam.useQueryParams()
   let inputRef = React.useRef(Js.Nullable.null)
 
-  React.useEffect2(() => {
+  React.useMemo2(() => {
     switch queryParam {
     | Search({query}) =>
       switch Js.Nullable.toOption(inputRef.current) {
@@ -15,7 +15,6 @@ let make = () => {
       }
     | _ => ()
     }
-    None
   }, (queryParam, inputRef.current))
 
   let handleKeyDown = e => {

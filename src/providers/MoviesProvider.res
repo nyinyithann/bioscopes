@@ -231,7 +231,7 @@ let getApiPath = apiParams => {
         id,
       )}&page=${Js.Int.toString(page)}&sort_by=${sort_by}`
   | Search({query, page}) =>
-    `${apiBaseUrl}/${apiVersion}/search/multi?query=${query}&page=${Js.Int.toString(page)}`
+    `${apiBaseUrl}/${apiVersion}/search/movie?query=${query}&page=${Js.Int.toString(page)}`
   | Movie({id, media_type}) =>
     `${apiBaseUrl}/${apiVersion}/${media_type}/${id}?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en`
   | Person({id}) =>

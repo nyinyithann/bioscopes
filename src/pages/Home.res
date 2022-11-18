@@ -40,11 +40,11 @@ module NavLink = {
     }
     <button
       type_="button"
-      className="flex gap-1 items-center justify-center p-1 px-2 group rounded ring-0 outline-none hover:bg-300"
+      className="flex gap-1 items-center justify-center p-1 group rounded-full sm:rounded-md ring-0 outline-none bg-200 hover:bg-300"
       onClick>
       <Heroicons.Solid.HomeIcon className="w-6 h-6 fill-klor-900" />
-      <div className="flex flex-col items-end justify-end pt-[0.4rem]">
-        <span className="hidden sm:flex text-900 m-auto"> {title->React.string} </span>
+      <div className="hidden sm:flex flex-col items-end justify-end pt-[0.4rem] pr-2">
+        <span className="text-900 m-auto"> {title->React.string} </span>
       </div>
     </button>
   }
@@ -62,7 +62,7 @@ let make = () => {
     <SuspensionLoader>
       <YoutubePlayerProvider> lazyMovie </YoutubePlayerProvider>
     </SuspensionLoader>
-  | list{"person"} => <SuspensionLoader> lazyPerson </SuspensionLoader>
+  | list{"person"} => <Person />
   | _ => <NotFound />
   }
 
@@ -76,7 +76,7 @@ let make = () => {
         </div>
         <div
           id="search-colorswatch-container"
-          className="flex flex-1 pl-4 items-center justify-between sm:justify-end gap-2">
+          className="flex flex-1 pl-[4px] sm:pl-4 items-center justify-between sm:justify-end gap-2">
           <SearchBox />
           <div
             id="colorswatch-container"
@@ -93,3 +93,5 @@ let make = () => {
     </div>
   </div>
 }
+
+let make = React.memo(make)

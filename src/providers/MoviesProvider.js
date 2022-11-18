@@ -242,7 +242,7 @@ function getApiPath(apiParams) {
         return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/discover/movie?with_genres=" + String(match$1.id) + "&page=" + match$1.page.toString() + "&sort_by=" + match$1.sort_by + "";
     case /* Search */2 :
         var match$2 = apiParams._0;
-        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/search/multi?query=" + match$2.query + "&page=" + match$2.page.toString() + "";
+        return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/search/movie?query=" + match$2.query + "&page=" + match$2.page.toString() + "";
     case /* Movie */3 :
         var match$3 = apiParams._0;
         return "" + Links.apiBaseUrl + "/" + Links.apiVersion + "/" + match$3.media_type + "/" + match$3.id + "?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en";

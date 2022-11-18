@@ -77,12 +77,12 @@ let getAge = (person: PersonModel.person) => {
 let make = () => {
   open HeadlessUI
   let isMedium = MediaQuery.useMediaQuery("(max-width: 900px)")
-  let height = isMedium ? 280 : 376
+  let height = true ? 280 : 376
 
   let (imageLoaded, setImageLoaded) = React.useState(_ => false)
   let (queryParam, _) = UrlQueryParam.useQueryParams()
   let {loading, error, person, loadPerson, clearError} = MoviesProvider.useMoviesContext()
-  let (personVM, setPersonVM) = React.useState(_ => None)
+  let personVM = React.useRef(None)
 
   React.useEffect0(() => {
     let controller = Fetch.AbortController.make()
@@ -94,18 +94,20 @@ let make = () => {
     Some(() => Fetch.AbortController.abort(controller, "Cancel the request"))
   })
 
-  React.useEffect1(() => {
+  React.useMemo1(() => {
     open Belt
     if person.id != PersonModel.initial_invalid_id {
       let profilePath = Util.getOrEmptyString(person.profile_path)
       let profileImagePath =
         profilePath != "" ? Links.getPosterImage_W370_H556_bestv2Link(profilePath) : ""
 
-      setPersonVM(_ => Some({
+      personVM.current = Some({
         id: person.id->Js.Int.toString,
         name: Js.Option.getWithDefault("🏃", person.name),
         profileImagePath,
-        biography: Util.getOrEmptyString(person.biography)->Js.String2.split("\n")->Array.keep(x => x !== ""),
+        biography: Util.getOrEmptyString(person.biography)
+        ->Js.String2.split("\n")
+        ->Array.keep(x => x !== ""),
         knownFor: Util.getOrEmptyString(person.known_for_department),
         born: Util.toLocaleString(~date=person.birthday),
         died: Util.toLocaleString(~date=person.deathday),
@@ -124,9 +126,8 @@ let make = () => {
         ->Belt.Option.map(x => Util.getOrEmptyString(x.instagram_id))
         ->Util.getOrEmptyString,
         websiteLink: person.homepage->Util.getOrEmptyString,
-      }))
+      })
     }
-    None
   }, [person])
 
   Document.useTitle(Util.getOrEmptyString(person.name))
@@ -136,7 +137,7 @@ let make = () => {
       clearError()
     }
 
-  switch personVM {
+  switch personVM.current {
   | Some(personVM) =>
     <main className="flex flex-col items-center justify-center w-full py-2">
       <Pulse show={loading} />
@@ -153,7 +154,9 @@ let make = () => {
               {personVM.name->string}
             </p>
             {Belt.Array.map(personVM.biography, x =>
-              <p key={Js.String2.slice(x, ~from=0, ~to_=32)} className="pb-2 prose-base w-auto md:w-[60vw]">
+              <p
+                key={Js.String2.slice(x, ~from=0, ~to_=32)}
+                className="pb-2 prose-base w-auto md:w-[60vw]">
                 {x->string}
               </p>
             )->array}
@@ -257,6 +260,7 @@ let make = () => {
             </div>
           }}
         </Tab.Group>
+        <KnownFor person={MoviesProvider.emptyPerson} />
       </div>
       {Js.String2.length(error) > 0
         ? <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />
@@ -266,3 +270,4 @@ let make = () => {
   | _ => <Pulse show={loading} />
   }
 }
+let make = React.memo(make)
