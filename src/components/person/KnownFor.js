@@ -29,10 +29,6 @@ function toMovie(stew) {
         };
 }
 
-var c = {
-  contents: 0
-};
-
 function KnownFor(Props) {
   var person = Props.person;
   var match = React.useState(function () {
@@ -140,7 +136,6 @@ export {
   array ,
   toMovie ,
   moviesPerPage ,
-  c ,
   make ,
 }
 /* make Not a pure module */

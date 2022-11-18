@@ -18,8 +18,8 @@ module HeroText = {
 
     <div className={`flex flex-col w-full p-[0.6rem] gap-2 ${textColor}`}>
       {Util.isEmptyString(name)
-        ? <span className="font-nav text-[2rem]"> {title->string} </span>
-        : <span className="font-nav text-[2rem]"> {name->string} </span>}
+        ? <span className="font-nav text-[2rem] md:text-[3rem]"> {title->string} </span>
+        : <span className="font-nav text-[2rem] md:text-[3rem]"> {name->string} </span>}
       <div className="flex w-full gap-4">
         <Rating ratingValue={movie.vote_average} />
         <span> {`${voteAverage} Reviews`->string} </span>
@@ -178,8 +178,8 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
           ? React.null
           : <span
               className={`${size.width == 100
-                  ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full p-1 pr-4"
-                  : "top-0 left-0 text-[1.4rem] rounded-br-full p-1 pr-8"} absolute z-50 w-auto font-nav font-extrabold text-900 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-70`}>
+                  ? "bottom-0 left-0 text-[1rem] rounded-tr-full p-1 pr-4"
+                  : "top-0 left-0 text-[1.2rem] rounded-br-full p-1 pr-8"} absolute z-50 w-auto font-nav font-extrabold text-900 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50`}>
               {Util.toStringElement(tagline)}
             </span>}
         {size.width == 100

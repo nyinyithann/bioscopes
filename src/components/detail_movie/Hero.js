@@ -47,9 +47,9 @@ function Hero$HeroText(Props) {
   return React.createElement("div", {
               className: "flex flex-col w-full p-[0.6rem] gap-2 " + textColor + ""
             }, Util.isEmptyString(name) ? React.createElement("span", {
-                    className: "font-nav text-[2rem]"
+                    className: "font-nav text-[2rem] md:text-[3rem]"
                   }, title) : React.createElement("span", {
-                    className: "font-nav text-[2rem]"
+                    className: "font-nav text-[2rem] md:text-[3rem]"
                   }, name), React.createElement("div", {
                   className: "flex w-full gap-4"
                 }, React.createElement(Rating.make, {
@@ -242,8 +242,8 @@ function Hero(Props) {
                               className: "hidden sm:block text-slate-100 text-opacity-40"
                             }, "Back")), Util.isEmptyString(tagline) ? null : React.createElement("span", {
                             className: "" + (
-                              size.width === 100 ? "bottom-0 left-0 text-[1.1rem] rounded-tr-full p-1 pr-4" : "top-0 left-0 text-[1.4rem] rounded-br-full p-1 pr-8"
-                            ) + " absolute z-50 w-auto font-nav font-extrabold text-900 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-70"
+                              size.width === 100 ? "bottom-0 left-0 text-[1rem] rounded-tr-full p-1 pr-4" : "top-0 left-0 text-[1.2rem] rounded-br-full p-1 pr-8"
+                            ) + " absolute z-50 w-auto font-nav font-extrabold text-900 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50"
                           }, Util.toStringElement(tagline)), size.width === 100 ? React.createElement("div", {
                             className: "relative flex-inline"
                           }, React.createElement("img", {
@@ -252,6 +252,7 @@ function Hero(Props) {
                                 ) + "",
                                 style: imageStyle,
                                 alt: "Poster",
+        fetchpriority:"high",
                                 src: imgPathRef.current,
                                 onError: (function (e) {
                                     Curry._1(setShowHeroText, (function (param) {
@@ -261,7 +262,7 @@ function Hero(Props) {
                                       e.target.src = Links.placeholderImage;
                                       return ;
                                     }
-                                    
+
                                   }),
                                 onLoad: (function (e) {
                                     Curry._1(setLoaded, (function (param) {
@@ -283,6 +284,7 @@ function Hero(Props) {
                                     ) + "",
                                     style: imageStyle,
                                     alt: "Poster",
+        fetchpriority:"high",
                                     src: Util.isEmptyString(imgPathRef.current) ? "" : imgPathRef.current,
                                     onError: (function (e) {
                                         Curry._1(setShowHeroText, (function (param) {
@@ -292,7 +294,7 @@ function Hero(Props) {
                                           e.target.src = Links.placeholderImage;
                                           return ;
                                         }
-                                        
+
                                       }),
                                     onLoad: (function (e) {
                                         Curry._1(setLoaded, (function (param) {

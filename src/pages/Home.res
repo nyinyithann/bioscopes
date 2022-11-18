@@ -70,11 +70,13 @@ let make = () => {
     <div className="h-auto flex w-full flex-col z-50 relative">
       <div
         id="navbar"
-        className="flex items-center w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0 shadow-md">
+        className="flex items-center w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0 shadow-md bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50">
         <div className="pl-2 mr-auto">
           <NavLink title={"Home"} />
         </div>
-        <div id="search-colorswatch-container" className="flex w-full items-center px-2 sm:items-end md:w-[30rem]">
+        <div
+          id="search-colorswatch-container"
+          className="flex w-full items-center px-2 sm:items-end md:w-[30rem]">
           <SearchBox />
         </div>
         <div id="colorswatch-container" className="flex items-center justify-center gap-2 pr-2">

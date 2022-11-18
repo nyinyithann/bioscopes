@@ -251,7 +251,9 @@ let make = () => {
                     </Tab.Panel>
                     <Tab.Panel key="photos-panel">
                       {props => {
-                        <div className="flex w-full p-2" />
+                        <div className="flex w-full p-2">
+                          <PersonPhotos person />
+                        </div>
                       }}
                     </Tab.Panel>
                   </>

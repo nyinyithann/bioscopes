@@ -10,7 +10,6 @@ let toMovie = (~stew: PersonModel.cast) => {
 }
 
 let moviesPerPage = 30
-let c = ref(0)
 @react.component
 let make = (~person: PersonModel.person) => {
   open Belt

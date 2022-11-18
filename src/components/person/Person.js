@@ -19,6 +19,7 @@ import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as ErrorDialog from "../ErrorDialog.js";
 import * as PersonModel from "../../models/PersonModel.js";
 import * as WebsiteLink from "../social_media/WebsiteLink.js";
+import * as PersonPhotos from "./PersonPhotos.js";
 import * as UrlQueryParam from "../../routes/UrlQueryParam.js";
 import * as MoviesProvider from "../../providers/MoviesProvider.js";
 import * as StorylinePanel from "../detail_movie/StorylinePanel.js";
@@ -278,7 +279,9 @@ function Person(Props) {
                                                                 children: (function (props) {
                                                                     return React.createElement("div", {
                                                                                 className: "flex w-full p-2"
-                                                                              });
+                                                                              }, React.createElement(PersonPhotos.make, {
+                                                                                    person: person
+                                                                                  }));
                                                                   }),
                                                                 key: "photos-panel"
                                                               }));
