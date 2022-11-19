@@ -184,7 +184,7 @@ let make = () => {
             {switch queryParam {
             | Search(_) =>
               <div className="flex w-full items-center gap-6">
-                <div className="flex gap-4 min-w-[12rem] max-w-fit items-center">
+                <div className="flex gap-4 w-[10rem] items-center">
                   <Heroicons.Outline.SearchCircleIcon className="w-4 h-4" />
                   <span> {"In search"->string} </span>
                 </div>

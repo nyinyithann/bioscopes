@@ -277,7 +277,7 @@ function GenreList(Props) {
     tmp$1 = queryParam.TAG === /* Search */2 ? React.createElement("div", {
             className: "flex w-full items-center gap-6"
           }, React.createElement("div", {
-                className: "flex gap-4 min-w-[12rem] max-w-fit items-center"
+                className: "flex gap-4 w-[10rem] items-center"
               }, React.createElement(Outline.SearchCircleIcon, {
                     className: "w-4 h-4"
                   }), React.createElement("span", undefined, "In search")), React.createElement("div", {
