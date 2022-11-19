@@ -10,7 +10,7 @@ module HeroText = {
     let runtime = switch movie.runtime {
     | Some(x) => {
         let t = int_of_float(x)
-        `${(t / 60)->Util.itos}h ${mod(t, 60)->Util.itos}min`
+        t == 0 ? "" : `${(t / 60)->Util.itos}h ${mod(t, 60)->Util.itos}min`
       }
 
     | None => ""
@@ -125,11 +125,11 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
 
   React.useLayoutEffect5(() => {
     if isMobile {
-      setSize(_ => {width: 100, height: 16})
+      setSize(_ => {width: 100, height: 14})
     } else if isSmallScreen {
-      setSize(_ => {width: 100, height: 26})
+      setSize(_ => {width: 100, height: 24})
     } else if isMediumScreen {
-      setSize(_ => {width: 100, height: 30})
+      setSize(_ => {width: 100, height: 28})
     } else if isLargeScreen {
       setSize(_ => {width: 70, height: 32})
     } else if isVeryLargeScreen {
@@ -157,23 +157,23 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
 
   let sotryline = Util.getOrEmptyString(movie.overview)->Util.toStringElement
 
-  let goBack = e => {
-    ReactEvent.Mouse.preventDefault(e)
-    Webapi.Dom.History.back(Webapi.Dom.history)
-  }
+  /* let goBack = e => { */
+  /* ReactEvent.Mouse.preventDefault(e) */
+  /* Webapi.Dom.History.back(Webapi.Dom.history) */
+  /* } */
 
   <div className="flex w-full">
     <div className="flex flex-col w-full">
       <div className="relative flex flex-col w-full">
-        <button
-          type_="button"
-          onClick={goBack}
-          className="flex w-auto gap-2 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30 px-2 sm:px-4">
-          <Heroicons.Solid.ArrowLeftIcon className="w-5 h-6 fill-slate-400 sm:bg-opacity-5" />
-          <span className="hidden sm:block text-slate-100 text-opacity-40">
-            {"Back"->React.string}
-          </span>
-        </button>
+        /* <button */
+        /* type_="button" */
+        /* onClick={goBack} */
+        /* className="flex w-auto gap-2 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30 px-2 sm:px-4"> */
+        /* <Heroicons.Solid.ArrowLeftIcon className="w-5 h-6 fill-slate-400 sm:bg-opacity-5" /> */
+        /* <span className="hidden sm:block text-slate-100 text-opacity-40"> */
+        /* {"Back"->React.string} */
+        /* </span> */
+        /* </button> */
         {Util.isEmptyString(tagline)
           ? React.null
           : <span

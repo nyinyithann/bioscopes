@@ -1,13 +1,43 @@
 let {string, int, float, array} = module(React)
 
+type overview = {
+  storyline: string,
+  releasedDate: string,
+  runtime: string,
+  budget: string,
+  revenue: string,
+  status: string,
+  imdbId: string,
+  twitterId: string,
+  facebookId: string,
+  instagramId: string,
+  websiteLink: string,
+  directorId: int,
+  directorName: string,
+  genreLinks: array<(int, string)>,
+  spokenLanguages: string,
+  productionCompanies: string,
+}
+
+let getFirstPosterImage = (~movie: DetailMovieModel.detail_movie) => {
+  open Belt
+  movie.images
+  ->Option.map(imgs => imgs.posters)
+  ->Option.getWithDefault(Some([]))
+  ->Option.getWithDefault([])
+  ->Array.get(0)
+}
+
+let labelStyle = "w-[12rem] flex items-center bg-50 pl-1 rounded-r-full mb-1"
+
 module Pair = {
   @react.component
   let make = (~title, ~value) => {
     Util.isEmptyString(value)
       ? React.null
-      : <dl className="flex w-full gap-2">
-          <dt className="w-1/3 truncate bg-100 pl-1 rounded-r-full mb-1"> {Util.toStringElement(title)} </dt>
-          <dd className="w-2/3 truncate"> {Util.toStringElement(value)} </dd>
+      : <dl className="flex w-full gap-4">
+          <dt className={labelStyle}> {Util.toStringElement(title)} </dt>
+          <dd className="w-full"> {Util.toStringElement(value)} </dd>
         </dl>
   }
 }
@@ -32,23 +62,27 @@ let getDirectorIdAndName = (movie: DetailMovieModel.detail_movie) => {
 
 module DirectorLink = {
   @react.component
-  let make = (~movie: DetailMovieModel.detail_movie) => {
-    let (id, name) = getDirectorIdAndName(movie)
-      open Webapi.Url
-      let param: UrlQueryParam.person_param = {
-        id: id ->Js.Int.toString
-      }
-      let seg =
-        `/person?` ++
-        UrlQueryParam.Converter_person_param.stringfy(. param)
-        ->URLSearchParams.make
-        ->URLSearchParams.toString
+  let make = (~id, ~name) => {
+    open Webapi.Url
+    let param: UrlQueryParam.person_param = {
+      id: id->Js.Int.toString,
+    }
+    let seg =
+      `/person?` ++
+      UrlQueryParam.Converter_person_param.stringfy(. param)
+      ->URLSearchParams.make
+      ->URLSearchParams.toString
+
     {
       id != 0
-        ? <div className="flex w-full">
-            <span className="w-1/3 overflow-ellipsis"> {Util.toStringElement("Director")} </span>
-            <a href={seg} className="w-1/3 truncate span-link" rel="noopener noreferrer" > {Util.toStringElement(name)} </a>
-            /* <span className="w-2/3 truncate"> {Util.toStringElement(name)} </span> */
+        ? <div className="flex w-full gap-4">
+            <span className={labelStyle}> {Util.toStringElement("Director")} </span>
+            <a
+              href={seg}
+              className="w-full text-base font-normal span-link"
+              rel="noopener noreferrer">
+              {Util.toStringElement(name)}
+            </a>
           </div>
         : React.null
     }
@@ -85,16 +119,15 @@ let getGenres = (movie: DetailMovieModel.detail_movie) => {
 
 module GenreLinks = {
   @react.component
-  let make = (~movie: DetailMovieModel.detail_movie) => {
-    let links = getGenres(movie)
+  let make = (~links) => {
     let (_, setQueryParam) = UrlQueryParam.useQueryParams()
 
     {
       Util.isEmptyArray(links)
         ? React.null
-        : <div className="flex w-full">
-            <span className="w-1/3 overflow-ellipsis"> {Util.toStringElement("Genres")} </span>
-            <div className="w-2/3 overflow-ellipsis flex flex-wrap items-center gap-2">
+        : <div className="flex w-full gap-4">
+            <span className={labelStyle}> {Util.toStringElement("Genres")} </span>
+            <div className="w-full flex flex-wrap items-center gap-2">
               {links
               ->Belt.Array.map(((id, name)) =>
                 <span
@@ -118,100 +151,132 @@ module GenreLinks = {
 
 @react.component
 let make = (~movie: DetailMovieModel.detail_movie) => {
-  let sotryline = Util.getOrEmptyString(movie.overview)->Util.toStringElement
-  let releasedDate = Util.toLocaleString(~date=movie.release_date, ())
+  let overviewRef = React.useRef(None)
 
-  let runtime = switch movie.runtime {
-  | Some(x) if x == 0. => ""
-  | Some(x) => {
-      let t = int_of_float(x)
-      `${(t / 60)->Util.itos}h ${mod(t, 60)->Util.itos}min`
+  React.useMemo1(() => {
+    let storyline = Util.getOrEmptyString(movie.overview)
+    let releasedDate = Util.toLocaleString(~date=movie.release_date, ())
+
+    let runtime = switch movie.runtime {
+    | Some(x) if x == 0. => ""
+    | Some(x) => {
+        let t = int_of_float(x)
+        `${(t / 60)->Util.itos}h ${mod(t, 60)->Util.itos}min`
+      }
+
+    | None => ""
     }
 
-  | None => ""
-  }
-  let budget = Util.getOrFloatZero(movie.budget)->DomBinding.floatToLocaleString("en-GB")
-  let revenue = Util.getOrFloatZero(movie.revenue)->DomBinding.floatToLocaleString("en-GB")
-  let status = Util.getOrEmptyString(movie.status)
-  let imdbId =
-    movie.external_ids
-    ->Belt.Option.map(x => Util.getOrEmptyString(x.imdb_id))
-    ->Util.getOrEmptyString
-  let twitterId =
-    movie.external_ids
-    ->Belt.Option.map(x => Util.getOrEmptyString(x.twitter_id))
-    ->Util.getOrEmptyString
-  let facebookId =
-    movie.external_ids
-    ->Belt.Option.map(x => Util.getOrEmptyString(x.facebook_id))
-    ->Util.getOrEmptyString
-  let insgagramId =
-    movie.external_ids
-    ->Belt.Option.map(x => Util.getOrEmptyString(x.instagram_id))
-    ->Util.getOrEmptyString
-  let website = movie.homepage->Util.getOrEmptyString
+    let (directorId, directorName) = getDirectorIdAndName(movie)
+    let budget = Util.getOrFloatZero(movie.budget)->DomBinding.floatToLocaleString("en-GB")
+    let revenue = Util.getOrFloatZero(movie.revenue)->DomBinding.floatToLocaleString("en-GB")
+    let status = Util.getOrEmptyString(movie.status)
+    let imdbId =
+      movie.external_ids
+      ->Belt.Option.map(x => Util.getOrEmptyString(x.imdb_id))
+      ->Util.getOrEmptyString
+    let twitterId =
+      movie.external_ids
+      ->Belt.Option.map(x => Util.getOrEmptyString(x.twitter_id))
+      ->Util.getOrEmptyString
+    let facebookId =
+      movie.external_ids
+      ->Belt.Option.map(x => Util.getOrEmptyString(x.facebook_id))
+      ->Util.getOrEmptyString
+    let instagramId =
+      movie.external_ids
+      ->Belt.Option.map(x => Util.getOrEmptyString(x.instagram_id))
+      ->Util.getOrEmptyString
+    let websiteLink = movie.homepage->Util.getOrEmptyString
+    let genreLinks = getGenres(movie)
+    let spokenLanguages = getSpokenLanguages(movie)
+    let productionCompanies = getProductionCompanies(movie)
 
-  let getFirstPosterImage = (~movie: DetailMovieModel.detail_movie) => {
-    open Belt
-    movie.images
-    ->Option.map(imgs => imgs.posters)
-    ->Option.getWithDefault(Some([]))
-    ->Option.getWithDefault([])
-    ->Array.get(0)
-  }
+    overviewRef.current = Some({
+      storyline,
+      releasedDate,
+      runtime,
+      budget,
+      revenue,
+      status,
+      imdbId,
+      twitterId,
+      facebookId,
+      instagramId,
+      websiteLink,
+      directorId,
+      directorName,
+      genreLinks,
+      spokenLanguages,
+      productionCompanies,
+    })
+  }, [movie])
 
-  <div className="flex w-full pl-2 pt-6">
-    <div
-      className="hidden md:flex pr-8 items-start md:items-center md:justify-center justify-start">
-      {switch getFirstPosterImage(~movie) {
-      | Some(img) => {
-          let seg = Util.getOrEmptyString(img.file_path)
-          if !Util.isEmptyString(seg) {
-            <LazyImage
-              alt="poster image"
-              placeholderPath={Links.placeholderImage}
-              src={Links.getPosterImage_W370_H556_bestv2Link(seg)}
-              className="h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto"
-              lazyHeight={456.}
-              lazyOffset={50.}
-            />
-          } else {
-            React.null
+  switch overviewRef.current {
+  | Some(overview) =>
+    <div className="flex w-full pl-2 pt-2">
+      <div
+        className="hidden md:flex pr-8 items-start md:items-center md:justify-center justify-start">
+        {switch getFirstPosterImage(~movie) {
+        | Some(img) => {
+            let seg = Util.getOrEmptyString(img.file_path)
+            if !Util.isEmptyString(seg) {
+              <LazyImage
+                alt="poster image"
+                placeholderPath={Links.placeholderImage}
+                src={Links.getPosterImage_W370_H556_bestv2Link(seg)}
+                className="h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto"
+                lazyHeight={456.}
+                lazyOffset={50.}
+              />
+            } else {
+              React.null
+            }
           }
-        }
 
-      | None => React.null
-      }}
+        | None => React.null
+        }}
+      </div>
+      <div className="flex flex-col w-full prose">
+        <div className="flex flex-col w-full gap-1">
+          <span className="text-[1.2rem] font-semibold text-900"> {"Storyline"->string} </span>
+          <span className="break-words w-full flex"> {overview.storyline->string} </span>
+        </div>
+        <div className="flex flex-col w-full pt-4">
+          <Pair title={"Released"} value={overview.releasedDate} />
+          <Pair title={"Runtime"} value={overview.runtime} />
+          <DirectorLink id={overview.directorId} name={overview.directorName} />
+          {overview.budget != ""
+            ? React.null
+            : <Pair title={"Budget"} value={`$${overview.budget}`} />}
+          {overview.revenue != ""
+            ? React.null
+            : <Pair title={"Revenue"} value={`$${overview.revenue}`} />}
+          <GenreLinks links={overview.genreLinks} />
+          <Pair title={"Status"} value={overview.status} />
+          <Pair title={"Language"} value={overview.spokenLanguages} />
+          <Pair title={"Production"} value={overview.productionCompanies} />
+        </div>
+        <div className="flex w-full justify-start gap-[1.4rem] pt-4">
+          <Twitter id={overview.twitterId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+          <Facebook
+            id={overview.facebookId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900"
+          />
+          <Instagram
+            id={overview.instagramId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900"
+          />
+          <Imdb
+            id={overview.imdbId}
+            type_={"title"}
+            className="h-6 w-6 fill-klor-500 hover:fill-klor-900"
+          />
+          <WebsiteLink
+            link={overview.websiteLink}
+            className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
+          />
+        </div>
+      </div>
     </div>
-    <div className="flex flex-col w-full prose">
-      <div className="flex flex-col w-full gap-1">
-        <span className="text-[1.2rem] font-semibold text-900"> {"Storyline"->string} </span>
-        <span className="break-words w-full flex"> sotryline </span>
-      </div>
-      <div className="flex flex-col w-full pt-4">
-        <Pair title={"Released"} value={releasedDate} />
-        <Pair title={"Runtime"} value={runtime} />
-        <DirectorLink movie />
-        {Util.getOrFloatZero(movie.budget) == 0.
-          ? React.null
-          : <Pair title={"Budget"} value={`$${budget}`} />}
-        {Util.getOrFloatZero(movie.revenue) == 0.
-          ? React.null
-          : <Pair title={"Revenue"} value={`$${revenue}`} />}
-        <GenreLinks movie />
-        <Pair title={"Status"} value={status} />
-        <Pair title={"Language"} value={getSpokenLanguages(movie)} />
-        <Pair title={"Production"} value={getProductionCompanies(movie)} />
-      </div>
-      <div className="flex w-full justify-start gap-[1.4rem] pt-4">
-        <Twitter id={twitterId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-        <Facebook id={facebookId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-        <Instagram id={insgagramId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-        <Imdb id={imdbId} type_={"title"} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-        <WebsiteLink
-          link={website} className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
-        />
-      </div>
-    </div>
-  </div>
+  | _ => React.null
+  }
 }

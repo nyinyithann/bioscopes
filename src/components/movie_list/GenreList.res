@@ -78,7 +78,7 @@ module GenreLink = {
       <div
         className={`${active || selected
             ? "bg-300"
-            : ""} flex items-center w-full px-2 gap-4 p-[1px]`}>
+            : ""} flex items-center w-full px-2 gap-6 p-[1px]`}>
         icon
         {name->React.string}
         {selected
@@ -183,10 +183,10 @@ let make = () => {
             className="flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none">
             {switch queryParam {
             | Search(_) =>
-              <div className="flex w-full items-center gap-4">
-                <div className="flex gap-2 w-[12rem] items-center">
+              <div className="flex w-full items-center gap-6">
+                <div className="flex gap-4 min-w-[12rem] max-w-fit items-center">
                   <Heroicons.Outline.SearchCircleIcon className="w-4 h-4" />
-                  <span className="truncate"> {"In search"->string} </span>
+                  <span> {"In search"->string} </span>
                 </div>
                 <div className="ml-auto">
                   <Heroicons.Solid.ChevronDownIcon className="w-4 h-4" />
@@ -195,7 +195,7 @@ let make = () => {
 
             | _ =>
               <>
-                <div className="flex w-full items-center gap-4">
+                <div className="flex w-full items-center gap-6">
                   {getIcon(selectedRef.contents)}
                   <span className="block truncate">
                     {getDisplayName(selectedRef.contents)->string}

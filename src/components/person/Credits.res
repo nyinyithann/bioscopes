@@ -148,7 +148,6 @@ let make = (~person: PersonModel.person) => {
 
     creditGroupsRef.current =
       Array.concat(castGroup, crewGroups)->JsArray2Ex.groupBy(((key, _)) => key["dept"])
-    Js.log(creditGroupsRef.current)
   }, [person])
 
   let tabStyle = "flex flex-col items-start justify-start w-full h-full outline-none ring-0 px-1"

@@ -30,19 +30,22 @@ let getCaptionElement = (cast: DetailMovieModel.cast) => {
 @react.component
 let make = (~movie: DetailMovieModel.detail_movie) => {
   let isMobile = MediaQuery.useMediaQuery("(max-width: 600px)")
-  let casts = getCasts(~movie)
   let (_, setQueryParam) = UrlQueryParam.useQueryParams()
 
-  if Util.isEmptyArray(casts) {
+  let castsRef = React.useRef([])
+  React.useMemo1(() => {
+    castsRef.current = getCasts(~movie)
+}, [movie])
+
+  if Util.isEmptyArray(castsRef.current) {
     <NotAvailable thing={"casts"} />
   } else {
     <ul
       className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none items-start">
-      {casts
+      {castsRef.current
       ->Belt.Array.map(cast => {
         let id = Util.getOrIntZero(cast.id)->Js.Int.toString
         let seg = cast.profile_path->Util.getOrEmptyString
-        if !Util.isEmptyString(seg) {
           <li
             key={id}
             className="cursor-pointer flex flex-col w-full gap-2"
@@ -62,9 +65,6 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
             />
             {getCaptionElement(cast)}
           </li>
-        } else {
-          React.null
-        }
       })
       ->array}
     </ul>

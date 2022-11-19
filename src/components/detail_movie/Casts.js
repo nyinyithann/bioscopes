@@ -52,44 +52,43 @@ function getCaptionElement(cast) {
 function Casts(Props) {
   var movie = Props.movie;
   var isMobile = MediaQuery.useMediaQuery("(max-width: 600px)");
-  var casts = getCasts(movie);
   var match = UrlQueryParam.useQueryParams(undefined);
   var setQueryParam = match[1];
-  if (Util.isEmptyArray(casts)) {
+  var castsRef = React.useRef([]);
+  React.useMemo((function () {
+          castsRef.current = getCasts(movie);
+        }), [movie]);
+  if (Util.isEmptyArray(castsRef.current)) {
     return React.createElement(NotAvailable.make, {
                 thing: "casts"
               });
   } else {
     return React.createElement("ul", {
                 className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none items-start"
-              }, Belt_Array.map(casts, (function (cast) {
+              }, Belt_Array.map(castsRef.current, (function (cast) {
                       var id = Util.getOrIntZero(cast.id).toString();
                       var seg = Util.getOrEmptyString(cast.profile_path);
-                      if (Util.isEmptyString(seg)) {
-                        return null;
-                      } else {
-                        return React.createElement("li", {
-                                    key: id,
-                                    className: "cursor-pointer flex flex-col w-full gap-2",
-                                    role: "button",
-                                    onClick: (function (e) {
-                                        e.preventDefault();
-                                        Curry._1(setQueryParam, {
-                                              TAG: /* Person */4,
-                                              _0: {
-                                                id: id
-                                              }
-                                            });
-                                      })
-                                  }, React.createElement(LazyImage.make, {
-                                        className: "w-full border-2 border-slate-200 rounded-md h-full",
-                                        placeholderPath: Links.placeholderImage,
-                                        alt: "backdrop image",
-                                        src: Links.getPosterImage_W370_H556_bestv2Link(seg),
-                                        lazyHeight: isMobile ? 280 : 356,
-                                        lazyOffset: 50
-                                      }), getCaptionElement(cast));
-                      }
+                      return React.createElement("li", {
+                                  key: id,
+                                  className: "cursor-pointer flex flex-col w-full gap-2",
+                                  role: "button",
+                                  onClick: (function (e) {
+                                      e.preventDefault();
+                                      Curry._1(setQueryParam, {
+                                            TAG: /* Person */4,
+                                            _0: {
+                                              id: id
+                                            }
+                                          });
+                                    })
+                                }, React.createElement(LazyImage.make, {
+                                      className: "w-full border-2 border-slate-200 rounded-md h-full",
+                                      placeholderPath: Links.placeholderImage,
+                                      alt: "backdrop image",
+                                      src: Links.getPosterImage_W370_H556_bestv2Link(seg),
+                                      lazyHeight: isMobile ? 280 : 356,
+                                      lazyOffset: 50
+                                    }), getCaptionElement(cast));
                     })));
   }
 }

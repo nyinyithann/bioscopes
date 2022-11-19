@@ -40,7 +40,7 @@ function Hero$HeroText(Props) {
   var runtime;
   if (x !== undefined) {
     var t = x | 0;
-    runtime = "" + Util.itos(t / 60 | 0) + "h " + Util.itos(t % 60) + "min";
+    runtime = t === 0 ? "" : "" + Util.itos(t / 60 | 0) + "h " + Util.itos(t % 60) + "min";
   } else {
     runtime = "";
   }
@@ -162,21 +162,21 @@ function Hero(Props) {
             Curry._1(setSize, (function (param) {
                     return {
                             width: 100,
-                            height: 16
+                            height: 14
                           };
                   }));
           } else if (isSmallScreen) {
             Curry._1(setSize, (function (param) {
                     return {
                             width: 100,
-                            height: 26
+                            height: 24
                           };
                   }));
           } else if (isMediumScreen) {
             Curry._1(setSize, (function (param) {
                     return {
                             width: 100,
-                            height: 30
+                            height: 28
                           };
                   }));
           } else if (isLargeScreen) {
@@ -222,25 +222,13 @@ function Hero(Props) {
     width: "" + size.width.toString() + "vw"
   };
   var sotryline = Util.toStringElement(Util.getOrEmptyString(movie.overview));
-  var goBack = function (e) {
-    e.preventDefault();
-    window.history.back();
-  };
   return React.createElement("div", {
               className: "flex w-full"
             }, React.createElement("div", {
                   className: "flex flex-col w-full"
                 }, React.createElement("div", {
                       className: "relative flex flex-col w-full"
-                    }, React.createElement("button", {
-                          className: "flex w-auto gap-2 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30 px-2 sm:px-4",
-                          type: "button",
-                          onClick: goBack
-                        }, React.createElement(Solid.ArrowLeftIcon, {
-                              className: "w-5 h-6 fill-slate-400 sm:bg-opacity-5"
-                            }), React.createElement("span", {
-                              className: "hidden sm:block text-slate-100 text-opacity-40"
-                            }, "Back")), Util.isEmptyString(tagline) ? null : React.createElement("span", {
+                    }, Util.isEmptyString(tagline) ? null : React.createElement("span", {
                             className: "" + (
                               size.width === 100 ? "bottom-0 left-0 text-[1rem] rounded-tr-full p-1 pr-4" : "top-0 left-0 text-[1.2rem] rounded-br-full p-1 pr-8"
                             ) + " absolute z-50 w-auto font-nav font-extrabold text-600 bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-80"

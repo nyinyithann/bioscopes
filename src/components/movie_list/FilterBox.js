@@ -63,7 +63,7 @@ function FilterBox(Props) {
         });
   };
   return React.createElement("div", {
-              className: "w-[10rem] flex items-center justify-center text-base rounded-md text-700 py-1 px-2 outline-none ring-0 hover:bg-300"
+              className: "w-[8rem] flex items-center justify-center text-base rounded-md text-700 py-1 px-2 outline-none ring-0 hover:bg-300"
             }, React.createElement(React$1.Listbox, {
                   value: selectedRef.contents,
                   onChange: onChange,
@@ -73,13 +73,13 @@ function FilterBox(Props) {
                             className: "flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none",
                             children: null
                           }, React.createElement("span", {
-                                className: "block truncate"
+                                className: "flex m-auto truncate "
                               }, selectedRef.contents.name), React.createElement("div", {
                                 className: "ml-auto"
                               }, React.createElement(Solid.ChevronDownIcon, {
                                     className: "w-4 h-4"
                                   }))), React.createElement(React$1.Listbox.Options, {
-                            className: "absolute top-[2rem] -left-2 w-[10rem] rounded bg-200 py-1 outline-none ring-0",
+                            className: "absolute top-[2rem] -left-10 w-[10rem] rounded bg-200 py-1 outline-none ring-0",
                             children: Belt_Array.map(filter_data, (function (item) {
                                     return React.createElement(React$1.Listbox.Option, {
                                                 value: item,

@@ -19,10 +19,12 @@ let toLocaleString = (~date: option<string>, ~monthType="long", ()) => {
   switch date {
   | Some(x) =>
     try {
-      Js.Date.fromString(x)->DomBinding.toLocaleString(
-        "en-GB",
-        {"day": "numeric", "month": monthType, "year": "numeric"},
-      )
+      isEmptyString(x)
+        ? ""
+        : Js.Date.fromString(x)->DomBinding.toLocaleString(
+            "en-GB",
+            {"day": "numeric", "month": monthType, "year": "numeric"},
+          )
     } catch {
     | _ => ""
     }

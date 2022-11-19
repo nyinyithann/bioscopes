@@ -114,7 +114,7 @@ function GenreList$GenreLink(Props) {
             }, React.createElement("div", {
                   className: "" + (
                     active || selected ? "bg-300" : ""
-                  ) + " flex items-center w-full px-2 gap-4 p-[1px]"
+                  ) + " flex items-center w-full px-2 gap-6 p-[1px]"
                 }, icon, name, selected ? React.createElement(Solid.CheckIcon, {
                         className: "h-6 w-6 fill-klor-500 ml-auto"
                       }) : React.createElement("span", {
@@ -275,19 +275,17 @@ function GenreList(Props) {
   } else {
     var tmp$1;
     tmp$1 = queryParam.TAG === /* Search */2 ? React.createElement("div", {
-            className: "flex w-full items-center gap-4"
+            className: "flex w-full items-center gap-6"
           }, React.createElement("div", {
-                className: "flex gap-2 w-[12rem] items-center"
+                className: "flex gap-4 min-w-[12rem] max-w-fit items-center"
               }, React.createElement(Outline.SearchCircleIcon, {
                     className: "w-4 h-4"
-                  }), React.createElement("span", {
-                    className: "truncate"
-                  }, "In search")), React.createElement("div", {
+                  }), React.createElement("span", undefined, "In search")), React.createElement("div", {
                 className: "ml-auto"
               }, React.createElement(Solid.ChevronDownIcon, {
                     className: "w-4 h-4"
                   }))) : React.createElement(React.Fragment, undefined, React.createElement("div", {
-                className: "flex w-full items-center gap-4"
+                className: "flex w-full items-center gap-6"
               }, getIcon(selectedRef.contents), React.createElement("span", {
                     className: "block truncate"
                   }, getDisplayName(selectedRef.contents))), React.createElement("div", {

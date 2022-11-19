@@ -109,7 +109,7 @@ let make = (~photos: array<photo>, ~title: option<string>=?) => {
                     placeholderPath={Links.placeholderImage}
                     src={bd.url}
                     className="w-full h-full border-[2px] border-slate-200 rounded-md"
-                    lazyHeight={isMobile ? 280. : 356.}
+                    lazyHeight={isMobile ? 260. : 336.}
                     lazyOffset={50.}
                   />
                 </li>

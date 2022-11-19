@@ -260,11 +260,11 @@ function MovieList(Props) {
   return React.createElement("div", {
               className: "flex flex-col bg-white"
             }, React.createElement("div", {
-                  className: "flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200"
+                  className: "flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200  g-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50"
                 }, React.createElement("div", {
                       className: "flex items-center justify-center gap-2"
                     }, React.createElement(GenreList.make, {}), viewingTitleRef.current !== "" ? React.createElement("span", {
-                            className: "text-[0.9rem] text-900"
+                            className: "text-[0.9rem] text-800/70"
                           }, viewingTitleRef.current) : null), React.createElement("div", {
                       className: "" + (
                         isGenreRef.contents ? "flex" : "hidden"

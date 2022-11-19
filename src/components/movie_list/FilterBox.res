@@ -30,18 +30,18 @@ let make = () => {
   }
 
   <div
-    className="w-[10rem] flex items-center justify-center text-base rounded-md text-700 py-1 px-2 outline-none ring-0 hover:bg-300">
+    className="w-[8rem] flex items-center justify-center text-base rounded-md text-700 py-1 px-2 outline-none ring-0 hover:bg-300">
     <Listbox value={selectedRef.contents} onChange>
       <div className="w-full relative flex">
         <Listbox.Button
           className="flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none">
-          <span className="block truncate"> {selectedRef.contents.name->string} </span>
+          <span className="flex m-auto truncate "> {selectedRef.contents.name->string} </span>
           <div className="ml-auto">
             <Heroicons.Solid.ChevronDownIcon className="w-4 h-4" />
           </div>
         </Listbox.Button>
         <Listbox.Options
-          className="absolute top-[2rem] -left-2 w-[10rem] rounded bg-200 py-1 outline-none ring-0">
+          className="absolute top-[2rem] -left-10 w-[10rem] rounded bg-200 py-1 outline-none ring-0">
           {filter_data
           ->Belt.Array.map(item =>
             <Listbox.Option key={item.id} value={item} className="flex w-full">

@@ -143,7 +143,7 @@ function PhotosViewer(Props) {
                                                 placeholderPath: Links.placeholderImage,
                                                 alt: "poster image",
                                                 src: bd.url,
-                                                lazyHeight: isMobile ? 280 : 356,
+                                                lazyHeight: isMobile ? 260 : 336,
                                                 lazyOffset: 50
                                               }));
                               })))), React.createElement(ModalDialog.make, {

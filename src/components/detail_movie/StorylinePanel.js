@@ -31,6 +31,14 @@ function array(prim) {
   return prim;
 }
 
+function getFirstPosterImage(movie) {
+  return Belt_Array.get(Belt_Option.getWithDefault(Belt_Option.getWithDefault(Belt_Option.map(movie.images, (function (imgs) {
+                            return imgs.posters;
+                          })), []), []), 0);
+}
+
+var labelStyle = "w-[12rem] flex items-center bg-50 pl-1 rounded-r-full mb-1";
+
 function StorylinePanel$Pair(Props) {
   var title = Props.title;
   var value = Props.value;
@@ -38,11 +46,11 @@ function StorylinePanel$Pair(Props) {
     return null;
   } else {
     return React.createElement("dl", {
-                className: "flex w-full gap-2"
+                className: "flex w-full gap-4"
               }, React.createElement("dt", {
-                    className: "w-1/3 truncate bg-100 pl-1 rounded-r-full mb-1"
+                    className: labelStyle
                   }, Util.toStringElement(title)), React.createElement("dd", {
-                    className: "w-2/3 truncate"
+                    className: "w-full"
                   }, Util.toStringElement(value)));
   }
 }
@@ -75,23 +83,22 @@ function getDirectorIdAndName(movie) {
 }
 
 function StorylinePanel$DirectorLink(Props) {
-  var movie = Props.movie;
-  var match = getDirectorIdAndName(movie);
-  var id = match[0];
+  var id = Props.id;
+  var name = Props.name;
   var param = {
     id: id.toString()
   };
   var seg = "/person?" + new URLSearchParams(UrlQueryParam.Converter_person_param.stringfy(param)).toString();
   if (id !== 0) {
     return React.createElement("div", {
-                className: "flex w-full"
+                className: "flex w-full gap-4"
               }, React.createElement("span", {
-                    className: "w-1/3 overflow-ellipsis"
+                    className: labelStyle
                   }, Util.toStringElement("Director")), React.createElement("a", {
-                    className: "w-1/3 truncate span-link",
+                    className: "w-full text-base font-normal span-link",
                     href: seg,
                     rel: "noopener noreferrer"
-                  }, Util.toStringElement(match[1])));
+                  }, Util.toStringElement(name)));
   } else {
     return null;
   }
@@ -146,19 +153,18 @@ function getGenres(movie) {
 }
 
 function StorylinePanel$GenreLinks(Props) {
-  var movie = Props.movie;
-  var links = getGenres(movie);
+  var links = Props.links;
   var match = UrlQueryParam.useQueryParams(undefined);
   var setQueryParam = match[1];
   if (Util.isEmptyArray(links)) {
     return null;
   } else {
     return React.createElement("div", {
-                className: "flex w-full"
+                className: "flex w-full gap-4"
               }, React.createElement("span", {
-                    className: "w-1/3 overflow-ellipsis"
+                    className: labelStyle
                   }, Util.toStringElement("Genres")), React.createElement("div", {
-                    className: "w-2/3 overflow-ellipsis flex flex-wrap items-center gap-2"
+                    className: "w-full flex flex-wrap items-center gap-2"
                   }, Belt_Array.map(links, (function (param) {
                           var name = param[1];
                           var id = param[0];
@@ -189,37 +195,61 @@ var GenreLinks = {
 
 function StorylinePanel(Props) {
   var movie = Props.movie;
-  var sotryline = Util.toStringElement(Util.getOrEmptyString(movie.overview));
-  var releasedDate = Util.toLocaleString(movie.release_date, undefined, undefined);
-  var x = movie.runtime;
-  var runtime;
-  if (x !== undefined && x !== 0) {
-    var t = x | 0;
-    runtime = "" + Util.itos(t / 60 | 0) + "h " + Util.itos(t % 60) + "min";
-  } else {
-    runtime = "";
+  var overviewRef = React.useRef(undefined);
+  React.useMemo((function () {
+          var storyline = Util.getOrEmptyString(movie.overview);
+          var releasedDate = Util.toLocaleString(movie.release_date, undefined, undefined);
+          var x = movie.runtime;
+          var runtime;
+          if (x !== undefined && x !== 0) {
+            var t = x | 0;
+            runtime = "" + Util.itos(t / 60 | 0) + "h " + Util.itos(t % 60) + "min";
+          } else {
+            runtime = "";
+          }
+          var match = getDirectorIdAndName(movie);
+          var budget = Util.getOrFloatZero(movie.budget).toLocaleString("en-GB");
+          var revenue = Util.getOrFloatZero(movie.revenue).toLocaleString("en-GB");
+          var status = Util.getOrEmptyString(movie.status);
+          var imdbId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
+                      return Util.getOrEmptyString(x.imdb_id);
+                    })));
+          var twitterId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
+                      return Util.getOrEmptyString(x.twitter_id);
+                    })));
+          var facebookId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
+                      return Util.getOrEmptyString(x.facebook_id);
+                    })));
+          var instagramId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
+                      return Util.getOrEmptyString(x.instagram_id);
+                    })));
+          var websiteLink = Util.getOrEmptyString(movie.homepage);
+          var genreLinks = getGenres(movie);
+          var spokenLanguages = getSpokenLanguages(movie);
+          var productionCompanies = getProductionCompanies(movie);
+          overviewRef.current = {
+            storyline: storyline,
+            releasedDate: releasedDate,
+            runtime: runtime,
+            budget: budget,
+            revenue: revenue,
+            status: status,
+            imdbId: imdbId,
+            twitterId: twitterId,
+            facebookId: facebookId,
+            instagramId: instagramId,
+            websiteLink: websiteLink,
+            directorId: match[0],
+            directorName: match[1],
+            genreLinks: genreLinks,
+            spokenLanguages: spokenLanguages,
+            productionCompanies: productionCompanies
+          };
+        }), [movie]);
+  var overview = overviewRef.current;
+  if (overview === undefined) {
+    return null;
   }
-  var budget = Util.getOrFloatZero(movie.budget).toLocaleString("en-GB");
-  var revenue = Util.getOrFloatZero(movie.revenue).toLocaleString("en-GB");
-  var status = Util.getOrEmptyString(movie.status);
-  var imdbId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
-              return Util.getOrEmptyString(x.imdb_id);
-            })));
-  var twitterId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
-              return Util.getOrEmptyString(x.twitter_id);
-            })));
-  var facebookId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
-              return Util.getOrEmptyString(x.facebook_id);
-            })));
-  var insgagramId = Util.getOrEmptyString(Belt_Option.map(movie.external_ids, (function (x) {
-              return Util.getOrEmptyString(x.instagram_id);
-            })));
-  var website = Util.getOrEmptyString(movie.homepage);
-  var getFirstPosterImage = function (movie) {
-    return Belt_Array.get(Belt_Option.getWithDefault(Belt_Option.getWithDefault(Belt_Option.map(movie.images, (function (imgs) {
-                              return imgs.posters;
-                            })), []), []), 0);
-  };
   var img = getFirstPosterImage(movie);
   var tmp;
   if (img !== undefined) {
@@ -236,7 +266,7 @@ function StorylinePanel(Props) {
     tmp = null;
   }
   return React.createElement("div", {
-              className: "flex w-full pl-2 pt-6"
+              className: "flex w-full pl-2 pt-2"
             }, React.createElement("div", {
                   className: "hidden md:flex pr-8 items-start md:items-center md:justify-center justify-start"
                 }, tmp), React.createElement("div", {
@@ -247,50 +277,51 @@ function StorylinePanel(Props) {
                           className: "text-[1.2rem] font-semibold text-900"
                         }, "Storyline"), React.createElement("span", {
                           className: "break-words w-full flex"
-                        }, sotryline)), React.createElement("div", {
+                        }, overview.storyline)), React.createElement("div", {
                       className: "flex flex-col w-full pt-4"
                     }, React.createElement(StorylinePanel$Pair, {
                           title: "Released",
-                          value: releasedDate
+                          value: overview.releasedDate
                         }), React.createElement(StorylinePanel$Pair, {
                           title: "Runtime",
-                          value: runtime
+                          value: overview.runtime
                         }), React.createElement(StorylinePanel$DirectorLink, {
-                          movie: movie
-                        }), Util.getOrFloatZero(movie.budget) === 0 ? null : React.createElement(StorylinePanel$Pair, {
+                          id: overview.directorId,
+                          name: overview.directorName
+                        }), overview.budget !== "" ? null : React.createElement(StorylinePanel$Pair, {
                             title: "Budget",
-                            value: "$" + budget + ""
-                          }), Util.getOrFloatZero(movie.revenue) === 0 ? null : React.createElement(StorylinePanel$Pair, {
+                            value: "$" + overview.budget + ""
+                          }), overview.revenue !== "" ? null : React.createElement(StorylinePanel$Pair, {
                             title: "Revenue",
-                            value: "$" + revenue + ""
+                            value: "$" + overview.revenue + ""
                           }), React.createElement(StorylinePanel$GenreLinks, {
-                          movie: movie
+                          links: overview.genreLinks
                         }), React.createElement(StorylinePanel$Pair, {
                           title: "Status",
-                          value: status
+                          value: overview.status
                         }), React.createElement(StorylinePanel$Pair, {
                           title: "Language",
-                          value: getSpokenLanguages(movie)
+                          value: overview.spokenLanguages
                         }), React.createElement(StorylinePanel$Pair, {
                           title: "Production",
-                          value: getProductionCompanies(movie)
+                          value: overview.productionCompanies
                         })), React.createElement("div", {
                       className: "flex w-full justify-start gap-[1.4rem] pt-4"
                     }, React.createElement(Twitter.make, {
-                          id: twitterId,
+                          id: overview.twitterId,
                           className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
                         }), React.createElement(Facebook.make, {
-                          id: facebookId,
+                          id: overview.facebookId,
                           className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
                         }), React.createElement(Instagram.make, {
-                          id: insgagramId,
+                          id: overview.instagramId,
                           className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
                         }), React.createElement(Imdb.make, {
-                          id: imdbId,
+                          id: overview.imdbId,
                           type_: "title",
                           className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
                         }), React.createElement(WebsiteLink.make, {
-                          link: website,
+                          link: overview.websiteLink,
                           className: "h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
                         }))));
 }
@@ -302,6 +333,8 @@ export {
   $$int ,
   $$float ,
   array ,
+  getFirstPosterImage ,
+  labelStyle ,
   Pair ,
   getDirectorIdAndName ,
   DirectorLink ,

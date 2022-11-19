@@ -44,6 +44,14 @@ function getImgElem(src, height, imageLoaded, setImageLoaded) {
               },
               alt: "image",
               src: src,
+              onError: (function (e) {
+                  if (e.target.src !== Links.placeholderImage) {
+                    e.target.src = Links.placeholderImage;
+                    e.target.style = "height: 350px; width: 260px";
+                    return ;
+                  }
+                  
+                }),
               onLoad: (function (param) {
                   Curry._1(setImageLoaded, (function (param) {
                           return true;
@@ -188,7 +196,7 @@ function Person(Props) {
                         className: "block lg:hidden font-nav font-semibold text-[1.4rem] pb-1 pl-4"
                       }, personVM$1.name), React.createElement("div", {
                         className: "block px-4 py-2"
-                      }, personVM$1.profileImagePath !== "" ? getImgElem(personVM$1.profileImagePath, height, match[0], match[1]) : null, React.createElement("div", {
+                      }, getImgElem(personVM$1.profileImagePath, height, match[0], match[1]), React.createElement("div", {
                             className: "block lg:flex flex-col"
                           }, React.createElement("p", {
                                 className: "hidden lg:block font-nav font-semibold text-[1.4rem] pb-2"

@@ -174,7 +174,6 @@ function Credits(Props) {
           creditGroupsRef.current = JsArray2Ex.groupBy(Belt_Array.concat(castGroup, crewGroups), (function (param) {
                   return param[0].dept;
                 }));
-          console.log(creditGroupsRef.current);
         }), [person]);
   var getTabHeaderStyle = function (selected) {
     var base = "w-full h-full flex items-start justify-start py-2 border-b-2 border-b-100 text-600";

@@ -26,6 +26,13 @@ let getImgElem = (src, height, imageLoaded, setImageLoaded) =>
     style={ReactDOM.Style.make(~height=Js.Int.toString(height) ++ "px", ())}
     alt="image"
     onLoad={_ => setImageLoaded(_ => true)}
+    onError={e => {
+      open ReactEvent.Media
+      if target(e)["src"] !== Links.placeholderImage {
+        target(e)["src"] = Links.placeholderImage
+        target(e)["style"] = "height: 350px; width: 260px"
+      }
+    }}
   />
 
 let getSocialLinks = person =>
@@ -147,9 +154,7 @@ let make = () => {
           {personVM.name->string}
         </p>
         <div className="block px-4 py-2">
-          {personVM.profileImagePath != ""
-            ? getImgElem(personVM.profileImagePath, height, imageLoaded, setImageLoaded)
-            : React.null}
+          {getImgElem(personVM.profileImagePath, height, imageLoaded, setImageLoaded)}
           <div className="block lg:flex flex-col">
             <p className="hidden lg:block font-nav font-semibold text-[1.4rem] pb-2">
               {personVM.name->string}
@@ -191,8 +196,7 @@ let make = () => {
         </div>
       </div>
       <div
-        id="person_tab_container"
-        className="w-full flex flex-col items-center justify-center pt-8">
+        id="person_tab_container" className="w-full flex flex-col items-center justify-center pt-8">
         <Tab.Group>
           {selectedIndex => {
             <div className="flex flex-col w-full">

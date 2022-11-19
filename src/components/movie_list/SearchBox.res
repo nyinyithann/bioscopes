@@ -24,7 +24,12 @@ let make = () => {
     if key(e) == "Enter" {
       preventDefault(e)
       switch Js.Nullable.toOption(inputRef.current) {
-      | Some(elem) => setQueryParam(UrlQueryParam.Search({query: getValue(elem), page: 1}))
+      | Some(elem) => {
+          let query = getValue(elem)
+          if !Util.isEmptyString(query) {
+            setQueryParam(UrlQueryParam.Search({query, page: 1}))
+          }
+        }
 
       | None => ()
       }

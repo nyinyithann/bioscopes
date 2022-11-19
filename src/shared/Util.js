@@ -53,11 +53,15 @@ function toLocaleString(date, monthTypeOpt, param) {
     return "";
   }
   try {
-    return new Date(date).toLocaleString("en-GB", {
-                day: "numeric",
-                month: monthType,
-                year: "numeric"
-              });
+    if (date.length === 0) {
+      return "";
+    } else {
+      return new Date(date).toLocaleString("en-GB", {
+                  day: "numeric",
+                  month: monthType,
+                  year: "numeric"
+                });
+    }
   }
   catch (exn){
     return "";
