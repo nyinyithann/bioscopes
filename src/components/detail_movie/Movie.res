@@ -15,7 +15,7 @@ let make = () => {
   let windowSize: Window.window_size = Window.useWindowSize()
   let (queryParam, _) = UrlQueryParam.useQueryParams()
 
-  Document.useTitle(Js.Option.getWithDefault("🏃", detail_movie.title))
+  Document.useTitle(Js.Option.getWithDefault("🎬", detail_movie.title))
 
   let voidLoading = switch apiParams {
   | Void(_) => true

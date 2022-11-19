@@ -243,7 +243,7 @@ function Hero(Props) {
                             }, "Back")), Util.isEmptyString(tagline) ? null : React.createElement("span", {
                             className: "" + (
                               size.width === 100 ? "bottom-0 left-0 text-[1rem] rounded-tr-full p-1 pr-4" : "top-0 left-0 text-[1.2rem] rounded-br-full p-1 pr-8"
-                            ) + " absolute z-50 w-auto font-nav font-extrabold text-900 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50"
+                            ) + " absolute z-50 w-auto font-nav font-extrabold text-600 bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-80"
                           }, Util.toStringElement(tagline)), size.width === 100 ? React.createElement("div", {
                             className: "relative flex-inline"
                           }, React.createElement("img", {
@@ -251,8 +251,7 @@ function Hero(Props) {
                                   loaded ? "opacity-100" : "opacity-0"
                                 ) + "",
                                 style: imageStyle,
-                                alt: "Poster",
-        fetchpriority:"high",
+                                alt: "poster",
                                 src: imgPathRef.current,
                                 onError: (function (e) {
                                     Curry._1(setShowHeroText, (function (param) {
@@ -262,7 +261,7 @@ function Hero(Props) {
                                       e.target.src = Links.placeholderImage;
                                       return ;
                                     }
-
+                                    
                                   }),
                                 onLoad: (function (e) {
                                     Curry._1(setLoaded, (function (param) {
@@ -283,8 +282,7 @@ function Hero(Props) {
                                       loaded ? "opacity-100" : "opacity-0"
                                     ) + "",
                                     style: imageStyle,
-                                    alt: "Poster",
-        fetchpriority:"high",
+                                    alt: "poster",
                                     src: Util.isEmptyString(imgPathRef.current) ? "" : imgPathRef.current,
                                     onError: (function (e) {
                                         Curry._1(setShowHeroText, (function (param) {
@@ -294,7 +292,7 @@ function Hero(Props) {
                                           e.target.src = Links.placeholderImage;
                                           return ;
                                         }
-
+                                        
                                       }),
                                     onLoad: (function (e) {
                                         Curry._1(setLoaded, (function (param) {
@@ -302,7 +300,7 @@ function Hero(Props) {
                                               }));
                                       })
                                   })), React.createElement("div", {
-                                className: "absolute top-[20%] left-[6%] z-50"
+                                className: "absolute top-[14%] left-[6%] z-50"
                               }, React.createElement(React$1.Transition, {
                                     show: loaded || match$2[0],
                                     as_: "div",

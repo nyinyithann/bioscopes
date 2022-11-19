@@ -28,31 +28,19 @@ function array(prim) {
 function MovieList$Poster(Props) {
   var movie = Props.movie;
   var isMobile = MediaQuery.useMediaQuery("(max-width: 600px)");
-  var match = UrlQueryParam.useQueryParams(undefined);
-  var setQueryParam = match[1];
   var p = movie.poster_path;
   var imgLink = p !== undefined ? Links.getPosterImageW342Link(p) : "";
-  var id = movie.id.toString();
-  var onClick = function (e) {
-    e.preventDefault();
+  var getHref = function (movie) {
+    var id = movie.id.toString();
     var mt = movie.media_type;
-    if (mt !== undefined) {
-      return Curry._1(setQueryParam, {
-                  TAG: /* Movie */3,
-                  _0: {
-                    id: id,
-                    media_type: mt
-                  }
-                });
-    } else {
-      return Curry._1(setQueryParam, {
-                  TAG: /* Movie */3,
-                  _0: {
-                    id: id,
-                    media_type: "movie"
-                  }
-                });
-    }
+    var param = mt !== undefined ? ({
+          id: id,
+          media_type: mt
+        }) : ({
+          id: id,
+          media_type: "movie"
+        });
+    return "/" + Js_option.getWithDefault("movie", movie.media_type) + "?" + new URLSearchParams(UrlQueryParam.Converter_movie_tv_param.stringfy(param)).toString();
   };
   var rd = movie.release_date;
   var tmp;
@@ -64,10 +52,11 @@ function MovieList$Poster(Props) {
   } else {
     tmp = null;
   }
-  return React.createElement("div", {
-              className: "cursor-pointer transform duration-300 hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.01] hover:rounded group",
+  return React.createElement("a", {
+              className: "block cursor-pointer transform duration-300 hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.01] hover:rounded group",
               role: "button",
-              onClick: onClick
+              href: getHref(movie),
+              rel: "noopener noreferrer"
             }, React.createElement(LazyImage.make, {
                   className: "w-[16rem] h-full border-[2px] border-slate-200 rounded-md group-hover:border-0 group-hover rounded-b-none",
                   placeholderPath: Links.placeholderImage,

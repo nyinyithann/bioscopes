@@ -37,7 +37,7 @@ function PhotosViewer$PhotoTitle(Props) {
             }, React.createElement("span", {
                   className: "text-[1rem]"
                 }, title), React.createElement("span", {
-                  className: "text-[0.95rem]"
+                  className: "text-[0.85rem]"
                 }, "" + count.toString() + " " + (
                   count === 1 ? "image" : "images"
                 ) + ""));
@@ -49,6 +49,7 @@ var PhotoTitle = {
 
 function PhotosViewer(Props) {
   var photos = Props.photos;
+  var title = Props.title;
   var isMobile = MediaQuery.useMediaQuery("(max-width: 600px)");
   var match = Belt_Array.partition(photos, (function (x) {
           return x.type_ === "backdrop";
@@ -84,7 +85,9 @@ function PhotosViewer(Props) {
               }, Util.isEmptyArray(backdrops) ? null : React.createElement("div", {
                       className: "flex flex-col w-full"
                     }, React.createElement(PhotosViewer$PhotoTitle, {
-                          title: "Backdrops",
+                          title: "" + (
+                            Util.isEmptyString(Util.getOrEmptyString(title)) ? "Backdrops" : "" + Util.getOrEmptyString(title) + ""
+                          ) + "",
                           count: backdrops.length
                         }), React.createElement("ul", {
                           className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full list-none"
@@ -114,7 +117,9 @@ function PhotosViewer(Props) {
                               })))), Util.isEmptyArray(posters) ? null : React.createElement("div", {
                       className: "flex flex-col w-full"
                     }, React.createElement(PhotosViewer$PhotoTitle, {
-                          title: "Posters",
+                          title: "" + (
+                            Util.isEmptyString(Util.getOrEmptyString(title)) ? "Posters" : "" + Util.getOrEmptyString(title) + ""
+                          ) + "",
                           count: posters.length
                         }), React.createElement("ul", {
                           className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full"

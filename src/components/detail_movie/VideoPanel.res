@@ -25,9 +25,7 @@ module VideoImage = {
       play(Links.getYoutubeVideoLink(vkey))
     }
 
-    let className = `${className} transition duration-1000 ${loaded
-        ? "opacity-100"
-        : "opacity-20"}`
+    let className = `${className} transition duration-1000 ${loaded ? "opacity-100" : "opacity-20"}`
     <>
       {!Util.isEmptyString(vkey)
         ? <div className="flex relative items-center justify-center">
@@ -67,14 +65,18 @@ module VideoImage = {
 
 @react.component
 let make = (~movie: DetailMovieModel.detail_movie) => {
-  let videos = getVideos(~movie)
+  let videosRef = React.useRef([])
 
-  if Util.isEmptyArray(videos) {
+  React.useMemo1(() => {
+    videosRef.current = getVideos(~movie)
+  }, [movie])
+
+  if Util.isEmptyArray(videosRef.current) {
     <NotAvailable thing={"videos"} />
   } else {
     <ul
       className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none">
-      {videos
+      {videosRef.current
       ->Belt.Array.map(video =>
         <li key={Util.getOrEmptyString(video.key)}>
           <VideoImage video className="w-full border-[2px] border-slate-200 rounded-md" />

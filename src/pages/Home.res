@@ -40,7 +40,7 @@ module NavLink = {
     }
     <button
       type_="button"
-      className="flex gap-1 items-center justify-center p-1 group rounded-full sm:rounded-md ring-0 outline-none bg-200 hover:bg-300"
+      className="flex gap-1 items-center justify-center p-1 group rounded-full sm:rounded-md ring-0 outline-none bg-200 hover:bg-300 text-[1.1rem] font-semibold"
       onClick>
       <Heroicons.Solid.HomeIcon className="w-6 h-6 fill-klor-900" />
       <div className="hidden sm:flex flex-col items-end justify-end pt-[0.4rem] pr-2">

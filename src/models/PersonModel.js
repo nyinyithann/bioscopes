@@ -37,6 +37,8 @@ var cast = Json_Decode$JsonCombinators.object(function (fields) {
               popularity: Marshal.to_opt(fields, "popularity", Json_Decode$JsonCombinators.$$float),
               poster_path: Marshal.to_opt(fields, "poster_path", Json_Decode$JsonCombinators.string),
               release_date: Marshal.to_opt(fields, "release_date", Json_Decode$JsonCombinators.string),
+              first_air_date: Marshal.to_opt(fields, "first_air_date", Json_Decode$JsonCombinators.string),
+              name: Marshal.to_opt(fields, "name", Json_Decode$JsonCombinators.string),
               title: Marshal.to_opt(fields, "title", Json_Decode$JsonCombinators.string),
               video: Marshal.to_opt(fields, "video", Json_Decode$JsonCombinators.bool),
               vote_average: Marshal.to_opt(fields, "vote_average", Json_Decode$JsonCombinators.$$float),
@@ -46,7 +48,8 @@ var cast = Json_Decode$JsonCombinators.object(function (fields) {
               order: Marshal.to_opt(fields, "order", Json_Decode$JsonCombinators.$$int),
               department: Marshal.to_opt(fields, "department", Json_Decode$JsonCombinators.string),
               job: Marshal.to_opt(fields, "job", Json_Decode$JsonCombinators.string),
-              media_type: Marshal.to_opt(fields, "media_type", Json_Decode$JsonCombinators.string)
+              media_type: Marshal.to_opt(fields, "media_type", Json_Decode$JsonCombinators.string),
+              episode_count: Marshal.to_opt(fields, "episode_count", Json_Decode$JsonCombinators.$$int)
             };
     });
 

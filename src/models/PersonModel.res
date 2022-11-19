@@ -22,6 +22,8 @@ type cast = {
   popularity?: float,
   poster_path?: string,
   release_date?: string,
+  first_air_date?: string,
+  name?: string,
   title?: string,
   video?: bool,
   vote_average?: float,
@@ -32,6 +34,7 @@ type cast = {
   department?: string,
   job?: string,
   media_type?: string,
+  episode_count?: int,
 }
 
 type combined_credits = {
@@ -91,7 +94,9 @@ module Decoder = {
     popularity: ?Marshal.to_opt(. fields, "popularity", float),
     poster_path: ?Marshal.to_opt(. fields, "poster_path", string),
     release_date: ?Marshal.to_opt(. fields, "release_date", string),
+    first_air_date: ?Marshal.to_opt(. fields, "first_air_date", string),
     title: ?Marshal.to_opt(. fields, "title", string),
+    name: ?Marshal.to_opt(. fields, "name", string),
     video: ?Marshal.to_opt(. fields, "video", bool),
     vote_average: ?Marshal.to_opt(. fields, "vote_average", float),
     vote_count: ?Marshal.to_opt(. fields, "vote_count", int),
@@ -101,6 +106,7 @@ module Decoder = {
     department: ?Marshal.to_opt(. fields, "department", string),
     job: ?Marshal.to_opt(. fields, "job", string),
     media_type: ?Marshal.to_opt(. fields, "media_type", string),
+    episode_count: ?Marshal.to_opt(. fields, "episode_count", int),
   })
 
   let combined_credits = object(fields => {

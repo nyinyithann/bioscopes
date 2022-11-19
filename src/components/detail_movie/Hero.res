@@ -179,13 +179,13 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
           : <span
               className={`${size.width == 100
                   ? "bottom-0 left-0 text-[1rem] rounded-tr-full p-1 pr-4"
-                  : "top-0 left-0 text-[1.2rem] rounded-br-full p-1 pr-8"} absolute z-50 w-auto font-nav font-extrabold text-900 bg-slate-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50`}>
+                  : "top-0 left-0 text-[1.2rem] rounded-br-full p-1 pr-8"} absolute z-50 w-auto font-nav font-extrabold text-600 bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-80`}>
               {Util.toStringElement(tagline)}
             </span>}
         {size.width == 100
           ? <div className="relative flex-inline">
               <img
-                alt="Poster"
+                alt="poster"
                 className={`w-full transition duration-1000 ml-auto z-0 ${loaded
                     ? "opacity-100"
                     : "opacity-0"}`}
@@ -214,7 +214,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                 style={imageStyle}
                 className="relative z-10 ml-auto after:absolute after:top-0 after:left-0 after:bg-gradient-title after:z-20 after:w-full after:h-full">
                 <img
-                  alt="Poster"
+                  alt="poster"
                   className={`w-full ml-auto z-0 transition duration-1000 ${loaded
                       ? "opacity-100"
                       : "opacity-0"}`}
@@ -232,7 +232,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                   }}
                 />
               </div>
-              <div className="absolute top-[20%] left-[6%] z-50">
+              <div className="absolute top-[14%] left-[6%] z-50">
                 <HeadlessUI.Transition
                   as_="div"
                   show={loaded || showHeroText}

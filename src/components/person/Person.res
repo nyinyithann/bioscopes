@@ -77,7 +77,8 @@ let getAge = (person: PersonModel.person) => {
 let make = () => {
   open HeadlessUI
   let isMedium = MediaQuery.useMediaQuery("(max-width: 900px)")
-  let height = true ? 280 : 376
+  let isLg = MediaQuery.useMediaQuery("(max-width: 1200px)")
+  let height = isMedium ? 280 : isLg ? 356 : 476
 
   let (imageLoaded, setImageLoaded) = React.useState(_ => false)
   let (queryParam, _) = UrlQueryParam.useQueryParams()
@@ -149,14 +150,14 @@ let make = () => {
           {personVM.profileImagePath != ""
             ? getImgElem(personVM.profileImagePath, height, imageLoaded, setImageLoaded)
             : React.null}
-          <div>
+          <div className="block lg:flex flex-col">
             <p className="hidden lg:block font-nav font-semibold text-[1.4rem] pb-2">
               {personVM.name->string}
             </p>
             {Belt.Array.map(personVM.biography, x =>
               <p
                 key={Js.String2.slice(x, ~from=0, ~to_=32)}
-                className="pb-2 prose-base w-auto md:w-[60vw]">
+                className="pb-2 prose w-auto md:w-[60vw]">
                 {x->string}
               </p>
             )->array}
@@ -190,7 +191,7 @@ let make = () => {
         </div>
       </div>
       <div
-        id="movie_info_tab_container"
+        id="person_tab_container"
         className="w-full flex flex-col items-center justify-center pt-8">
         <Tab.Group>
           {selectedIndex => {
@@ -246,7 +247,9 @@ let make = () => {
                     </Tab.Panel>
                     <Tab.Panel key="credits-panel">
                       {props => {
-                        <div className="flex w-full p-2" />
+                        <div className="flex w-full p-2">
+                          <Credits person />
+                        </div>
                       }}
                     </Tab.Panel>
                     <Tab.Panel key="photos-panel">
@@ -262,7 +265,6 @@ let make = () => {
             </div>
           }}
         </Tab.Group>
-        <KnownFor person={MoviesProvider.emptyPerson} />
       </div>
       {Js.String2.length(error) > 0
         ? <ErrorDialog isOpen={Js.String2.length(error) > 0} errorMessage={error} onClose />

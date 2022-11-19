@@ -40,7 +40,7 @@ function Movie(Props) {
   var windowSize = $$Window.useWindowSize(undefined);
   var match$2 = UrlQueryParam.useQueryParams(undefined);
   var queryParam = match$2[0];
-  $$Document.useTitle(Js_option.getWithDefault("🏃", detail_movie.title));
+  $$Document.useTitle(Js_option.getWithDefault("🎬", detail_movie.title));
   var voidLoading;
   voidLoading = match.apiParams.TAG === /* Void */5 ? true : false;
   React.useEffect((function () {

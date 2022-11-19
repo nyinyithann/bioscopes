@@ -38,11 +38,11 @@ function StorylinePanel$Pair(Props) {
     return null;
   } else {
     return React.createElement("dl", {
-                className: "flex w-full"
+                className: "flex w-full gap-2"
               }, React.createElement("dt", {
-                    className: "w-1/3 overflow-ellipsis"
+                    className: "w-1/3 truncate bg-100 pl-1 rounded-r-full mb-1"
                   }, Util.toStringElement(title)), React.createElement("dd", {
-                    className: "w-2/3 overflow-ellipsis"
+                    className: "w-2/3 truncate"
                   }, Util.toStringElement(value)));
   }
 }
@@ -77,13 +77,20 @@ function getDirectorIdAndName(movie) {
 function StorylinePanel$DirectorLink(Props) {
   var movie = Props.movie;
   var match = getDirectorIdAndName(movie);
-  if (match[0] !== 0) {
+  var id = match[0];
+  var param = {
+    id: id.toString()
+  };
+  var seg = "/person?" + new URLSearchParams(UrlQueryParam.Converter_person_param.stringfy(param)).toString();
+  if (id !== 0) {
     return React.createElement("div", {
                 className: "flex w-full"
               }, React.createElement("span", {
                     className: "w-1/3 overflow-ellipsis"
-                  }, Util.toStringElement("Director")), React.createElement("span", {
-                    className: "w-2/3 overflow-ellipsis"
+                  }, Util.toStringElement("Director")), React.createElement("a", {
+                    className: "w-1/3 truncate span-link",
+                    href: seg,
+                    rel: "noopener noreferrer"
                   }, Util.toStringElement(match[1])));
   } else {
     return null;

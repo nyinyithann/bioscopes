@@ -44,7 +44,8 @@ function PersonPhotos(Props) {
   return React.createElement("div", {
               className: "flex w-full items-center justify-center p-2"
             }, React.createElement(PhotosViewer.make, {
-                  photos: photosRef.current
+                  photos: photosRef.current,
+                  title: "Photos"
                 }));
 }
 

@@ -4,28 +4,31 @@ module Poster = {
   @react.component
   let make = (~movie: MovieModel.movie) => {
     let isMobile = MediaQuery.useMediaQuery("(max-width: 600px)")
-    let (_, setQueryParam) = UrlQueryParam.useQueryParams()
 
     let imgLink = switch movie.poster_path {
     | Some(p) => Links.getPosterImageW342Link(p)
     | None => ""
     }
 
-    let id = Js.Int.toString(movie.id)
-
-    let onClick = e => {
-      open ReactEvent.Mouse
-      preventDefault(e)
-      switch movie.media_type {
-      | Some(mt) => setQueryParam(UrlQueryParam.Movie({id, media_type: mt}))
-      | _ => setQueryParam(UrlQueryParam.Movie({id, media_type: "movie"}))
+    let getHref = (movie: MovieModel.movie) => {
+      open Webapi.Url
+      let id = Js.Int.toString(movie.id)
+      let param = switch movie.media_type {
+      | Some(mt) => {UrlQueryParam.id, media_type: mt}
+      | _ => {id, media_type: "movie"}
       }
+
+      `/${Js.Option.getWithDefault("movie", movie.media_type)}?` ++
+      UrlQueryParam.Converter_movie_tv_param.stringfy(. param)
+      ->URLSearchParams.make
+      ->URLSearchParams.toString
     }
 
-    <div
-      className="cursor-pointer transform duration-300 hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.01] hover:rounded group"
-      role="button"
-      onClick>
+    <a
+      href={getHref(movie)}
+      rel="noopener noreferrer"
+      className="block cursor-pointer transform duration-300 hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.01] hover:rounded group"
+      role="button">
       <LazyImage
         alt="poster image"
         placeholderPath={Links.placeholderImage}
@@ -56,7 +59,7 @@ module Poster = {
 
       | None => React.null
       }}
-    </div>
+    </a>
   }
 }
 

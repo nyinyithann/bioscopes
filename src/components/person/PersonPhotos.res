@@ -26,6 +26,6 @@ let make = (~person: PersonModel.person) => {
   }, [person])
 
   <div className="flex w-full items-center justify-center p-2">
-    <PhotosViewer photos={photosRef.current} />
+    <PhotosViewer photos={photosRef.current} title={"Photos"} />
   </div>
 }

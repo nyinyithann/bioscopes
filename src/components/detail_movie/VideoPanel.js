@@ -90,15 +90,18 @@ var VideoImage = {
 
 function VideoPanel(Props) {
   var movie = Props.movie;
-  var videos = getVideos(movie);
-  if (Util.isEmptyArray(videos)) {
+  var videosRef = React.useRef([]);
+  React.useMemo((function () {
+          videosRef.current = getVideos(movie);
+        }), [movie]);
+  if (Util.isEmptyArray(videosRef.current)) {
     return React.createElement(NotAvailable.make, {
                 thing: "videos"
               });
   } else {
     return React.createElement("ul", {
                 className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none"
-              }, Belt_Array.map(videos, (function (video) {
+              }, Belt_Array.map(videosRef.current, (function (video) {
                       return React.createElement("li", {
                                   key: Util.getOrEmptyString(video.key)
                                 }, React.createElement(VideoPanel$VideoImage, {

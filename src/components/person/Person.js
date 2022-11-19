@@ -7,6 +7,7 @@ import * as Links from "../../shared/Links.js";
 import * as Pulse from "../Pulse.js";
 import * as React from "react";
 import * as Js_int from "rescript/lib/es6/js_int.js";
+import * as Credits from "./Credits.js";
 import * as Twitter from "../social_media/Twitter.js";
 import * as $$Document from "../../hooks/Document.js";
 import * as Facebook from "../social_media/Facebook.js";
@@ -107,6 +108,10 @@ function getAge(person) {
 
 function Person(Props) {
   var isMedium = MediaQuery.useMediaQuery("(max-width: 900px)");
+  var isLg = MediaQuery.useMediaQuery("(max-width: 1200px)");
+  var height = isMedium ? 280 : (
+      isLg ? 356 : 476
+    );
   var match = React.useState(function () {
         return false;
       });
@@ -183,12 +188,14 @@ function Person(Props) {
                         className: "block lg:hidden font-nav font-semibold text-[1.4rem] pb-1 pl-4"
                       }, personVM$1.name), React.createElement("div", {
                         className: "block px-4 py-2"
-                      }, personVM$1.profileImagePath !== "" ? getImgElem(personVM$1.profileImagePath, 280, match[0], match[1]) : null, React.createElement("div", undefined, React.createElement("p", {
+                      }, personVM$1.profileImagePath !== "" ? getImgElem(personVM$1.profileImagePath, height, match[0], match[1]) : null, React.createElement("div", {
+                            className: "block lg:flex flex-col"
+                          }, React.createElement("p", {
                                 className: "hidden lg:block font-nav font-semibold text-[1.4rem] pb-2"
                               }, personVM$1.name), Belt_Array.map(personVM$1.biography, (function (x) {
                                   return React.createElement("p", {
                                               key: x.slice(0, 32),
-                                              className: "pb-2 prose-base w-auto md:w-[60vw]"
+                                              className: "pb-2 prose w-auto md:w-[60vw]"
                                             }, x);
                                 })), React.createElement("div", {
                                 className: "flex flex-col items-start justify-start prose pt-6 w-[22rem]"
@@ -216,7 +223,7 @@ function Person(Props) {
                                       value: personVM$1.placeOfBirth
                                     }) : null), isMedium ? null : getSocialLinks(personVM$1)), isMedium ? getSocialLinks(personVM$1) : null)), React.createElement("div", {
                     className: "w-full flex flex-col items-center justify-center pt-8",
-                    id: "movie_info_tab_container"
+                    id: "person_tab_container"
                   }, React.createElement(React$1.Tab.Group, {
                         children: (function (selectedIndex) {
                             return React.createElement("div", {
@@ -272,7 +279,9 @@ function Person(Props) {
                                                                 children: (function (props) {
                                                                     return React.createElement("div", {
                                                                                 className: "flex w-full p-2"
-                                                                              });
+                                                                              }, React.createElement(Credits.make, {
+                                                                                    person: person
+                                                                                  }));
                                                                   }),
                                                                 key: "credits-panel"
                                                               }), React.createElement(React$1.Tab.Panel, {
@@ -288,8 +297,6 @@ function Person(Props) {
                                               })
                                           }));
                           })
-                      }), React.createElement(KnownFor.make, {
-                        person: MoviesProvider.emptyPerson
                       })), error.length > 0 ? React.createElement(ErrorDialog.make, {
                       isOpen: error.length > 0,
                       errorMessage: error,

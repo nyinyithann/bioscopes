@@ -51,7 +51,7 @@ function Home$NavLink(Props) {
     RescriptReactRouter.push("/");
   };
   return React.createElement("button", {
-              className: "flex gap-1 items-center justify-center p-1 group rounded-full sm:rounded-md ring-0 outline-none bg-200 hover:bg-300",
+              className: "flex gap-1 items-center justify-center p-1 group rounded-full sm:rounded-md ring-0 outline-none bg-200 hover:bg-300 text-[1.1rem] font-semibold",
               type: "button",
               onClick: onClick
             }, React.createElement(Solid.HomeIcon, {

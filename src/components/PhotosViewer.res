@@ -17,7 +17,7 @@ module PhotoTitle = {
   let make = (~title, ~count) => {
     <div className="flex w-full gap-2 items-center font-sans text-900 pb-1">
       <span className="text-[1rem]"> {title->string} </span>
-      <span className="text-[0.95rem]">
+      <span className="text-[0.85rem]">
         {`${count->Js.Int.toString} ${count == 1 ? "image" : "images"}`->string}
       </span>
     </div>
@@ -25,7 +25,7 @@ module PhotoTitle = {
 }
 
 @react.component
-let make = (~photos: array<photo>) => {
+let make = (~photos: array<photo>, ~title: option<string>=?) => {
   open Belt
   let isMobile = MediaQuery.useMediaQuery("(max-width: 600px)")
   let (backdrops, posters) = photos->Array.partition(x => x.type_ == #backdrop)
@@ -66,21 +66,26 @@ let make = (~photos: array<photo>) => {
       {Util.isEmptyArray(backdrops)
         ? React.null
         : <div className="flex flex-col w-full">
-            <PhotoTitle title="Backdrops" count={Belt.Array.length(backdrops)} />
+            <PhotoTitle
+              title={`${Util.isEmptyString(Util.getOrEmptyString(title))
+                  ? "Backdrops"
+                  : `${Util.getOrEmptyString(title)}`}`}
+              count={Belt.Array.length(backdrops)}
+            />
             <ul
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full list-none">
               {backdrops
               ->Belt.Array.mapWithIndex((i, bd) => {
-                  <li key={bd.id} className="cursor-pointer" onClick={_ => slideBackdropImages(i)}>
-                    <LazyImage
-                      alt="backdrop image"
-                      placeholderPath={Links.placeholderImage}
-                      src={bd.url}
-                      className="w-full h-full border-[2px] border-slate-200 rounded-md"
-                      lazyHeight={isMobile ? 126. : 146.}
-                      lazyOffset={50.}
-                    />
-                  </li>
+                <li key={bd.id} className="cursor-pointer" onClick={_ => slideBackdropImages(i)}>
+                  <LazyImage
+                    alt="backdrop image"
+                    placeholderPath={Links.placeholderImage}
+                    src={bd.url}
+                    className="w-full h-full border-[2px] border-slate-200 rounded-md"
+                    lazyHeight={isMobile ? 126. : 146.}
+                    lazyOffset={50.}
+                  />
+                </li>
               })
               ->array}
             </ul>
@@ -88,21 +93,26 @@ let make = (~photos: array<photo>) => {
       {Util.isEmptyArray(posters)
         ? React.null
         : <div className="flex flex-col w-full">
-            <PhotoTitle title="Posters" count={Belt.Array.length(posters)} />
+            <PhotoTitle
+              title={`${Util.isEmptyString(Util.getOrEmptyString(title))
+                  ? "Posters"
+                  : `${Util.getOrEmptyString(title)}`}`}
+              count={Belt.Array.length(posters)}
+            />
             <ul
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full">
               {posters
               ->Belt.Array.mapWithIndex((i, bd) => {
-                  <li key={bd.id} className="cursor-pointer" onClick={_ => slidePosterImages(i)}>
-                    <LazyImage
-                      alt="poster image"
-                      placeholderPath={Links.placeholderImage}
-                      src={bd.url}
-                      className="w-full h-full border-[2px] border-slate-200 rounded-md"
-                      lazyHeight={isMobile ? 280. : 356.}
-                      lazyOffset={50.}
-                    />
-                  </li>
+                <li key={bd.id} className="cursor-pointer" onClick={_ => slidePosterImages(i)}>
+                  <LazyImage
+                    alt="poster image"
+                    placeholderPath={Links.placeholderImage}
+                    src={bd.url}
+                    className="w-full h-full border-[2px] border-slate-200 rounded-md"
+                    lazyHeight={isMobile ? 280. : 356.}
+                    lazyOffset={50.}
+                  />
+                </li>
               })
               ->array}
             </ul>

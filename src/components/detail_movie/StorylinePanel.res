@@ -5,9 +5,9 @@ module Pair = {
   let make = (~title, ~value) => {
     Util.isEmptyString(value)
       ? React.null
-      : <dl className="flex w-full">
-          <dt className="w-1/3 overflow-ellipsis"> {Util.toStringElement(title)} </dt>
-          <dd className="w-2/3 overflow-ellipsis"> {Util.toStringElement(value)} </dd>
+      : <dl className="flex w-full gap-2">
+          <dt className="w-1/3 truncate bg-100 pl-1 rounded-r-full mb-1"> {Util.toStringElement(title)} </dt>
+          <dd className="w-2/3 truncate"> {Util.toStringElement(value)} </dd>
         </dl>
   }
 }
@@ -34,12 +34,21 @@ module DirectorLink = {
   @react.component
   let make = (~movie: DetailMovieModel.detail_movie) => {
     let (id, name) = getDirectorIdAndName(movie)
-
+      open Webapi.Url
+      let param: UrlQueryParam.person_param = {
+        id: id ->Js.Int.toString
+      }
+      let seg =
+        `/person?` ++
+        UrlQueryParam.Converter_person_param.stringfy(. param)
+        ->URLSearchParams.make
+        ->URLSearchParams.toString
     {
       id != 0
         ? <div className="flex w-full">
             <span className="w-1/3 overflow-ellipsis"> {Util.toStringElement("Director")} </span>
-            <span className="w-2/3 overflow-ellipsis"> {Util.toStringElement(name)} </span>
+            <a href={seg} className="w-1/3 truncate span-link" rel="noopener noreferrer" > {Util.toStringElement(name)} </a>
+            /* <span className="w-2/3 truncate"> {Util.toStringElement(name)} </span> */
           </div>
         : React.null
     }
