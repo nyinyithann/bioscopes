@@ -7,7 +7,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const isProductionMode = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  entry: path.resolve(__dirname, '..', './src/index.js'),
+  entry: path.resolve(__dirname, '..', './src/Index.js'),
   output: {
     path: path.resolve(__dirname, '..', './dist'),
     publicPath: '/',
