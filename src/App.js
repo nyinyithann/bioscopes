@@ -80,7 +80,7 @@ function App(Props) {
   if (exit === 1) {
     component = React.createElement(NotFound.make, {});
   }
-  var match$1 = ThemeHook.useTheme("theme-emerald");
+  var match$1 = ThemeHook.useTheme("dark");
   return React.createElement(ThemeSwitchProvider.make, {
               value: match$1[1],
               children: React.createElement("div", {

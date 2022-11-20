@@ -35,7 +35,7 @@ let make = () => {
   | _ => <NotFound />
   }
 
-  let (theme, setTheme) = ThemeHook.useTheme("theme-emerald")
+  let (theme, setTheme) = ThemeHook.useTheme("dark")
   <ThemeSwitchProvider value=setTheme>
     <div className={`${theme} flex flex-col dark:dark-bg`}>
       <div className="h-screen bg-white dark:dark-bg">
