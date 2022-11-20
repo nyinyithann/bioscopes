@@ -47,7 +47,7 @@ function getImgElem(src, height, imageLoaded, setImageLoaded) {
               onError: (function (e) {
                   if (e.target.src !== Links.placeholderImage) {
                     e.target.src = Links.placeholderImage;
-                    e.target.style = "height: 350px; width: 260px";
+                    e.target.style = "height: 280px; width: 180px";
                     return ;
                   }
                   
@@ -206,7 +206,7 @@ function Person(Props) {
                                               className: "pb-2 prose w-auto md:w-[60vw]"
                                             }, x);
                                 })), React.createElement("div", {
-                                className: "flex flex-col items-start justify-start prose pt-6 w-[22rem]"
+                                className: "flex flex-col items-start justify-start prose pt-6 w-auto"
                               }, personVM$1.knownFor !== "" ? React.createElement(StorylinePanel.Pair.make, {
                                       title: "Known For",
                                       value: personVM$1.knownFor

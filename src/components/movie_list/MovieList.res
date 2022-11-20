@@ -4,10 +4,16 @@ module Poster = {
   @react.component
   let make = (~movie: MovieModel.movie) => {
     let isMobile = MediaQuery.useMediaQuery("(max-width: 600px)")
+    let title = Util.getOrEmptyString(movie.title)
+    let name = Util.getOrEmptyString(movie.name)
 
     let imgLink = switch movie.poster_path {
     | Some(p) => Links.getPosterImageW342Link(p)
-    | None => ""
+    | None =>
+      switch movie.profile_path {
+      | Some(p) => Links.getPosterImageW342Link(p)
+      | None => ""
+      }
     }
 
     let getHref = (movie: MovieModel.movie) => {
@@ -39,10 +45,12 @@ module Poster = {
       />
       <p
         className="text-base break-words transform duration-300 pt-[0.3rem] flex text-left text-900  p-1">
-        {Util.getOrEmptyString(movie.title)->string}
+        {(Util.isEmptyString(title) ? name : title)->string}
       </p>
       <div className="pb-2">
-        <Rating ratingValue={movie.vote_average} />
+        {Util.getOrEmptyString(movie.media_type) != "person"
+          ? <Rating ratingValue={movie.vote_average} />
+          : React.null}
       </div>
       {switch movie.release_date {
       | Some(rd) =>

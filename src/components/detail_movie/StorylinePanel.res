@@ -28,7 +28,7 @@ let getFirstPosterImage = (~movie: DetailMovieModel.detail_movie) => {
   ->Array.get(0)
 }
 
-let labelStyle = "w-[12rem] flex items-center bg-50 pl-1 rounded-r-full mb-1"
+let labelStyle = "w-[12rem] flex items-center bg-50 pl-1 pr-2 rounded-r-full mb-1"
 
 module Pair = {
   @react.component

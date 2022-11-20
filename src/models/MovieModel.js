@@ -39,7 +39,9 @@ var movie = Json_Decode$JsonCombinators.object(function (fields) {
               video: Marshal.to_opt(fields, "video", Json_Decode$JsonCombinators.bool),
               vote_average: Marshal.to_opt(fields, "vote_average", Json_Decode$JsonCombinators.$$float),
               vote_count: Marshal.to_opt(fields, "vote_count", Json_Decode$JsonCombinators.$$int),
-              media_type: Marshal.to_opt(fields, "media_type", Json_Decode$JsonCombinators.string)
+              media_type: Marshal.to_opt(fields, "media_type", Json_Decode$JsonCombinators.string),
+              name: Marshal.to_opt(fields, "name", Json_Decode$JsonCombinators.string),
+              profile_path: Marshal.to_opt(fields, "profile_path", Json_Decode$JsonCombinators.string)
             };
     });
 

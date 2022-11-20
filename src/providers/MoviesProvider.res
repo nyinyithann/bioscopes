@@ -124,6 +124,16 @@ module MoviesContext = {
   }
 }
 
+let filterTVShows = (results : array<MovieModel.movie>, apiParams) => {
+  switch apiParams {
+  | UrlQueryParam.Search(_) =>
+    Belt.Array.keep(results, x =>
+      Util.getOrEmptyString(x.media_type)->Js.String2.toLowerCase != "tv"
+    )
+  | _ => results
+  }
+}
+
 let reducer = (state: state, action) => {
   switch action {
   | Error(msg) => {
@@ -153,7 +163,7 @@ let reducer = (state: state, action) => {
         total_results: ?movies.total_results,
         results: MovieModel.unique(
           Js.Option.getWithDefault([], state.movies.results),
-          Js.Option.getWithDefault([], movies.results),
+          Js.Option.getWithDefault([], movies.results)  -> filterTVShows(apiParams)
         ),
       },
       detail_movie: emptyDetailMovie,
@@ -231,7 +241,7 @@ let getApiPath = apiParams => {
         id,
       )}&page=${Js.Int.toString(page)}&sort_by=${sort_by}`
   | Search({query, page}) =>
-    `${apiBaseUrl}/${apiVersion}/search/movie?query=${query}&page=${Js.Int.toString(page)}`
+    `${apiBaseUrl}/${apiVersion}/search/multi?query=${query}&page=${Js.Int.toString(page)}`
   | Movie({id, media_type}) =>
     `${apiBaseUrl}/${apiVersion}/${media_type}/${id}?language=en-US&append_to_response=videos,credits,images,external_ids,release_dates&include_image_language=en`
   | Person({id}) =>
@@ -248,7 +258,6 @@ let loadMovieInternal = (dispatch, ~apiParams: UrlQueryParam.query_param, ~signa
     | Ok(json) =>
       switch MovieModel.MovieListDecoder.decode(. ~json) {
       | Ok(ml) => dispatch(SuccessMovies(apiParams, ml))
-
       | Error(msg) => dispatch(Error(msg))
       }
     | Error(json) =>

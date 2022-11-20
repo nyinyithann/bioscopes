@@ -30,7 +30,7 @@ let getImgElem = (src, height, imageLoaded, setImageLoaded) =>
       open ReactEvent.Media
       if target(e)["src"] !== Links.placeholderImage {
         target(e)["src"] = Links.placeholderImage
-        target(e)["style"] = "height: 350px; width: 260px"
+        target(e)["style"] = "height: 280px; width: 180px"
       }
     }}
   />
@@ -166,7 +166,7 @@ let make = () => {
                 {x->string}
               </p>
             )->array}
-            <div className="flex flex-col items-start justify-start prose pt-6 w-[22rem]">
+            <div className="flex flex-col items-start justify-start prose pt-6 w-auto">
               {personVM.knownFor != ""
                 ? <StorylinePanel.Pair title={"Known For"} value={personVM.knownFor} />
                 : React.null}

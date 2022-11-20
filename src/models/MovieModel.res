@@ -20,6 +20,13 @@ type movie = {
   vote_average?: float,
   vote_count?: int,
   media_type?: string,
+  /*
+  The following fields are supposed to be in Person model.
+  They are here because movie type is also used to represent search result for now.
+  They will be moved to the proper place after TV shows borwsing and searching are supported.
+ */
+  name?: string,
+  profile_path?: string,
 }
 
 type upcoming_dates = {
@@ -72,6 +79,8 @@ module MovieDecoder = {
     vote_average: ?Marshal.to_opt(. fields, "vote_average", float),
     vote_count: ?Marshal.to_opt(. fields, "vote_count", int),
     media_type: ?Marshal.to_opt(. fields, "media_type", string),
+    profile_path: ?Marshal.to_opt(. fields, "profile_path", string),
+    name: ?Marshal.to_opt(. fields, "name", string),
   })
 
   let decode = (. ~json: Js.Json.t): result<movie, string> => {

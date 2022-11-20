@@ -6,6 +6,7 @@ import * as NotFound from "./NotFound.js";
 import * as SearchBox from "../components/movie_list/SearchBox.js";
 import * as ThemeMenu from "../components/ThemeMenu.js";
 import * as Js_promise from "rescript/lib/es6/js_promise.js";
+import * as ScrollToTop from "../components/ScrollToTop.js";
 import * as GithubButton from "../components/social_media/GithubButton.js";
 import * as MoviesProvider from "../providers/MoviesProvider.js";
 import * as SuspensionLoader from "../components/SuspensionLoader.js";
@@ -141,7 +142,9 @@ function Home(Props) {
                           children: component
                         })), React.createElement("footer", {
                       className: "h-8"
-                    })));
+                    }), React.createElement("div", {
+                      className: "z-50 m:right-[18.5rem] fixed bottom-[1rem] right-[1rem] flex flex-none shrink-0 items-center justify-center rounded-full hover:cursor-pointer hover:outline-none hover:ring-0 md:bottom-[1.3rem] active:ring-0 active:outline-none"
+                    }, React.createElement(ScrollToTop.make, {}))));
 }
 
 var make = React.memo(Home);

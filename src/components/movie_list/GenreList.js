@@ -67,7 +67,11 @@ var staticItems = [
 
 function getDisplayName(genre) {
   if (genre.id > 0) {
-    return genre.name;
+    if (genre.name.toLowerCase() === "science fiction") {
+      return "Sci-Fi";
+    } else {
+      return genre.name;
+    }
   }
   var g = Belt_Array.getBy(staticItemLookup, (function (x) {
           return x.id === genre.id;

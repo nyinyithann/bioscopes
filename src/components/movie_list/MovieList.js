@@ -28,8 +28,16 @@ function array(prim) {
 function MovieList$Poster(Props) {
   var movie = Props.movie;
   var isMobile = MediaQuery.useMediaQuery("(max-width: 600px)");
+  var title = Util.getOrEmptyString(movie.title);
+  var name = Util.getOrEmptyString(movie.name);
   var p = movie.poster_path;
-  var imgLink = p !== undefined ? Links.getPosterImageW342Link(p) : "";
+  var imgLink;
+  if (p !== undefined) {
+    imgLink = Links.getPosterImageW342Link(p);
+  } else {
+    var p$1 = movie.profile_path;
+    imgLink = p$1 !== undefined ? Links.getPosterImageW342Link(p$1) : "";
+  }
   var getHref = function (movie) {
     var id = movie.id.toString();
     var mt = movie.media_type;
@@ -66,11 +74,11 @@ function MovieList$Poster(Props) {
                   lazyOffset: 200
                 }), React.createElement("p", {
                   className: "text-base break-words transform duration-300 pt-[0.3rem] flex text-left text-900  p-1"
-                }, Util.getOrEmptyString(movie.title)), React.createElement("div", {
+                }, Util.isEmptyString(title) ? name : title), React.createElement("div", {
                   className: "pb-2"
-                }, React.createElement(Rating.make, {
-                      ratingValue: movie.vote_average
-                    })), tmp);
+                }, Util.getOrEmptyString(movie.media_type) !== "person" ? React.createElement(Rating.make, {
+                        ratingValue: movie.vote_average
+                      }) : null), tmp);
 }
 
 var Poster = {

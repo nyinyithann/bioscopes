@@ -42,7 +42,11 @@ let staticItems = [
 
 let getDisplayName = (genre: GenreModel.genre) => {
   if genre.id > 0 {
-    genre.name
+    if Js.String2.toLowerCase(genre.name) == "science fiction" {
+      "Sci-Fi"
+    } else {
+      genre.name
+    }
   } else {
     switch staticItemLookup->Belt.Array.getBy(x => x["id"] == genre.id) {
     | Some(g) => g["displayName"]

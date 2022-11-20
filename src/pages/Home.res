@@ -88,6 +88,10 @@ let make = () => {
         <MoviesProvider> {component} </MoviesProvider>
       </div>
       <footer className="h-8" />
+      <div
+        className="z-50 m:right-[18.5rem] fixed bottom-[1rem] right-[1rem] flex flex-none shrink-0 items-center justify-center rounded-full hover:cursor-pointer hover:outline-none hover:ring-0 md:bottom-[1.3rem] active:ring-0 active:outline-none">
+        <ScrollToTop />
+      </div>
     </div>
   </div>
 }

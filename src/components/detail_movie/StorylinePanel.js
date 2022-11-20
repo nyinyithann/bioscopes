@@ -37,7 +37,7 @@ function getFirstPosterImage(movie) {
                           })), []), []), 0);
 }
 
-var labelStyle = "w-[12rem] flex items-center bg-50 pl-1 rounded-r-full mb-1";
+var labelStyle = "w-[12rem] flex items-center bg-50 pl-1 pr-2 rounded-r-full mb-1";
 
 function StorylinePanel$Pair(Props) {
   var title = Props.title;
