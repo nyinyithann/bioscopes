@@ -89,7 +89,7 @@ let make = () => {
   <Menu className="relative z-50 flex items-center justify-center text-left">
     {<>
       <Menu.Button
-        className="flex h-8 w-8 items-center justify-center rounded-full border-transparent bg-300 text-700 outline-none ring-0 hover:bg-400 hover:text-white dark:border-[1px] dark:border-slate-400 dark:bg-slate-400 dark:hover:bg-slate-700">
+        className="flex h-8 w-8 items-center justify-center rounded-full border-transparent bg-300 text-700 outline-none ring-0 hover:bg-400 hover:text-white dark:dark-button">
         <Heroicons.Solid.ColorSwatchIcon className="self-center w-5 h-5 text-900 dark:text-white" />
       </Menu.Button>
       <Menu.Items

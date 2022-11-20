@@ -96,13 +96,13 @@ module CreditGroup = {
   @react.component
   let make = (~creditGroup) => {
     <div className="flex flex-col w-full">
-      <div className="flex flex-col w-full divide-y divide-200">
+      <div className="flex flex-col w-full divide-y divide-200 dark:dark-divide">
         {creditGroup
         ->Belt.Array.mapWithIndex((i, (_, credits)) => {
           credits
           ->Belt.Array.map(credit =>
             <div
-              key={credit.id->Js.Int.toString} className={`${mod(i, 2) == 0 ? "bg-50" : "bg-100"}`}>
+              key={credit.id->Js.Int.toString} className={`${mod(i, 2) == 0 ? "bg-50 dark:bg-slate-700" : "bg-100 dark:bg-slate-800/40"}`}>
               <CreditItem credit />
             </div>
           )
@@ -153,11 +153,11 @@ let make = (~person: PersonModel.person) => {
   let tabStyle = "flex flex-col items-start justify-start w-full h-full outline-none ring-0 px-1"
 
   let getTabHeaderStyle = selected => {
-    let base = "w-full h-full flex items-start justify-start py-2 border-b-2 border-b-100 text-600"
-    selected ? base ++ " border-b-500 font-semibold" : base
+    let base = "w-full h-full flex items-start justify-start py-2 border-b-2 border-b-100 text-600  dark:dark-sub-tab-button"
+    selected ? base ++ " border-b-500 font-semibold dark:dark-sub-tab-selected" : base
   }
 
-  <div className="flex flex-col w-full gap-4 px-2">
+  <div className="flex flex-col w-full gap-4 px-2 dark:dark-bg">
     <div
       id="credit_info_tab_container"
       className="w-full flex flex-col items-center justify-center">

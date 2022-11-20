@@ -46,7 +46,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     photosRef.current = Array.concat(getBackdrops(movie), getPosters(movie))
   }, [movie])
 
-  <div className="flex w-full items-center justify-center p-2">
+  <div className="flex w-full items-center justify-center p-2 dark:dark-bg">
     <PhotosViewer photos={photosRef.current} />
   </div>
 }

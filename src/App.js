@@ -84,9 +84,9 @@ function App(Props) {
   return React.createElement(ThemeSwitchProvider.make, {
               value: match$1[1],
               children: React.createElement("div", {
-                    className: "" + match$1[0] + " flex flex-col"
+                    className: "" + match$1[0] + " flex flex-col dark:dark-bg"
                   }, React.createElement("div", {
-                        className: "h-screen bg-white dark:bg-slate-500"
+                        className: "h-screen bg-white dark:dark-bg"
                       }, React.createElement(ErrorBoundary.make, {
                             children: component
                           })))

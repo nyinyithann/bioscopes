@@ -35,29 +35,31 @@ function array(prim) {
 }
 
 function getImgElem(src, height, imageLoaded, setImageLoaded) {
-  return React.createElement("img", {
-              className: "transition duration-1000 " + (
-                imageLoaded ? "opacity-100" : "opacity-0"
-              ) + " pt-2 pr-4 pb-4 float-left w-auto",
-              style: {
-                height: height.toString() + "px"
-              },
-              alt: "image",
-              src: src,
-              onError: (function (e) {
-                  if (e.target.src !== Links.placeholderImage) {
-                    e.target.src = Links.placeholderImage;
-                    e.target.style = "height: 280px; width: 180px";
-                    return ;
-                  }
-                  
-                }),
-              onLoad: (function (param) {
-                  Curry._1(setImageLoaded, (function (param) {
-                          return true;
-                        }));
-                })
-            });
+  return React.createElement("div", {
+              className: "pt-2 pr-4 pb-4 float-left"
+            }, React.createElement("img", {
+                  className: "transition duration-1000 " + (
+                    imageLoaded ? "opacity-100" : "opacity-0"
+                  ) + " dark:dark-shadow",
+                  style: {
+                    height: height.toString() + "px"
+                  },
+                  alt: "image",
+                  src: src,
+                  onError: (function (e) {
+                      if (e.target.src !== Links.placeholderImage) {
+                        e.target.src = Links.placeholderImage;
+                        e.target.style = "height: 280px; width: 180px";
+                        return ;
+                      }
+                      
+                    }),
+                  onLoad: (function (param) {
+                      Curry._1(setImageLoaded, (function (param) {
+                              return true;
+                            }));
+                    })
+                }));
 }
 
 function getSocialLinks(person) {
@@ -65,20 +67,20 @@ function getSocialLinks(person) {
               className: "flex w-full justify-start gap-[1.4rem] pt-6"
             }, React.createElement(Twitter.make, {
                   id: person.twitterId,
-                  className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                  className: "h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
                 }), React.createElement(Facebook.make, {
                   id: person.facebookId,
-                  className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                  className: "h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
                 }), React.createElement(Instagram.make, {
                   id: person.instagramId,
-                  className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                  className: "h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
                 }), React.createElement(Imdb.make, {
                   id: person.imdbId,
                   type_: "name",
-                  className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                  className: "h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
                 }), React.createElement(WebsiteLink.make, {
                   link: person.websiteLink,
-                  className: "h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
+                  className: "h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900 dark:dark-svg"
                 }));
 }
 
@@ -189,7 +191,7 @@ function Person(Props) {
   var personVM$1 = personVM.current;
   if (personVM$1 !== undefined) {
     return React.createElement("main", {
-                className: "flex flex-col items-center justify-center w-full py-2"
+                className: "flex flex-col items-center justify-center w-full py-2 dark:dark-bg dark:dark-text"
               }, React.createElement(Pulse.make, {
                     show: loading
                   }), React.createElement("div", undefined, React.createElement("p", {
@@ -197,16 +199,16 @@ function Person(Props) {
                       }, personVM$1.name), React.createElement("div", {
                         className: "block px-4 py-2"
                       }, getImgElem(personVM$1.profileImagePath, height, match[0], match[1]), React.createElement("div", {
-                            className: "block lg:flex flex-col"
+                            className: "block lg:flex flex-col dark:dark-text"
                           }, React.createElement("p", {
                                 className: "hidden lg:block font-nav font-semibold text-[1.4rem] pb-2"
                               }, personVM$1.name), Belt_Array.map(personVM$1.biography, (function (x) {
                                   return React.createElement("p", {
                                               key: x.slice(0, 32),
-                                              className: "pb-2 prose w-auto md:w-[60vw]"
+                                              className: "pb-2 prose w-auto md:w-[60vw] dark:prose-gray dark:dark-text"
                                             }, x);
                                 })), React.createElement("div", {
-                                className: "flex flex-col items-start justify-start prose pt-6 w-auto"
+                                className: "flex flex-col items-start justify-start prose pt-6 w-auto dark:dark-text"
                               }, personVM$1.knownFor !== "" ? React.createElement(StorylinePanel.Pair.make, {
                                       title: "Known For",
                                       value: personVM$1.knownFor
@@ -235,36 +237,36 @@ function Person(Props) {
                   }, React.createElement(React$1.Tab.Group, {
                         children: (function (selectedIndex) {
                             return React.createElement("div", {
-                                        className: "flex flex-col w-full"
+                                        className: "flex flex-col w-full dark:dark-text dark:dark-top-border-2"
                                       }, React.createElement(React$1.Tab.List, {
                                             className: "flex w-full flex-nowrap items-center justify-around",
                                             children: (function (param) {
                                                 return React.createElement(React.Fragment, undefined, React.createElement(React$1.Tab, {
-                                                                className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300",
+                                                                className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button",
                                                                 children: (function (props) {
                                                                     return React.createElement("div", {
                                                                                 className: "" + (
-                                                                                  props.selected ? "bg-300 text-900" : ""
+                                                                                  props.selected ? "bg-300 text-900 dark:dark-tab-selected" : ""
                                                                                 ) + " w-full h-full control-color flex items-center justify-center py-2 font-semibold"
                                                                               }, "KNOWN FOR");
                                                                   }),
                                                                 key: "knownfor"
                                                               }), React.createElement(React$1.Tab, {
-                                                                className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300",
+                                                                className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button",
                                                                 children: (function (props) {
                                                                     return React.createElement("div", {
                                                                                 className: "" + (
-                                                                                  props.selected ? "bg-300 text-900" : ""
+                                                                                  props.selected ? "bg-300 text-900 dark:dark-tab-selected" : ""
                                                                                 ) + " w-full h-full control-color flex items-center justify-center py-2 font-semibold"
                                                                               }, "CREDITS");
                                                                   }),
                                                                 key: "credits"
                                                               }), React.createElement(React$1.Tab, {
-                                                                className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300",
+                                                                className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button",
                                                                 children: (function (props) {
                                                                     return React.createElement("div", {
                                                                                 className: "" + (
-                                                                                  props.selected ? "bg-300 text-900" : ""
+                                                                                  props.selected ? "bg-300 text-900 dark:dark-tab-selected" : ""
                                                                                 ) + " w-full h-full control-color flex items-center justify-center py-2 font-semibold"
                                                                               }, "PHOTOS");
                                                                   }),

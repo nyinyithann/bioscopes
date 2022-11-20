@@ -73,60 +73,60 @@ function Movie(Props) {
   } else {
     var movieId = detail_movie.id;
     tmp = React.createElement(React.Fragment, undefined, React.createElement("main", {
-              className: "flex border-t-[2px] border-slate-200 relative"
+              className: "flex border-t-[2px] border-slate-200 relative dark:dark-top-border dark:dark-bg"
             }, React.createElement("div", {
-                  className: "flex flex-col w-full h-full"
+                  className: "flex flex-col w-full h-full dark:dark-bg"
                 }, React.createElement("div", {
-                      className: "w-full",
+                      className: "w-full dark:dark-bg",
                       id: "hero_container"
                     }, React.createElement(Hero.make, {
                           movie: detail_movie
                         })), React.createElement("div", {
-                      className: "w-full flex flex-col items-center justify-center",
+                      className: "w-full flex flex-col items-center justify-center dark:dark-top-border-2",
                       id: "movie_info_tab_container"
                     }, React.createElement(React$1.Tab.Group, {
                           children: (function (selectedIndex) {
                               return React.createElement("div", {
-                                          className: "flex flex-col w-full"
+                                          className: "flex flex-col w-full dark:dark-bg dark:dark-text"
                                         }, React.createElement(React$1.Tab.List, {
                                               className: "flex w-full flex-nowrap items-center justify-around",
                                               children: (function (param) {
                                                   return React.createElement(React.Fragment, undefined, React.createElement(React$1.Tab, {
-                                                                  className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300",
+                                                                  className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button",
                                                                   children: (function (props) {
                                                                       return React.createElement("div", {
                                                                                   className: "" + (
-                                                                                    props.selected ? "bg-300 text-900" : ""
+                                                                                    props.selected ? "bg-300 text-900 dark:dark-tab-selected" : ""
                                                                                   ) + " w-full h-full control-color flex items-center justify-center py-2 font-semibold"
                                                                                 }, "OVERVIEW");
                                                                     }),
                                                                   key: "overview"
                                                                 }), React.createElement(React$1.Tab, {
-                                                                  className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300",
+                                                                  className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button",
                                                                   children: (function (props) {
                                                                       return React.createElement("div", {
                                                                                   className: "" + (
-                                                                                    props.selected ? "bg-300 text-900" : ""
+                                                                                    props.selected ? "bg-300 text-900 dark:dark-tab-selected" : ""
                                                                                   ) + " w-full h-full control-color flex items-center justify-center py-2 font-semibold"
                                                                                 }, "CASTS");
                                                                     }),
                                                                   key: "casts"
                                                                 }), React.createElement(React$1.Tab, {
-                                                                  className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300",
+                                                                  className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button",
                                                                   children: (function (props) {
                                                                       return React.createElement("div", {
                                                                                   className: "" + (
-                                                                                    props.selected ? "bg-300 text-900" : ""
+                                                                                    props.selected ? "bg-300 text-900 dark:dark-tab-selected" : ""
                                                                                   ) + " w-full h-full control-color flex items-center justify-center py-2 font-semibold"
                                                                                 }, "VIDEOS");
                                                                     }),
                                                                   key: "videos"
                                                                 }), React.createElement(React$1.Tab, {
-                                                                  className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300",
+                                                                  className: "control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button",
                                                                   children: (function (props) {
                                                                       return React.createElement("div", {
                                                                                   className: "" + (
-                                                                                    props.selected ? "bg-300 text-900" : ""
+                                                                                    props.selected ? "bg-300 text-900 dark:dark-tab-selected" : ""
                                                                                   ) + " w-full h-full control-color flex items-center justify-center py-2 font-semibold"
                                                                                 }, "PHOTOS");
                                                                     }),
@@ -179,7 +179,7 @@ function Movie(Props) {
                         }), movieId !== undefined && !Util.isEmptyArray(Belt_Option.getWithDefault(match.recommendedMovies.results, [])) ? React.createElement("div", {
                             className: "w-full flex flex-col justify-center items-center p-2 pt-8 gap-2"
                           }, React.createElement("span", {
-                                className: "text-900 text-[1.2rem] font-semibold text-left w-full pb-2"
+                                className: "text-900 text-[1.2rem] font-semibold text-left w-full pb-2 dark:dark-text"
                               }, "MORE LIKE THIS"), React.createElement(MoreLikeThis.make, {
                                 movieId: movieId
                               })) : null))), React.createElement(ModalDialog.make, {

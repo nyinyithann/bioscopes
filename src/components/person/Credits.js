@@ -110,13 +110,13 @@ function Credits$CreditGroup(Props) {
   return React.createElement("div", {
               className: "flex flex-col w-full"
             }, React.createElement("div", {
-                  className: "flex flex-col w-full divide-y divide-200"
+                  className: "flex flex-col w-full divide-y divide-200 dark:dark-divide"
                 }, Belt_Array.mapWithIndex(creditGroup, (function (i, param) {
                         return Belt_Array.map(param[1], (function (credit) {
                                       return React.createElement("div", {
                                                   key: credit.id.toString(),
                                                   className: "" + (
-                                                    i % 2 === 0 ? "bg-50" : "bg-100"
+                                                    i % 2 === 0 ? "bg-50 dark:bg-slate-700" : "bg-100 dark:bg-slate-800/40"
                                                   ) + ""
                                                 }, React.createElement(Credits$CreditItem, {
                                                       credit: credit
@@ -176,15 +176,15 @@ function Credits(Props) {
                 }));
         }), [person]);
   var getTabHeaderStyle = function (selected) {
-    var base = "w-full h-full flex items-start justify-start py-2 border-b-2 border-b-100 text-600";
+    var base = "w-full h-full flex items-start justify-start py-2 border-b-2 border-b-100 text-600  dark:dark-sub-tab-button";
     if (selected) {
-      return base + " border-b-500 font-semibold";
+      return base + " border-b-500 font-semibold dark:dark-sub-tab-selected";
     } else {
       return base;
     }
   };
   return React.createElement("div", {
-              className: "flex flex-col w-full gap-4 px-2"
+              className: "flex flex-col w-full gap-4 px-2 dark:dark-bg"
             }, React.createElement("div", {
                   className: "w-full flex flex-col items-center justify-center",
                   id: "credit_info_tab_container"

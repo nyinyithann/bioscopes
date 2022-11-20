@@ -62,7 +62,7 @@ function PhotosPanel(Props) {
           photosRef.current = Belt_Array.concat(getBackdrops(movie), getPosters(movie));
         }), [movie]);
   return React.createElement("div", {
-              className: "flex w-full items-center justify-center p-2"
+              className: "flex w-full items-center justify-center p-2 dark:dark-bg"
             }, React.createElement(PhotosViewer.make, {
                   photos: photosRef.current
                 }));

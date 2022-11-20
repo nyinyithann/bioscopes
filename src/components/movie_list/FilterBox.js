@@ -63,7 +63,7 @@ function FilterBox(Props) {
         });
   };
   return React.createElement("div", {
-              className: "w-[8rem] flex items-center justify-center text-base rounded-md text-700 py-1 px-2 outline-none ring-0 hover:bg-300"
+              className: "w-[8rem] flex items-center justify-center text-base rounded-md text-700 py-1 px-2 outline-none ring-0 hover:bg-300 dark:dark-button"
             }, React.createElement(React$1.Listbox, {
                   value: selectedRef.contents,
                   onChange: onChange,
@@ -79,7 +79,7 @@ function FilterBox(Props) {
                               }, React.createElement(Solid.ChevronDownIcon, {
                                     className: "w-4 h-4"
                                   }))), React.createElement(React$1.Listbox.Options, {
-                            className: "absolute top-[2rem] -left-10 w-[10rem] rounded bg-200 py-1 outline-none ring-0",
+                            className: "absolute top-[2rem] -left-10 w-[10rem] rounded bg-200 py-1 outline-none ring-0 cursor-pointer dark:dark-bg dark:dark-text dark:dark-svg dark:dark-border-all",
                             children: Belt_Array.map(filter_data, (function (item) {
                                     return React.createElement(React$1.Listbox.Option, {
                                                 value: item,
@@ -88,7 +88,7 @@ function FilterBox(Props) {
                                                     return React.createElement("div", {
                                                                 className: "" + (
                                                                   param.active ? "bg-300" : ""
-                                                                ) + " flex w-full pl-2 items-center p-[1px]"
+                                                                ) + " flex w-full pl-2 items-center p-[1px] dark:dark-button"
                                                               }, param.selected ? React.createElement(Solid.CheckIcon, {
                                                                       className: "h-6 w-6 fill-klor-500"
                                                                     }) : React.createElement("span", {

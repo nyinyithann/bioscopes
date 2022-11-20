@@ -62,10 +62,10 @@ let make = (~photos: array<photo>, ~title: option<string>=?) => {
   if Util.isEmptyArray(backdrops) && Util.isEmptyArray(posters) {
     <NotAvailable thing={"photos"} />
   } else {
-    <div className="flex flex-col w-full gap-8">
+    <div className="flex flex-col w-full gap-8 dark:dark-bg">
       {Util.isEmptyArray(backdrops)
         ? React.null
-        : <div className="flex flex-col w-full">
+        : <div className="flex flex-col w-full dark:dark-text dark:dark-bg">
             <PhotoTitle
               title={`${Util.isEmptyString(Util.getOrEmptyString(title))
                   ? "Backdrops"
@@ -73,15 +73,18 @@ let make = (~photos: array<photo>, ~title: option<string>=?) => {
               count={Belt.Array.length(backdrops)}
             />
             <ul
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full list-none">
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full list-none dark:dark-bg">
               {backdrops
               ->Belt.Array.mapWithIndex((i, bd) => {
-                <li key={bd.id} className="cursor-pointer" onClick={_ => slideBackdropImages(i)}>
+                <li
+                  key={bd.id}
+                  className="cursor-pointer dark:dark-bg"
+                  onClick={_ => slideBackdropImages(i)}>
                   <LazyImage
                     alt="backdrop image"
                     placeholderPath={Links.placeholderImage}
                     src={bd.url}
-                    className="w-full h-full border-[2px] border-slate-200 rounded-md"
+                    className="w-full h-full border-[2px] border-slate-200 rounded-md dark:dark-border-all dark:dark-shadow"
                     lazyHeight={isMobile ? 126. : 146.}
                     lazyOffset={50.}
                   />
@@ -100,15 +103,18 @@ let make = (~photos: array<photo>, ~title: option<string>=?) => {
               count={Belt.Array.length(posters)}
             />
             <ul
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full">
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full dark:dark-bg">
               {posters
               ->Belt.Array.mapWithIndex((i, bd) => {
-                <li key={bd.id} className="cursor-pointer" onClick={_ => slidePosterImages(i)}>
+                <li
+                  key={bd.id}
+                  className="cursor-pointer dark:dark-bg"
+                  onClick={_ => slidePosterImages(i)}>
                   <LazyImage
                     alt="poster image"
                     placeholderPath={Links.placeholderImage}
                     src={bd.url}
-                    className="w-full h-full border-[2px] border-slate-200 rounded-md"
+                    className="w-full h-full border-[2px] border-slate-200 rounded-md dark:dark-border-all dark:dark-bg dark:dark-shadow"
                     lazyHeight={isMobile ? 260. : 336.}
                     lazyOffset={50.}
                   />

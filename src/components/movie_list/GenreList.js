@@ -112,15 +112,15 @@ function GenreList$GenreLink(Props) {
   var name = getDisplayName(genre);
   var icon = getIcon(genre);
   return React.createElement("button", {
-              className: "flex items-center gap-4 w-full hover:bg-300",
+              className: "flex items-center gap-4 w-full hover:bg-300 dark:dark-button",
               type: "button",
               onClick: handleClick
             }, React.createElement("div", {
                   className: "" + (
                     active || selected ? "bg-300" : ""
-                  ) + " flex items-center w-full px-2 gap-6 p-[1px]"
+                  ) + " flex items-center w-full px-2 gap-6 p-[1px] "
                 }, icon, name, selected ? React.createElement(Solid.CheckIcon, {
-                        className: "h-6 w-6 fill-klor-500 ml-auto"
+                        className: "h-6 w-6 fill-klor-500 ml-auto dark:dark-svg"
                       }) : React.createElement("span", {
                         className: "block h-6 w-6"
                       })));
@@ -305,7 +305,7 @@ function GenreList(Props) {
                     className: "flex w-full h-full items-center justify-center cursor-pointer ring-0 outline-none",
                     children: tmp$1
                   }), React.createElement(React$1.Listbox.Options, {
-                    className: "absolute top-[2rem] -left-2 w-[14rem] rounded bg-200 py-2 outline-none ring-0",
+                    className: "absolute top-[2rem] -left-2 w-[14rem] rounded bg-200 py-2 outline-none ring-0 dark:dark-bg dark:dark-border-all",
                     children: Belt_Array.map(state._0, (function (genre) {
                             return React.createElement(React$1.Listbox.Option, {
                                         value: genre,
@@ -325,7 +325,7 @@ function GenreList(Props) {
         });
   }
   return React.createElement("div", {
-              className: "flex w-[10rem] items-center justify-center text-base text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300"
+              className: "flex w-[10rem] items-center justify-center text-base text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300 dark:dark-button"
             }, tmp);
 }
 

@@ -45,7 +45,7 @@ function Hero$HeroText(Props) {
     runtime = "";
   }
   return React.createElement("div", {
-              className: "flex flex-col w-full p-[0.6rem] gap-2 " + textColor + ""
+              className: "flex flex-col w-full p-[0.6rem] gap-2 " + textColor + " dark:dark-text"
             }, Util.isEmptyString(name) ? React.createElement("span", {
                     className: "font-nav text-[2rem] md:text-[3rem]"
                   }, title) : React.createElement("span", {
@@ -96,7 +96,7 @@ function Hero$WatchTrailerSmallButton(Props) {
                     Curry._1(play, Links.getYoutubeVideoLink(vkey));
                   })
               }, React.createElement(Outline.PlayIcon, {
-                    className: "h-14 w-14 transition-all sm:h-16 sm:w-16 stroke-[1px] stroke-slate-100 group-hover:stroke-klor-400 group-hover:cursor-pointer"
+                    className: "h-14 w-14 transition-all sm:h-16 sm:w-16 stroke-[1px] stroke-slate-100 group-hover:stroke-klor-400 group-hover:cursor-pointer dark:group-hover:stroke-slate-200"
                   }));
   } else {
     return null;
@@ -118,14 +118,14 @@ function Hero$WatchTrailerButton(Props) {
   var vkey = video.key;
   if (vkey !== undefined) {
     return React.createElement("button", {
-                className: "flex gap-2 px-6 py-2 border-[1px] border-slate-400 backdrop-filter backdrop-blur-xl  text-white rounded-sm group mr-auto hover:bg-klor-400 hover:text-black transition-all",
+                className: "flex gap-2 px-6 py-2 border-[1px] border-slate-400 backdrop-filter backdrop-blur-xl  text-white rounded-sm group mr-auto hover:bg-klor-400 hover:text-black transition-all dark:dark-button",
                 type: "button",
                 onClick: (function (e) {
                     e.preventDefault();
                     Curry._1(play, Links.getYoutubeVideoLink(vkey));
                   })
               }, React.createElement(Solid.PlayIcon, {
-                    className: "h-6 w-6 fill-white group-hover:fill-black"
+                    className: "h-6 w-6 fill-white group-hover:fill-black dark:dark-svg dark:group-hover:fill-white"
                   }), React.createElement("span", undefined, "Watch Trailer"));
   } else {
     return null;
@@ -223,15 +223,15 @@ function Hero(Props) {
   };
   var sotryline = Util.toStringElement(Util.getOrEmptyString(movie.overview));
   return React.createElement("div", {
-              className: "flex w-full"
+              className: "flex w-full dark:dark-bg"
             }, React.createElement("div", {
-                  className: "flex flex-col w-full"
+                  className: "flex flex-col w-full dark:dark-bg"
                 }, React.createElement("div", {
-                      className: "relative flex flex-col w-full"
+                      className: "relative flex flex-col w-full dark:dark-bg"
                     }, Util.isEmptyString(tagline) ? null : React.createElement("span", {
                             className: "" + (
                               size.width === 100 ? "bottom-0 left-0 text-[1rem] rounded-tr-full p-1 pr-4" : "top-0 left-0 text-[1.2rem] rounded-br-full p-1 pr-8"
-                            ) + " absolute z-50 w-auto font-nav font-extrabold text-600 bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-80"
+                            ) + " absolute z-50 w-auto font-nav font-extrabold text-600 bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-80 dark:bg-slate-900 dark:text-slate-400"
                           }, Util.toStringElement(tagline)), size.width === 100 ? React.createElement("div", {
                             className: "relative flex-inline"
                           }, React.createElement("img", {

@@ -37,7 +37,7 @@ function getFirstPosterImage(movie) {
                           })), []), []), 0);
 }
 
-var labelStyle = "w-[12rem] flex items-center bg-50 pl-1 pr-2 rounded-r-full mb-1";
+var labelStyle = "w-[12rem] flex items-center bg-50 pl-1 pr-2 rounded-r-full mb-1 dark:dark-bg-label";
 
 function StorylinePanel$Pair(Props) {
   var title = Props.title;
@@ -95,7 +95,7 @@ function StorylinePanel$DirectorLink(Props) {
               }, React.createElement("span", {
                     className: labelStyle
                   }, Util.toStringElement("Director")), React.createElement("a", {
-                    className: "w-full text-base font-normal span-link",
+                    className: "w-full text-base font-normal span-link dark:dark-link",
                     href: seg,
                     rel: "noopener noreferrer"
                   }, Util.toStringElement(name)));
@@ -170,7 +170,7 @@ function StorylinePanel$GenreLinks(Props) {
                           var id = param[0];
                           return React.createElement("span", {
                                       key: Util.itos(id),
-                                      className: "span-link",
+                                      className: "span-link dark:dark-link",
                                       onClick: (function (e) {
                                           e.preventDefault();
                                           Curry._1(setQueryParam, {
@@ -255,7 +255,7 @@ function StorylinePanel(Props) {
   if (img !== undefined) {
     var seg = Util.getOrEmptyString(img.file_path);
     tmp = Util.isEmptyString(seg) ? null : React.createElement(LazyImage.make, {
-            className: "h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto",
+            className: "h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto dark:dark-shadow",
             placeholderPath: Links.placeholderImage,
             alt: "poster image",
             src: Links.getPosterImage_W370_H556_bestv2Link(seg),
@@ -266,11 +266,11 @@ function StorylinePanel(Props) {
     tmp = null;
   }
   return React.createElement("div", {
-              className: "flex w-full pl-2 pt-2"
+              className: "flex w-full pl-2 pt-2 dark:dark-bg dark:dark-text"
             }, React.createElement("div", {
                   className: "hidden md:flex pr-8 items-start md:items-center md:justify-center justify-start"
                 }, tmp), React.createElement("div", {
-                  className: "flex flex-col w-full prose"
+                  className: "flex flex-col w-full prose dark:dark-bg dark:dark-text"
                 }, React.createElement("div", {
                       className: "flex flex-col w-full gap-1"
                     }, React.createElement("span", {
@@ -309,20 +309,20 @@ function StorylinePanel(Props) {
                       className: "flex w-full justify-start gap-[1.4rem] pt-4"
                     }, React.createElement(Twitter.make, {
                           id: overview.twitterId,
-                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
                         }), React.createElement(Facebook.make, {
                           id: overview.facebookId,
-                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
                         }), React.createElement(Instagram.make, {
                           id: overview.instagramId,
-                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
                         }), React.createElement(Imdb.make, {
                           id: overview.imdbId,
                           type_: "title",
-                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900"
+                          className: "h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
                         }), React.createElement(WebsiteLink.make, {
                           link: overview.websiteLink,
-                          className: "h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
+                          className: "h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900 dark:dark-svg"
                         }))));
 }
 

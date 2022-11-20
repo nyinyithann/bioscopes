@@ -75,11 +75,14 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
     <NotAvailable thing={"videos"} />
   } else {
     <ul
-      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none">
+      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none dark:dark-bg">
       {videosRef.current
       ->Belt.Array.map(video =>
         <li key={Util.getOrEmptyString(video.key)}>
-          <VideoImage video className="w-full border-[2px] border-slate-200 rounded-md" />
+          <VideoImage
+            video
+            className="w-full border-[2px] border-slate-200 rounded-md dark:dark-border-all dark:dark-shadow"
+          />
         </li>
       )
       ->array}

@@ -100,13 +100,13 @@ function VideoPanel(Props) {
               });
   } else {
     return React.createElement("ul", {
-                className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none"
+                className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none dark:dark-bg"
               }, Belt_Array.map(videosRef.current, (function (video) {
                       return React.createElement("li", {
                                   key: Util.getOrEmptyString(video.key)
                                 }, React.createElement(VideoPanel$VideoImage, {
                                       video: video,
-                                      className: "w-full border-[2px] border-slate-200 rounded-md"
+                                      className: "w-full border-[2px] border-slate-200 rounded-md dark:dark-border-all dark:dark-shadow"
                                     }));
                     })));
   }

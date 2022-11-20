@@ -10,11 +10,78 @@ boty {
 @tailwind utilities;
 
 @layer components {
-    .control-color {
-        @apply bg-200 text-600 hover:bg-300 hover:text-900
-    }
+  .control-color {
+    @apply bg-200 text-600 hover:bg-300 hover:text-900;
+  }
 
-    .span-link {
-        @apply text-600 underline hover:text-900 cursor-pointer
+  .span-link {
+    @apply cursor-pointer text-600 underline hover:text-900;
+  }
+
+  .dark-bg {
+    @apply bg-slate-700;
+  }
+  .darker-bg {
+    @apply bg-slate-800;
+  }
+
+  .dark-button {
+    @apply bg-slate-700 text-slate-200 hover:bg-slate-600;
+  }
+
+  .dark-svg {
+    @apply fill-slate-200 hover:fill-blue-400;
+  }
+
+  .dark-border-all {
+    @apply border-[1px] border-slate-600;
+  }
+
+  .dark-text {
+    @apply text-slate-200;
+  }
+
+  .dark-top-border {
+    @apply border-t-[1px] border-black;
+  }
+
+  .dark-top-border-2 {
+    @apply border-t-[2px] border-t-slate-800;
+  }
+
+  .dark-bg-label {
+    @apply bg-slate-800;
+  }
+
+  .dark-tab-button {
+    @apply border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700;
+  }
+
+  .dark-tab-selected {
+    @apply bg-slate-700 text-blue-400;
+  }
+
+  .dark-sub-tab-button {
+    @apply border-b-[2px] border-b-slate-800/40 hover:border-blue-400;
+  }
+
+  .dark-sub-tab-selected {
+    @apply border-b-[2px] border-blue-400;
+  }
+
+  .dark-link {
+    @apply cursor-pointer text-blue-400 underline hover:text-blue-500;
+  }
+
+  .dark-shadow {
+    @apply shadow-md shadow-slate-800;
+  }
+
+  .dark-rating {
+    @apply fill-blue-400;
+  }
+
+    .dark-divide {
+        @apply divide-slate-600 divide-y;
     }
 }

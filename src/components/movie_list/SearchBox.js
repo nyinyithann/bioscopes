@@ -66,10 +66,10 @@ function SearchBox(Props) {
             }, React.createElement("div", {
                   className: "pointer-events-none absolute inset-y-0 left-1 flex items-center"
                 }, React.createElement(Solid.SearchIcon, {
-                      className: "h-5 w-5 fill-klor-400"
+                      className: "h-5 w-5 fill-klor-400 dark:dark-svg"
                     })), React.createElement("input", {
                   ref: inputRef,
-                  className: "block w-full pl-[2rem] placeholder-klor-200 outline-none ring-0 border-t-0 border-r-0 border-l-0 border-b-[1px] border-b-400 hover:border-b-500 focus:placeholder-klor-300 focus:outline-none focus:ring-0 text-900 active:text-900 focus:text-900 active:ring-0 active:outline-none rounded-md",
+                  className: "block w-full pl-[2rem] placeholder-klor-200 outline-none ring-0 border-t-0 border-r-0 border-l-0 border-b-[1px] border-b-400 hover:border-b-500 focus:placeholder-klor-300 focus:outline-none focus:ring-0 text-900 active:text-900 focus:text-900 active:ring-0 active:outline-none rounded-md dark:bg-slate-800 dark:text-slate-400",
                   id: "search-field",
                   maxLength: 64,
                   name: "search",

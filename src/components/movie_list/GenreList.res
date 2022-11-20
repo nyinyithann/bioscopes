@@ -78,15 +78,15 @@ module GenreLink = {
     let name = getDisplayName(genre)
     let icon = getIcon(genre)
     <button
-      type_="button" className="flex items-center gap-4 w-full hover:bg-300" onClick={handleClick}>
+      type_="button" className="flex items-center gap-4 w-full hover:bg-300 dark:dark-button" onClick={handleClick}>
       <div
         className={`${active || selected
             ? "bg-300"
-            : ""} flex items-center w-full px-2 gap-6 p-[1px]`}>
+            : ""} flex items-center w-full px-2 gap-6 p-[1px] `}>
         icon
         {name->React.string}
         {selected
-          ? <Heroicons.Solid.CheckIcon className="h-6 w-6 fill-klor-500 ml-auto" />
+          ? <Heroicons.Solid.CheckIcon className="h-6 w-6 fill-klor-500 ml-auto dark:dark-svg" />
           : <span className="block h-6 w-6" />}
       </div>
     </button>
@@ -175,7 +175,7 @@ let make = () => {
   })
 
   <div
-    className="flex w-[10rem] items-center justify-center text-base text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300">
+    className="flex w-[10rem] items-center justify-center text-base text-700 py-1 px-2 outline-none ring-0 rounded-md hover:bg-300 dark:dark-button">
     {switch state {
     | Loading => <p className="w-full text-left"> {"..."->React.string} </p>
     | Error(errorMessage) =>
@@ -212,7 +212,7 @@ let make = () => {
             }}
           </Listbox.Button>
           <Listbox.Options
-            className="absolute top-[2rem] -left-2 w-[14rem] rounded bg-200 py-2 outline-none ring-0">
+            className="absolute top-[2rem] -left-2 w-[14rem] rounded bg-200 py-2 outline-none ring-0 dark:dark-bg dark:dark-border-all">
             {genres
             ->Belt.Array.map(genre =>
               <Listbox.Option key={genre.id->string_of_int} value={genre} className="flex w-full">

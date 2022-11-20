@@ -81,20 +81,20 @@ function PhotosViewer(Props) {
               });
   } else {
     return React.createElement("div", {
-                className: "flex flex-col w-full gap-8"
+                className: "flex flex-col w-full gap-8 dark:dark-bg"
               }, Util.isEmptyArray(backdrops) ? null : React.createElement("div", {
-                      className: "flex flex-col w-full"
+                      className: "flex flex-col w-full dark:dark-text dark:dark-bg"
                     }, React.createElement(PhotosViewer$PhotoTitle, {
                           title: "" + (
                             Util.isEmptyString(Util.getOrEmptyString(title)) ? "Backdrops" : "" + Util.getOrEmptyString(title) + ""
                           ) + "",
                           count: backdrops.length
                         }), React.createElement("ul", {
-                          className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full list-none"
+                          className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full list-none dark:dark-bg"
                         }, Belt_Array.mapWithIndex(backdrops, (function (i, bd) {
                                 return React.createElement("li", {
                                             key: bd.id,
-                                            className: "cursor-pointer",
+                                            className: "cursor-pointer dark:dark-bg",
                                             onClick: (function (param) {
                                                 Curry._1(setPhotosliderState, (function (param) {
                                                         return {
@@ -107,7 +107,7 @@ function PhotosViewer(Props) {
                                                       }));
                                               })
                                           }, React.createElement(LazyImage.make, {
-                                                className: "w-full h-full border-[2px] border-slate-200 rounded-md",
+                                                className: "w-full h-full border-[2px] border-slate-200 rounded-md dark:dark-border-all dark:dark-shadow",
                                                 placeholderPath: Links.placeholderImage,
                                                 alt: "backdrop image",
                                                 src: bd.url,
@@ -122,11 +122,11 @@ function PhotosViewer(Props) {
                           ) + "",
                           count: posters.length
                         }), React.createElement("ul", {
-                          className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full"
+                          className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center items-center w-full dark:dark-bg"
                         }, Belt_Array.mapWithIndex(posters, (function (i, bd) {
                                 return React.createElement("li", {
                                             key: bd.id,
-                                            className: "cursor-pointer",
+                                            className: "cursor-pointer dark:dark-bg",
                                             onClick: (function (param) {
                                                 Curry._1(setPhotosliderState, (function (param) {
                                                         return {
@@ -139,7 +139,7 @@ function PhotosViewer(Props) {
                                                       }));
                                               })
                                           }, React.createElement(LazyImage.make, {
-                                                className: "w-full h-full border-[2px] border-slate-200 rounded-md",
+                                                className: "w-full h-full border-[2px] border-slate-200 rounded-md dark:dark-border-all dark:dark-bg dark:dark-shadow",
                                                 placeholderPath: Links.placeholderImage,
                                                 alt: "poster image",
                                                 src: bd.url,

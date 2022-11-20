@@ -46,60 +46,60 @@ let make = () => {
     {loading
       ? <Pulse show={loading && !voidLoading} />
       : <>
-          <main className="flex border-t-[2px] border-slate-200 relative">
-            <div className="flex flex-col w-full h-full">
-              <div id="hero_container" className="w-full">
+          <main className="flex border-t-[2px] border-slate-200 relative dark:dark-top-border dark:dark-bg">
+            <div className="flex flex-col w-full h-full dark:dark-bg">
+              <div id="hero_container" className="w-full dark:dark-bg">
                 <Hero movie={detail_movie} />
               </div>
               <div
                 id="movie_info_tab_container"
-                className="w-full flex flex-col items-center justify-center">
+                className="w-full flex flex-col items-center justify-center dark:dark-top-border-2">
                 <Tab.Group>
                   {selectedIndex => {
-                    <div className="flex flex-col w-full">
+                    <div className="flex flex-col w-full dark:dark-bg dark:dark-text">
                       <Tab.List className="flex w-full flex-nowrap items-center justify-around">
                         {_ => {
                           <>
                             <Tab
                               key={"overview"}
-                              className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300">
+                              className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button">
                               {props =>
                                 <div
                                   className={`${props.selected
-                                      ? "bg-300 text-900"
+                                      ? "bg-300 text-900 dark:dark-tab-selected"
                                       : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
                                   {"OVERVIEW"->string}
                                 </div>}
                             </Tab>
                             <Tab
                               key={"casts"}
-                              className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300">
+                              className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button">
                               {props =>
                                 <div
                                   className={`${props.selected
-                                      ? "bg-300 text-900"
+                                      ? "bg-300 text-900 dark:dark-tab-selected"
                                       : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
                                   {"CASTS"->string}
                                 </div>}
                             </Tab>
                             <Tab
                               key={"videos"}
-                              className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300">
+                              className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button">
                               {props =>
                                 <div
                                   className={`${props.selected
-                                      ? "bg-300 text-900"
+                                      ? "bg-300 text-900 dark:dark-tab-selected"
                                       : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
                                   {"VIDEOS"->string}
                                 </div>}
                             </Tab>
                             <Tab
                               key={"photos"}
-                              className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300">
+                              className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button">
                               {props =>
                                 <div
                                   className={`${props.selected
-                                      ? "bg-300 text-900"
+                                      ? "bg-300 text-900 dark:dark-tab-selected"
                                       : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
                                   {"PHOTOS"->string}
                                 </div>}
@@ -150,7 +150,7 @@ let make = () => {
                     ? <div
                         className="w-full flex flex-col justify-center items-center p-2 pt-8 gap-2">
                         <span
-                          className="text-900 text-[1.2rem] font-semibold text-left w-full pb-2">
+                          className="text-900 text-[1.2rem] font-semibold text-left w-full pb-2 dark:dark-text">
                           {"MORE LIKE THIS"->string}
                         </span>
                         <MoreLikeThis movieId />

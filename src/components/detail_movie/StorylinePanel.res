@@ -28,7 +28,7 @@ let getFirstPosterImage = (~movie: DetailMovieModel.detail_movie) => {
   ->Array.get(0)
 }
 
-let labelStyle = "w-[12rem] flex items-center bg-50 pl-1 pr-2 rounded-r-full mb-1"
+let labelStyle = "w-[12rem] flex items-center bg-50 pl-1 pr-2 rounded-r-full mb-1 dark:dark-bg-label"
 
 module Pair = {
   @react.component
@@ -79,7 +79,7 @@ module DirectorLink = {
             <span className={labelStyle}> {Util.toStringElement("Director")} </span>
             <a
               href={seg}
-              className="w-full text-base font-normal span-link"
+              className="w-full text-base font-normal span-link dark:dark-link"
               rel="noopener noreferrer">
               {Util.toStringElement(name)}
             </a>
@@ -138,7 +138,7 @@ module GenreLinks = {
                       Genre({id, name, display: name, page: 1, sort_by: MovieModel.popularity.id}),
                     )
                   }}
-                  className="span-link">
+                  className="span-link dark:dark-link">
                   {Util.toStringElement(name)}
                 </span>
               )
@@ -214,7 +214,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
 
   switch overviewRef.current {
   | Some(overview) =>
-    <div className="flex w-full pl-2 pt-2">
+    <div className="flex w-full pl-2 pt-2 dark:dark-bg dark:dark-text">
       <div
         className="hidden md:flex pr-8 items-start md:items-center md:justify-center justify-start">
         {switch getFirstPosterImage(~movie) {
@@ -225,7 +225,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
                 alt="poster image"
                 placeholderPath={Links.placeholderImage}
                 src={Links.getPosterImage_W370_H556_bestv2Link(seg)}
-                className="h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto"
+                className="h-full border-slate-200 rounded-md shadow-gray-300 shadow-md md:min-w-[20rem] w-auto dark:dark-shadow"
                 lazyHeight={456.}
                 lazyOffset={50.}
               />
@@ -237,7 +237,7 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
         | None => React.null
         }}
       </div>
-      <div className="flex flex-col w-full prose">
+      <div className="flex flex-col w-full prose dark:dark-bg dark:dark-text">
         <div className="flex flex-col w-full gap-1">
           <span className="text-[1.2rem] font-semibold text-900"> {"Storyline"->string} </span>
           <span className="break-words w-full flex"> {overview.storyline->string} </span>
@@ -258,21 +258,26 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
           <Pair title={"Production"} value={overview.productionCompanies} />
         </div>
         <div className="flex w-full justify-start gap-[1.4rem] pt-4">
-          <Twitter id={overview.twitterId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+          <Twitter
+            id={overview.twitterId}
+            className="h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
+          />
           <Facebook
-            id={overview.facebookId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900"
+            id={overview.facebookId}
+            className="h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
           />
           <Instagram
-            id={overview.instagramId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900"
+            id={overview.instagramId}
+            className="h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
           />
           <Imdb
             id={overview.imdbId}
             type_={"title"}
-            className="h-6 w-6 fill-klor-500 hover:fill-klor-900"
+            className="h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg"
           />
           <WebsiteLink
             link={overview.websiteLink}
-            className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
+            className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900 dark:dark-svg"
           />
         </div>
       </div>

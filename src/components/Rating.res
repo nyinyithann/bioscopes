@@ -29,8 +29,8 @@ module HalfStar = {
 @react.component
 let make = (~ratingValue: option<float>) => {
   let stars = React.useRef([])
-  let fullStar = "w-6 h-6 fill-yellow-400 stroke-0"
-  let halfStar = "w-6 h-6 fill-yellow-400 stroke-0"
+  let fullStar = "w-6 h-6 fill-yellow-400 stroke-0 dark:dark-rating"
+  let halfStar = "w-6 h-6 fill-yellow-400 stroke-0 dark:dark-rating"
   let noStar = "w-6 h-6 fill-gray-400 stroke-0"
   React.useMemo1(() => {
     let rv = Js.Option.getWithDefault(0.0, ratingValue)

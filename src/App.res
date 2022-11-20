@@ -37,8 +37,8 @@ let make = () => {
 
   let (theme, setTheme) = ThemeHook.useTheme("theme-emerald")
   <ThemeSwitchProvider value=setTheme>
-    <div className={`${theme} flex flex-col`}>
-      <div className="h-screen bg-white dark:bg-slate-500">
+    <div className={`${theme} flex flex-col dark:dark-bg`}>
+      <div className="h-screen bg-white dark:dark-bg">
         <ErrorBoundary> {component} </ErrorBoundary>
       </div>
     </div>

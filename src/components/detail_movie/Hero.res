@@ -16,7 +16,7 @@ module HeroText = {
     | None => ""
     }
 
-    <div className={`flex flex-col w-full p-[0.6rem] gap-2 ${textColor}`}>
+    <div className={`flex flex-col w-full p-[0.6rem] gap-2 ${textColor} dark:dark-text`}>
       {Util.isEmptyString(name)
         ? <span className="font-nav text-[2rem] md:text-[3rem]"> {title->string} </span>
         : <span className="font-nav text-[2rem] md:text-[3rem]"> {name->string} </span>}
@@ -71,7 +71,7 @@ module WatchTrailerSmallButton = {
           }}
           className="absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center group">
           <Heroicons.Outline.PlayIcon
-            className="h-14 w-14 transition-all sm:h-16 sm:w-16 stroke-[1px] stroke-slate-100 group-hover:stroke-klor-400 group-hover:cursor-pointer"
+            className="h-14 w-14 transition-all sm:h-16 sm:w-16 stroke-[1px] stroke-slate-100 group-hover:stroke-klor-400 group-hover:cursor-pointer dark:group-hover:stroke-slate-200"
           />
         </button>
       }
@@ -97,8 +97,8 @@ module WatchTrailerButton = {
             ReactEvent.Mouse.preventDefault(e)
             play(Links.getYoutubeVideoLink(vkey))
           }}
-          className="flex gap-2 px-6 py-2 border-[1px] border-slate-400 backdrop-filter backdrop-blur-xl  text-white rounded-sm group mr-auto hover:bg-klor-400 hover:text-black transition-all">
-          <Heroicons.Solid.PlayIcon className="h-6 w-6 fill-white group-hover:fill-black" />
+          className="flex gap-2 px-6 py-2 border-[1px] border-slate-400 backdrop-filter backdrop-blur-xl  text-white rounded-sm group mr-auto hover:bg-klor-400 hover:text-black transition-all dark:dark-button">
+          <Heroicons.Solid.PlayIcon className="h-6 w-6 fill-white group-hover:fill-black dark:dark-svg dark:group-hover:fill-white" />
           <span> {"Watch Trailer"->string} </span>
         </button>
       }
@@ -157,29 +157,15 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
 
   let sotryline = Util.getOrEmptyString(movie.overview)->Util.toStringElement
 
-  /* let goBack = e => { */
-  /* ReactEvent.Mouse.preventDefault(e) */
-  /* Webapi.Dom.History.back(Webapi.Dom.history) */
-  /* } */
-
-  <div className="flex w-full">
-    <div className="flex flex-col w-full">
-      <div className="relative flex flex-col w-full">
-        /* <button */
-        /* type_="button" */
-        /* onClick={goBack} */
-        /* className="flex w-auto gap-2 justify-center p-1 group rounded ring-0 outline-none absolute right-1 top-1 z-[5000] bg-white bg-opacity-20 backdrop-blur-lg drop-shadow-lg hover:bg-opacity-30 px-2 sm:px-4"> */
-        /* <Heroicons.Solid.ArrowLeftIcon className="w-5 h-6 fill-slate-400 sm:bg-opacity-5" /> */
-        /* <span className="hidden sm:block text-slate-100 text-opacity-40"> */
-        /* {"Back"->React.string} */
-        /* </span> */
-        /* </button> */
+  <div className="flex w-full dark:dark-bg">
+    <div className="flex flex-col w-full dark:dark-bg">
+      <div className="relative flex flex-col w-full dark:dark-bg">
         {Util.isEmptyString(tagline)
           ? React.null
           : <span
               className={`${size.width == 100
                   ? "bottom-0 left-0 text-[1rem] rounded-tr-full p-1 pr-4"
-                  : "top-0 left-0 text-[1.2rem] rounded-br-full p-1 pr-8"} absolute z-50 w-auto font-nav font-extrabold text-600 bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-80`}>
+                  : "top-0 left-0 text-[1.2rem] rounded-br-full p-1 pr-8"} absolute z-50 w-auto font-nav font-extrabold text-600 bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-80 dark:bg-slate-900 dark:text-slate-400`}>
               {Util.toStringElement(tagline)}
             </span>}
         {size.width == 100

@@ -35,36 +35,36 @@ let make = (~movie: DetailMovieModel.detail_movie) => {
   let castsRef = React.useRef([])
   React.useMemo1(() => {
     castsRef.current = getCasts(~movie)
-}, [movie])
+  }, [movie])
 
   if Util.isEmptyArray(castsRef.current) {
     <NotAvailable thing={"casts"} />
   } else {
     <ul
-      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none items-start">
+      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none items-start dark:dark-bg">
       {castsRef.current
       ->Belt.Array.map(cast => {
         let id = Util.getOrIntZero(cast.id)->Js.Int.toString
         let seg = cast.profile_path->Util.getOrEmptyString
-          <li
-            key={id}
-            className="cursor-pointer flex flex-col w-full gap-2"
-            role="button"
-            onClick={e => {
-              open ReactEvent.Mouse
-              preventDefault(e)
-              setQueryParam(UrlQueryParam.Person({id: id}))
-            }}>
-            <LazyImage
-              alt="backdrop image"
-              placeholderPath={Links.placeholderImage}
-              src={Links.getPosterImage_W370_H556_bestv2Link(seg)}
-              className="w-full border-2 border-slate-200 rounded-md h-full"
-              lazyHeight={isMobile ? 280. : 356.}
-              lazyOffset={50.}
-            />
-            {getCaptionElement(cast)}
-          </li>
+        <li
+          key={id}
+          className="cursor-pointer flex flex-col w-full gap-2"
+          role="button"
+          onClick={e => {
+            open ReactEvent.Mouse
+            preventDefault(e)
+            setQueryParam(UrlQueryParam.Person({id: id}))
+          }}>
+          <LazyImage
+            alt="backdrop image"
+            placeholderPath={Links.placeholderImage}
+            src={Links.getPosterImage_W370_H556_bestv2Link(seg)}
+            className="w-full border-2 border-slate-200 rounded-md h-full dark:dark-border-all dark:dark-shadow"
+            lazyHeight={isMobile ? 280. : 356.}
+            lazyOffset={50.}
+          />
+          {getCaptionElement(cast)}
+        </li>
       })
       ->array}
     </ul>

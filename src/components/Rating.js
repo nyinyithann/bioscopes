@@ -54,13 +54,13 @@ function Rating(Props) {
           var hfc = match[0] >= 0.5 ? 1 : 0;
           for(var i = 0; i < fsc; ++i){
             stars.current.push(React.createElement(Rating$FullStar, {
-                      className: "w-6 h-6 fill-yellow-400 stroke-0",
+                      className: "w-6 h-6 fill-yellow-400 stroke-0 dark:dark-rating",
                       key: String(Math.imul(i + 10 | 0, fsc))
                     }));
           }
           for(var i$1 = 0; i$1 < hfc; ++i$1){
             stars.current.push(React.createElement(Rating$HalfStar, {
-                      className: "w-6 h-6 fill-yellow-400 stroke-0",
+                      className: "w-6 h-6 fill-yellow-400 stroke-0 dark:dark-rating",
                       key: String(Math.imul(i$1 + 1 | 0, hfc))
                     }));
           }

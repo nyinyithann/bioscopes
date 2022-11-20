@@ -64,7 +64,7 @@ function Casts(Props) {
               });
   } else {
     return React.createElement("ul", {
-                className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none items-start"
+                className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 justify-center w-full list-none items-start dark:dark-bg"
               }, Belt_Array.map(castsRef.current, (function (cast) {
                       var id = Util.getOrIntZero(cast.id).toString();
                       var seg = Util.getOrEmptyString(cast.profile_path);
@@ -82,7 +82,7 @@ function Casts(Props) {
                                           });
                                     })
                                 }, React.createElement(LazyImage.make, {
-                                      className: "w-full border-2 border-slate-200 rounded-md h-full",
+                                      className: "w-full border-2 border-slate-200 rounded-md h-full dark:dark-border-all dark:dark-shadow",
                                       placeholderPath: Links.placeholderImage,
                                       alt: "backdrop image",
                                       src: Links.getPosterImage_W370_H556_bestv2Link(seg),

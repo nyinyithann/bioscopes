@@ -52,11 +52,11 @@ function Home$NavLink(Props) {
     RescriptReactRouter.push("/");
   };
   return React.createElement("button", {
-              className: "flex gap-1 items-center justify-center p-1 group rounded-full sm:rounded-md ring-0 outline-none bg-200 hover:bg-300 text-[1.1rem] font-semibold",
+              className: "flex gap-1 items-center justify-center p-1 group rounded-full sm:rounded-md ring-0 outline-none bg-200 hover:bg-300 text-[1.1rem] font-semibold dark:dark-button",
               type: "button",
               onClick: onClick
             }, React.createElement(Solid.HomeIcon, {
-                  className: "w-6 h-6 fill-klor-900"
+                  className: "w-6 h-6 fill-klor-900 dark:dark-svg"
                 }), React.createElement("div", {
                   className: "hidden sm:flex flex-col items-end justify-end pt-[0.4rem] pr-2"
                 }, React.createElement("span", {
@@ -120,11 +120,11 @@ function Home(Props) {
     component = React.createElement(NotFound.make, {});
   }
   return React.createElement("div", {
-              className: "flex flex-col w-full h-full"
+              className: "flex flex-col w-full h-full dark:dark-bg"
             }, React.createElement("div", {
-                  className: "h-auto flex w-full flex-col z-50 relative"
+                  className: "h-auto flex w-full flex-col z-50 relative dark:dark-bg"
                 }, React.createElement("div", {
-                      className: "flex items-center w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0 shadow-md bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50",
+                      className: "flex items-center w-full bg-white sticky top-0 z-50 h-14 flex-shrink-0 shadow-md bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50 dark:darker-bg",
                       id: "navbar"
                     }, React.createElement("div", {
                           className: "pl-2 mr-auto"
@@ -137,11 +137,11 @@ function Home(Props) {
                           className: "flex items-center justify-center gap-2 pr-2",
                           id: "colorswatch-container"
                         }, React.createElement(ThemeMenu.make, {}), React.createElement(GithubButton.make, {}))), React.createElement("div", {
-                      className: "z-30 bg-white"
+                      className: "z-30 bg-white dark:dark-bg"
                     }, React.createElement(MoviesProvider.make, {
                           children: component
                         })), React.createElement("footer", {
-                      className: "h-8"
+                      className: "h-8 dark:dark-bg"
                     }), React.createElement("div", {
                       className: "z-50 m:right-[18.5rem] fixed bottom-[1rem] right-[1rem] flex flex-none shrink-0 items-center justify-center rounded-full hover:cursor-pointer hover:outline-none hover:ring-0 md:bottom-[1.3rem] active:ring-0 active:outline-none"
                     }, React.createElement(ScrollToTop.make, {}))));

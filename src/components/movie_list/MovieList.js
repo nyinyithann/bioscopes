@@ -55,7 +55,7 @@ function MovieList$Poster(Props) {
   if (rd !== undefined) {
     var releaseYear = rd.substring(0, 4);
     tmp = releaseYear.length === 4 ? React.createElement("div", {
-            className: "absolute top-[2%] right-[3%] text-[0.8rem] bg-700/60 text-slate-50 px-[12px] py-[1px] rounded-sm"
+            className: "absolute top-[2%] right-[3%] text-[0.8rem] bg-700/60 text-slate-50 px-[12px] py-[1px] rounded-sm dark:bg-slate-600/40"
           }, releaseYear) : null;
   } else {
     tmp = null;
@@ -66,14 +66,14 @@ function MovieList$Poster(Props) {
               href: getHref(movie),
               rel: "noopener noreferrer"
             }, React.createElement(LazyImage.make, {
-                  className: "w-[16rem] h-full border-[2px] border-slate-200 rounded-md group-hover:border-0 group-hover rounded-b-none",
+                  className: "w-[16rem] h-full border-[2px] border-slate-200 rounded-md group-hover:border-0 group-hover rounded-b-none dark:dark-border-all",
                   placeholderPath: Links.placeholderImage,
                   alt: "poster image",
                   src: imgLink,
                   lazyHeight: isMobile ? 286 : 366,
                   lazyOffset: 200
                 }), React.createElement("p", {
-                  className: "text-base break-words transform duration-300 pt-[0.3rem] flex text-left text-900  p-1"
+                  className: "text-base break-words transform duration-300 pt-[0.3rem] flex text-left text-900 p-1 dark:text-slate-300"
                 }, Util.isEmptyString(title) ? name : title), React.createElement("div", {
                   className: "pb-2"
                 }, Util.getOrEmptyString(movie.media_type) !== "person" ? React.createElement(Rating.make, {
@@ -266,21 +266,21 @@ function MovieList(Props) {
                   });
         }), [lastPoster]);
   return React.createElement("div", {
-              className: "flex flex-col bg-white"
+              className: "flex flex-col bg-white dark:dark-bg"
             }, React.createElement("div", {
-                  className: "flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200  g-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50"
+                  className: "flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200  g-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50 dark:dark-bg dark:dark-top-border"
                 }, React.createElement("div", {
-                      className: "flex items-center justify-center gap-2"
+                      className: "flex items-center justify-center gap-2 dark:dark-bg"
                     }, React.createElement(GenreList.make, {}), viewingTitleRef.current !== "" && !loading ? React.createElement("span", {
-                            className: "text-[0.9rem] text-800/70"
+                            className: "text-[0.9rem] text-800/70 dark:dark-text"
                           }, viewingTitleRef.current) : null), React.createElement("div", {
                       className: "" + (
                         isGenreRef.contents ? "flex" : "hidden"
-                      ) + " justify-start ml-auto pr-4"
+                      ) + " justify-start ml-auto pr-4 dark:dark-bg"
                     }, React.createElement(FilterBox.make, {}))), React.createElement("div", {
-                  className: "flex flex-col items-center justify-center bg-white p-2"
+                  className: "flex flex-col items-center justify-center bg-white p-2 dark:dark-bg"
                 }, React.createElement("ul", {
-                      className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative"
+                      className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative dark:dark-bg"
                     }, Belt_Array.mapWithIndex(movieList, (function (i, m) {
                             if (i === (movieList.length - 1 | 0) && !loading && currentPage <= totalPages) {
                               return React.createElement("li", {
@@ -298,11 +298,11 @@ function MovieList(Props) {
                             }
                           }))), React.createElement(Pulse.make, {
                       show: loading
-                    })), (currentPage - 1 | 0) === totalPages && movieList.length !== 0 ? React.createElement("div", {
-                    className: "flex items-center justify-center w-full bg-900 gap-2 p-2"
+                    })), currentPage === totalPages && movieList.length !== 0 ? React.createElement("div", {
+                    className: "flex items-center justify-center w-full bg-900 gap-2 p-2 dark:dark-bg"
                   }, React.createElement("p", {
                         className: "text-slate-50"
-                      }, "Amazing... you browsed all the movies!  😲")) : null, error.length > 0 ? React.createElement(ErrorDialog.make, {
+                      }, "Amazing... you browsed lots of movies!  😲")) : null, error.length > 0 ? React.createElement(ErrorDialog.make, {
                     isOpen: error.length > 0,
                     errorMessage: error,
                     onClose: onClose

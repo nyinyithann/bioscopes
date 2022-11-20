@@ -39,12 +39,12 @@ module Poster = {
         alt="poster image"
         placeholderPath={Links.placeholderImage}
         src={imgLink}
-        className="w-[16rem] h-full border-[2px] border-slate-200 rounded-md group-hover:border-0 group-hover rounded-b-none"
+        className="w-[16rem] h-full border-[2px] border-slate-200 rounded-md group-hover:border-0 group-hover rounded-b-none dark:dark-border-all"
         lazyHeight={isMobile ? 286. : 366.}
         lazyOffset={200.}
       />
       <p
-        className="text-base break-words transform duration-300 pt-[0.3rem] flex text-left text-900  p-1">
+        className="text-base break-words transform duration-300 pt-[0.3rem] flex text-left text-900 p-1 dark:text-slate-300">
         {(Util.isEmptyString(title) ? name : title)->string}
       </p>
       <div className="pb-2">
@@ -58,7 +58,7 @@ module Poster = {
 
         if Js.String2.length(releaseYear) == 4 {
           <div
-            className="absolute top-[2%] right-[3%] text-[0.8rem] bg-700/60 text-slate-50 px-[12px] py-[1px] rounded-sm">
+            className="absolute top-[2%] right-[3%] text-[0.8rem] bg-700/60 text-slate-50 px-[12px] py-[1px] rounded-sm dark:bg-slate-600/40">
             {releaseYear->React.string}
           </div>
         } else {
@@ -219,22 +219,22 @@ let make = () => {
     )
   }, [lastPoster])
 
-  <div className="flex flex-col bg-white">
+  <div className="flex flex-col bg-white dark:dark-bg">
     <div
-      className="flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200  g-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50">
-      <div className="flex items-center justify-center gap-2">
+      className="flex items-center p-1 pl-4 sticky top-[3.4rem] z-50 shadlow-md flex-shrink-0 bg-white border-t-[2px] border-slate-200  g-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-50 dark:dark-bg dark:dark-top-border">
+      <div className="flex items-center justify-center gap-2 dark:dark-bg">
         <GenreList />
         {viewingTitleRef.current != "" && !loading
-          ? <span className="text-[0.9rem] text-800/70"> {viewingTitleRef.current->string} </span>
+          ? <span className="text-[0.9rem] text-800/70 dark:dark-text"> {viewingTitleRef.current->string} </span>
           : React.null}
       </div>
-      <div className={`${isGenreRef.contents ? "flex" : "hidden"} justify-start ml-auto pr-4`}>
+      <div className={`${isGenreRef.contents ? "flex" : "hidden"} justify-start ml-auto pr-4 dark:dark-bg`}>
         <FilterBox />
       </div>
     </div>
-    <div className="flex flex-col items-center justify-center bg-white p-2">
+    <div className="flex flex-col items-center justify-center bg-white p-2 dark:dark-bg">
       <ul
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative">
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative dark:dark-bg">
         {movieList
         ->Belt.Array.mapWithIndex((i, m) => {
           if i == Belt.Array.length(movieList) - 1 && !loading && currentPage <= totalPages {
@@ -253,10 +253,10 @@ let make = () => {
       </ul>
       <Pulse show={loading} />
     </div>
-    {currentPage - 1 == totalPages && Belt.Array.length(movieList) > 0
-      ? <div className="flex items-center justify-center w-full bg-900 gap-2 p-2">
+    {currentPage == totalPages && Belt.Array.length(movieList) > 0
+      ? <div className="flex items-center justify-center w-full bg-900 gap-2 p-2 dark:dark-bg">
           <p className="text-slate-50">
-            {"Amazing... you browsed all the movies!  😲"->string}
+            {"Amazing... you browsed lots of movies!  😲"->string}
           </p>
         </div>
       : React.null}

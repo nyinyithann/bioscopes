@@ -30,7 +30,7 @@ let make = () => {
   }
 
   <div
-    className="w-[8rem] flex items-center justify-center text-base rounded-md text-700 py-1 px-2 outline-none ring-0 hover:bg-300">
+    className="w-[8rem] flex items-center justify-center text-base rounded-md text-700 py-1 px-2 outline-none ring-0 hover:bg-300 dark:dark-button">
     <Listbox value={selectedRef.contents} onChange>
       <div className="w-full relative flex">
         <Listbox.Button
@@ -41,12 +41,15 @@ let make = () => {
           </div>
         </Listbox.Button>
         <Listbox.Options
-          className="absolute top-[2rem] -left-10 w-[10rem] rounded bg-200 py-1 outline-none ring-0">
+          className="absolute top-[2rem] -left-10 w-[10rem] rounded bg-200 py-1 outline-none ring-0 cursor-pointer dark:dark-bg dark:dark-text dark:dark-svg dark:dark-border-all">
           {filter_data
           ->Belt.Array.map(item =>
             <Listbox.Option key={item.id} value={item} className="flex w-full">
               {({active, selected}) => {
-                <div className={`${active ? "bg-300" : ""} flex w-full pl-2 items-center p-[1px]`}>
+                <div
+                  className={`${active
+                      ? "bg-300"
+                      : ""} flex w-full pl-2 items-center p-[1px] dark:dark-button`}>
                   {selected
                     ? <Heroicons.Solid.CheckIcon className="h-6 w-6 fill-klor-500" />
                     : <span className="block h-6 w-6" />}

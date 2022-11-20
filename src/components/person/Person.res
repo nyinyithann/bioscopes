@@ -18,31 +18,33 @@ type person_viewmodel = {
 }
 
 let getImgElem = (src, height, imageLoaded, setImageLoaded) =>
-  <img
-    className={`transition duration-1000 ${imageLoaded
-        ? "opacity-100"
-        : "opacity-0"} pt-2 pr-4 pb-4 float-left w-auto`}
-    src
-    style={ReactDOM.Style.make(~height=Js.Int.toString(height) ++ "px", ())}
-    alt="image"
-    onLoad={_ => setImageLoaded(_ => true)}
-    onError={e => {
-      open ReactEvent.Media
-      if target(e)["src"] !== Links.placeholderImage {
-        target(e)["src"] = Links.placeholderImage
-        target(e)["style"] = "height: 280px; width: 180px"
-      }
-    }}
-  />
+  <div className="pt-2 pr-4 pb-4 float-left">
+    <img
+      className={`transition duration-1000 ${imageLoaded
+          ? "opacity-100"
+          : "opacity-0"} dark:dark-shadow`}
+      src
+      style={ReactDOM.Style.make(~height=Js.Int.toString(height) ++ "px", ())}
+      alt="image"
+      onLoad={_ => setImageLoaded(_ => true)}
+      onError={e => {
+        open ReactEvent.Media
+        if target(e)["src"] !== Links.placeholderImage {
+          target(e)["src"] = Links.placeholderImage
+          target(e)["style"] = "height: 280px; width: 180px"
+        }
+      }}
+    />
+  </div>
 
 let getSocialLinks = person =>
   <div className="flex w-full justify-start gap-[1.4rem] pt-6">
-    <Twitter id={person.twitterId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-    <Facebook id={person.facebookId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-    <Instagram id={person.instagramId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
-    <Imdb id={person.imdbId} type_={"name"} className="h-6 w-6 fill-klor-500 hover:fill-klor-900" />
+    <Twitter id={person.twitterId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg" />
+    <Facebook id={person.facebookId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg" />
+    <Instagram id={person.instagramId} className="h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg" />
+    <Imdb id={person.imdbId} type_={"name"} className="h-6 w-6 fill-klor-500 hover:fill-klor-900 dark:dark-svg" />
     <WebsiteLink
-      link={person.websiteLink} className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900"
+      link={person.websiteLink} className="h-6 w-6 fill-klor-50 stroke-klor-500 hover:fill-klor-900 dark:dark-svg"
     />
   </div>
 
@@ -147,7 +149,8 @@ let make = () => {
 
   switch personVM.current {
   | Some(personVM) =>
-    <main className="flex flex-col items-center justify-center w-full py-2">
+    <main
+      className="flex flex-col items-center justify-center w-full py-2 dark:dark-bg dark:dark-text">
       <Pulse show={loading} />
       <div>
         <p className="block lg:hidden font-nav font-semibold text-[1.4rem] pb-1 pl-4">
@@ -155,18 +158,18 @@ let make = () => {
         </p>
         <div className="block px-4 py-2">
           {getImgElem(personVM.profileImagePath, height, imageLoaded, setImageLoaded)}
-          <div className="block lg:flex flex-col">
+          <div className="block lg:flex flex-col dark:dark-text">
             <p className="hidden lg:block font-nav font-semibold text-[1.4rem] pb-2">
               {personVM.name->string}
             </p>
             {Belt.Array.map(personVM.biography, x =>
               <p
                 key={Js.String2.slice(x, ~from=0, ~to_=32)}
-                className="pb-2 prose w-auto md:w-[60vw]">
+                className="pb-2 prose w-auto md:w-[60vw] dark:prose-gray dark:dark-text">
                 {x->string}
               </p>
             )->array}
-            <div className="flex flex-col items-start justify-start prose pt-6 w-auto">
+            <div className="flex flex-col items-start justify-start prose pt-6 w-auto dark:dark-text">
               {personVM.knownFor != ""
                 ? <StorylinePanel.Pair title={"Known For"} value={personVM.knownFor} />
                 : React.null}
@@ -199,39 +202,39 @@ let make = () => {
         id="person_tab_container" className="w-full flex flex-col items-center justify-center pt-8">
         <Tab.Group>
           {selectedIndex => {
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full dark:dark-text dark:dark-top-border-2">
               <Tab.List className="flex w-full flex-nowrap items-center justify-around">
                 {_ => {
                   <>
                     <Tab
                       key={"knownfor"}
-                      className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300">
+                      className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button">
                       {props =>
                         <div
                           className={`${props.selected
-                              ? "bg-300 text-900"
+                              ? "bg-300 text-900 dark:dark-tab-selected"
                               : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
                           {"KNOWN FOR"->string}
                         </div>}
                     </Tab>
                     <Tab
                       key={"credits"}
-                      className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300">
+                      className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button">
                       {props =>
                         <div
                           className={`${props.selected
-                              ? "bg-300 text-900"
+                              ? "bg-300 text-900 dark:dark-tab-selected"
                               : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
                           {"CREDITS"->string}
                         </div>}
                     </Tab>
                     <Tab
                       key={"photos"}
-                      className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300">
+                      className="control-color flex flex-col items-center justify-center w-full h-full outline-none ring-0 border-r-[1px] border-300 dark:dark-tab-button">
                       {props =>
                         <div
                           className={`${props.selected
-                              ? "bg-300 text-900"
+                              ? "bg-300 text-900 dark:dark-tab-selected"
                               : ""} w-full h-full control-color flex items-center justify-center py-2 font-semibold`}>
                           {"PHOTOS"->string}
                         </div>}

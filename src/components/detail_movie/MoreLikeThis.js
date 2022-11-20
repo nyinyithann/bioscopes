@@ -83,9 +83,9 @@ function MoreLikeThis(Props) {
                   });
         }), [lastPoster]);
   return React.createElement("div", {
-              className: "flex flex-col items-center justify-center bg-white"
+              className: "flex flex-col items-center justify-center bg-white dark:dark-bg"
             }, React.createElement("ul", {
-                  className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative"
+                  className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative dark:dark-bg"
                 }, Belt_Array.mapWithIndex(mlist, (function (i, m) {
                         if (i === (mlist.length - 1 | 0) && !loading && currentPage <= totalPages) {
                           return React.createElement("li", {
