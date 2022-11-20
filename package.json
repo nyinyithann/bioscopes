@@ -1,6 +1,6 @@
 {
     "name": "bioscopes",
-    "description": "A site to browse movies and casts provided by themoviedb.org",
+    "description": "Browse movies and people",
     "version": "0.0.1",
     "main": "index.js",
     "license": "MIT",

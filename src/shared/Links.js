@@ -53,9 +53,7 @@ var apiBaseUrl = "https://api.themoviedb.org";
 
 var apiVersion = "3";
 
-var placeholderImage = "/assets/nothing.svg";
-
-var heroPlaceholderImage = "/assets/hero_placeholder.svg";
+var placeholderImage = "/static/nothing.svg";
 
 export {
   apiBaseUrl ,
@@ -73,7 +71,6 @@ export {
   getInstagramLink ,
   getYoutubeImageLink ,
   placeholderImage ,
-  heroPlaceholderImage ,
   getYoutubeVideoLink ,
 }
 /* No side effect */

@@ -26,10 +26,8 @@ function useDebounce(delay, value) {
     
   };
   React.useEffect((function () {
-          debugger;
           $$clearTimeout$1(undefined);
           timeoutId.contents = Caml_option.some(setTimeout((function (param) {
-                      debugger;
                       Curry._1(setDebouncedValue, (function (param) {
                               return value;
                             }));

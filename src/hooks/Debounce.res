@@ -12,15 +12,13 @@ let useDebounce = (~delay: int, ~value: string) => {
   }
 
   React.useEffect2(() => {
-    %debugger
     clearTimeout()
     timeoutId.contents = Js.Global.setTimeout(() => {
-        %debugger
         setDebouncedValue(_ => value)
       }, delay)->Some
 
     Some(() => clearTimeout())
   }, (delay, value))
-  
+
   debouncedValue
 }
