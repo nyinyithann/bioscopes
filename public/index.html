@@ -2,6 +2,10 @@
 <html lang="en">
 
 <head>
+    <script>
+        if (/^\?fbclid=/.test(location.search))
+            location.replace(location.href.replace(/\?fbclid.+/, ''));
+    </script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-R5HR5C3YCX"></script>
     <script>
