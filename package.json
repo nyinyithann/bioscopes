@@ -83,7 +83,7 @@
         "stylelint": "npx stylelint --config .stylelintrc.json --fix 'styles/*.css' 'src/*.css' 'src/**/*.css' ",
         "prettier": "npx prettier --write --config prettier.config.js 'build/*.js' 'build/**/*.js' 'src/*.{js,jsx}' 'src/**/*.{js,jsx}' --check",
         "build:prod": "TAILWIND_MODE=build NODE_ENV=production rescript clean && rescript build && webpack --config build/webpack.js --env env=prod",
-        "build:vercel": "TAILWIND_MODE=build NODE_ENV=production rescript clean && rescript build && webpack --config build/webpack.js --env VERCEL_ENV=$VERCEL_ENV",
+        "build:vercel": "TAILWIND_MODE=build rescript clean && rescript build && webpack --config build/webpack.js --env production --env VERCEL_ENV=$VERCEL_ENV",
         "build:dev": "TAILWIND_MODE=build NODE_ENV=development rescript clean && rescript build && webpack --config build/webpack.js --env env=dev",
         "start:all": "concurrently --raw \"rescript build -w\" \"TAILWIND_MODE=watch NODE_ENV=development webpack serve --config build/webpack.js --env env=dev\" ",
         "start": "TAILWIND_MODE=watch NODE_ENV=development webpack serve --config build/webpack.js --env env=dev",
