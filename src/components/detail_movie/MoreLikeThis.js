@@ -26,9 +26,14 @@ function MoreLikeThis(Props) {
   var error = match.error;
   var loading = match.loading;
   var recommendedMovies = match.recommendedMovies;
-  var mlist = Js_option.getWithDefault([], recommendedMovies.results);
-  var totalPages = Util.getOrIntZero(recommendedMovies.total_pages);
-  var currentPage = Util.getOrIntZero(recommendedMovies.page);
+  var mlistRef = React.useRef([]);
+  var totalPagesRef = React.useRef(0);
+  var currentPageRef = React.useRef(0);
+  React.useMemo((function () {
+          mlistRef.current = Js_option.getWithDefault([], recommendedMovies.results);
+          totalPagesRef.current = Util.getOrIntZero(recommendedMovies.total_pages);
+          currentPageRef.current = Util.getOrIntZero(recommendedMovies.page);
+        }), [movieId]);
   var onClose = function (arg) {
     if (arg) {
       return Curry._1(clearError, undefined);
@@ -45,7 +50,7 @@ function MoreLikeThis(Props) {
   var setLastPoster = match$1[1];
   var lastPoster = match$1[0];
   var match$2 = React.useState(function () {
-        return currentPage;
+        return currentPageRef.current;
       });
   var setPageToLoad = match$2[1];
   var pageToLoad = match$2[0];
@@ -64,7 +69,7 @@ function MoreLikeThis(Props) {
               
             })));
   React.useEffect((function () {
-          if (pageToLoad !== currentPage && pageToLoad <= totalPages) {
+          if (pageToLoad !== currentPageRef.current && pageToLoad <= totalPagesRef.current) {
             loadPage(pageToLoad);
           }
           
@@ -86,17 +91,17 @@ function MoreLikeThis(Props) {
               className: "flex flex-col items-center justify-center bg-white dark:dark-bg"
             }, React.createElement("ul", {
                   className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative dark:dark-bg"
-                }, Belt_Array.mapWithIndex(mlist, (function (i, m) {
-                        if (i === (mlist.length - 1 | 0) && !loading && currentPage <= totalPages) {
+                }, Belt_Array.mapWithIndex(mlistRef.current, (function (i, m) {
+                        if (i === (mlistRef.current.length - 1 | 0) && !loading && currentPageRef.current <= totalPagesRef.current) {
                           return React.createElement("li", {
-                                      key: Util.itos(m.id) + currentPage.toString(),
+                                      key: Util.itos(m.id) + currentPageRef.current.toString(),
                                       ref: setLastPosterRef
                                     }, React.createElement(MovieList.Poster.make, {
                                           movie: m
                                         }));
                         } else {
                           return React.createElement("li", {
-                                      key: Util.itos(m.id) + currentPage.toString()
+                                      key: Util.itos(m.id) + currentPageRef.current.toString()
                                     }, React.createElement(MovieList.Poster.make, {
                                           movie: m
                                         }));

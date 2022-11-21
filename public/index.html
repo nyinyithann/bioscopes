@@ -1,13 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-2Z73EN0G4V"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
 
-<head>
+      gtag('config', 'G-2Z73EN0G4V');
+    </script>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1" />
-    <meta name="viewport"
-        content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-    <meta name="keywords" content="Listing and searching movies provided by themoviedb.org" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <meta
+      name="keywords"
+      content="Listing and searching movies provided by themoviedb.org"
+    />
     <meta name="title" content="Browse movies and people" />
     <meta name="description" content="Browse movies and people" />
     <meta name="application-name" content="Bioscopes" />
@@ -28,38 +46,11 @@
     <meta name="theme-color" content="#000000" />
     <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <link rel="manifest" href="./manifest.json" />
-    <title>
-        <%= htmlWebpackPlugin.options.title %>
-    </title>
-    <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
-    <style>
-        .pace {
-            -webkit-pointer-events: none;
-            pointer-events: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-        }
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
 
-        .pace-inactive {
-            display: none;
-        }
-
-        .pace .pace-progress {
-            background: #22ddbe;
-            position: fixed;
-            z-index: 2000;
-            top: 0;
-            right: 100%;
-            width: 100%;
-            height: 2px;
-        }
-    </style>
-</head>
-
-<body>
+  <body>
     <noscript> You need to enable JavaScript to run this app. </noscript>
     <div id="root"></div>
-</body>
-
+  </body>
 </html>

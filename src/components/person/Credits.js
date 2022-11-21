@@ -80,9 +80,9 @@ function Credits$CreditItem(Props) {
               ) + "", credit.episode_count > 0 ? React.createElement("span", {
                       className: "pl-1 text-[0.9rem] text-800/90"
                     }, "(" + credit.episode_count.toString() + " episode)") : null, credit.character !== "" ? React.createElement("span", {
-                      className: "pl-1 text-[0.9rem] text-800/90"
+                      className: "pl-1 text-[0.9rem] text-800/90 dark:text-slate-400"
                     }, "as " + credit.character + "") : null, credit.job !== "" ? React.createElement("span", {
-                      className: "pl-1 text-[0.9rem] text-800/90"
+                      className: "pl-1 text-[0.9rem] text-800/90 dark:text-slate-400"
                     }, "as " + credit.job + "") : null)));
   if (credit.media_type !== "movie") {
     return childItem;

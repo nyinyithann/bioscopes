@@ -61,19 +61,19 @@ module CreditItem = {
                 </span>
               : React.null}
             {credit.character != ""
-              ? <span className="pl-1 text-[0.9rem] text-800/90">
+              ? <span className="pl-1 text-[0.9rem] text-800/90 dark:text-slate-400">
                   {`as ${credit.character}`->string}
                 </span>
               : React.null}
             {credit.job != ""
-              ? <span className="pl-1 text-[0.9rem] text-800/90">
+              ? <span className="pl-1 text-[0.9rem] text-800/90 dark:text-slate-400">
                   {`as ${credit.job}`->string}
                 </span>
               : React.null}
           </p>
         </li>
       </ul>
-      
+
     if credit.media_type == "movie" {
       open Webapi.Url
       let param: UrlQueryParam.movie_tv_param = {
@@ -102,7 +102,10 @@ module CreditGroup = {
           credits
           ->Belt.Array.map(credit =>
             <div
-              key={credit.id->Js.Int.toString} className={`${mod(i, 2) == 0 ? "bg-50 dark:bg-slate-700" : "bg-100 dark:bg-slate-800/40"}`}>
+              key={credit.id->Js.Int.toString}
+              className={`${mod(i, 2) == 0
+                  ? "bg-50 dark:bg-slate-700"
+                  : "bg-100 dark:bg-slate-800/40"}`}>
               <CreditItem credit />
             </div>
           )
@@ -159,8 +162,7 @@ let make = (~person: PersonModel.person) => {
 
   <div className="flex flex-col w-full gap-4 px-2 dark:dark-bg">
     <div
-      id="credit_info_tab_container"
-      className="w-full flex flex-col items-center justify-center">
+      id="credit_info_tab_container" className="w-full flex flex-col items-center justify-center">
       <Tab.Group>
         {selectedIndex => {
           <div className="flex flex-col w-full">

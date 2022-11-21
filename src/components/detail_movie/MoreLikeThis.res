@@ -10,9 +10,15 @@ let make = (~movieId: int) => {
     clearError,
   } = MoviesProvider.useMoviesContext()
 
-  let mlist = Js.Option.getWithDefault([], recommendedMovies.results)
-  let totalPages = Util.getOrIntZero(recommendedMovies.total_pages)
-  let currentPage = Util.getOrIntZero(recommendedMovies.page)
+  let mlistRef = React.useRef([])
+  let totalPagesRef = React.useRef(0)
+  let currentPageRef = React.useRef(0)
+
+  React.useMemo1(() => {
+    mlistRef.current = Js.Option.getWithDefault([], recommendedMovies.results)
+    totalPagesRef.current = Util.getOrIntZero(recommendedMovies.total_pages)
+    currentPageRef.current = Util.getOrIntZero(recommendedMovies.page)
+  }, [movieId])
 
   let onClose = arg =>
     if arg {
@@ -26,7 +32,7 @@ let make = (~movieId: int) => {
   }
 
   let (lastPoster, setLastPoster) = React.useState(_ => Js.Nullable.null)
-  let (pageToLoad, setPageToLoad) = React.useState(_ => currentPage)
+  let (pageToLoad, setPageToLoad) = React.useState(_ => currentPageRef.current)
 
   let setLastPosterRef = elem => {
     setLastPoster(_ => elem)
@@ -47,7 +53,7 @@ let make = (~movieId: int) => {
   )
 
   React.useEffect1(() => {
-    if pageToLoad != currentPage && pageToLoad <= totalPages {
+    if pageToLoad != currentPageRef.current && pageToLoad <= totalPagesRef.current {
       loadPage(~page=pageToLoad)
     }
     None
@@ -76,16 +82,20 @@ let make = (~movieId: int) => {
   <div className="flex flex-col items-center justify-center bg-white dark:dark-bg">
     <ul
       className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-y-4 gap-2 justify-center items-start w-full relative dark:dark-bg">
-      {mlist
+      {mlistRef.current
       ->Belt.Array.mapWithIndex((i, m) => {
-        if i == Belt.Array.length(mlist) - 1 && !loading && currentPage <= totalPages {
+        if (
+          i == Belt.Array.length(mlistRef.current) - 1 &&
+          !loading &&
+          currentPageRef.current <= totalPagesRef.current
+        ) {
           <li
-            key={m.id->Util.itos ++ Js.Int.toString(currentPage)}
+            key={m.id->Util.itos ++ Js.Int.toString(currentPageRef.current)}
             ref={ReactDOM.Ref.callbackDomRef(setLastPosterRef)}>
             <MovieList.Poster movie={m} />
           </li>
         } else {
-          <li key={m.id->Util.itos ++ Js.Int.toString(currentPage)}>
+          <li key={m.id->Util.itos ++ Js.Int.toString(currentPageRef.current)}>
             <MovieList.Poster movie={m} />
           </li>
         }
