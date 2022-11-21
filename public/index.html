@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <script>
-        if (/^\?fbclid=/.test(location.search))
-            location.replace(location.href.replace(/\?fbclid.+/, ''));
+      if (/^\?fbclid=/.test(location.search))
+        location.replace(location.href.replace(/\?fbclid.+/, ''));
     </script>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R5HR5C3YCX"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-R5HR5C3YCX"
+    ></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
 
-        gtag('config', 'G-R5HR5C3YCX');
+      gtag('config', 'G-R5HR5C3YCX');
     </script>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1" />
-    <meta name="viewport"
-        content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-    <meta name="keywords" content="Listing and searching movies provided by themoviedb.org" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <meta
+      name="keywords"
+      content="Listing and searching movies provided by themoviedb.org"
+    />
     <meta name="title" content="Browse movies and people" />
     <meta name="description" content="Browse movies and people" />
     <meta name="application-name" content="Bioscopes" />
     <meta name="twitter:site" content="@jazztuyat" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:domain" content="bioscopes.fun" />
-    <meta name="twitter:url" content="https://bioscopes.fun" />
+    <meta name="twitter:url" content="https://www.bioscopes.fun" />
     <meta name="twitter:title" content="bioscopes.fun" />
     <meta name="twitter:description" content="Browse movies and people" />
     <meta name="twitter:image" content="https://iili.io/HHofRCG.jpg" />
@@ -43,14 +50,11 @@
     <meta name="theme-color" content="#000000" />
     <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <link rel="manifest" href="./manifest.json" />
-    <title>
-        <%= htmlWebpackPlugin.options.title %>
-    </title>
-</head>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
 
-<body>
+  <body>
     <noscript> You need to enable JavaScript to run this app. </noscript>
     <div id="root"></div>
-</body>
-
+  </body>
 </html>
