@@ -5,7 +5,8 @@ module.exports = {
   mode: 'production',
   plugins: [
     new Dotenv({
-      path: path.resolve(__dirname, '..', './.env.production'),
+      // path: path.resolve(__dirname, '..', './.env.production'),
+      systemvars: true
     }),
   ],
   optimization: {
